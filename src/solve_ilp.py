@@ -14,6 +14,7 @@ def solve_cncff(
     F_plus: pd.DataFrame,
     F_minus: pd.DataFrame,
     n_clones: int,
+    cluster_weights: list = None,
     n_solutions: int = 10,
     time_limit: int = 600,
 ):
@@ -23,6 +24,9 @@ def solve_cncff(
 
     n_mutations = len(mutations)
     n_clusters = len(clusters)
+
+    if cluster_weights is None:
+        cluster_weights = [1] * n_clusters
 
     model = Model("CNCFF", env=env)
     # Define variables
@@ -115,7 +119,7 @@ def solve_cncff(
                         model.addConstr(b[j, c] + b[j, d] <= 2 - z[c,d])
     
     model.update()
-    model.setObjective(quicksum(x[j] for j in range(n_mutations)), GRB.MAXIMIZE)
+    model.setObjective(quicksum((x[j] * cluster_weights[j]) for j in range(n_mutations)), GRB.MAXIMIZE)
 
     model.Params.TimeLimit = time_limit
     model.Params.PoolSearchMode = 2
