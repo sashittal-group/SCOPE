@@ -14,11 +14,10 @@ def solve_cncff(
     F_plus: pd.DataFrame,
     F_minus: pd.DataFrame,
     n_clones: int,
+    n_solutions: int = 10,
+    time_limit: int = 600,
 ):
     # TODO: Check if F_plus and F_minus have the same clones and mutations
-    print(F_plus)
-    print(F_minus)
-
     clusters = F_plus.index.tolist()
     mutations = F_plus.columns.tolist()
 
@@ -118,40 +117,51 @@ def solve_cncff(
     model.update()
     model.setObjective(quicksum(x[j] for j in range(n_mutations)), GRB.MAXIMIZE)
 
-    model.Params.TimeLimit = 600
+    model.Params.TimeLimit = time_limit
     model.Params.PoolSearchMode = 2
-    model.Params.PoolSolutions = 10
+    model.Params.PoolSolutions = n_solutions
 
     model.optimize()
 
-    X_df = pd.DataFrame([x[j].Xn for j in range(n_mutations)])
+    n_solutions_found = model.SolCount
 
-    b_values = [
-        [b[i, j].Xn for j in range(n_mutations)]
-        for i in range(n_clones + n_clusters)
-    ]
-    B_df = pd.DataFrame(b_values)
+    print(f"Number of solutions found: {n_solutions_found}")
 
-    u_values = [
-        [u[i, j].Xn for j in range(n_mutations)]
-        for i in range(n_clusters)
-    ]
-    U_df = pd.DataFrame(u_values)
+    solutions = []
+    for i in range(n_solutions_found):
+        model.setParam(GRB.Param.SolutionNumber, i)
+        print(f"Solution {i+1}:")
+        print("Objective value:", model.PoolObjVal)
 
-    f_values = [
-        [f[i, j].Xn for j in range(n_mutations)]
-        for i in range(n_clusters)
-    ]
-    F_df = pd.DataFrame(f_values)
+        X_df = pd.DataFrame([x[j].Xn for j in range(n_mutations)])
 
-    g_values = [
-        [g[i, j].Xn for j in range(n_mutations)]
-        for i in range(n_clusters)
-    ]
-    G_df = pd.DataFrame(g_values)
+        b_values = [
+            [b[i, j].Xn for j in range(n_mutations)]
+            for i in range(n_clones + n_clusters)
+        ]
+        B_df = pd.DataFrame(b_values)
 
+        u_values = [
+            [u[i, j].Xn for j in range(n_mutations)]
+            for i in range(n_clusters)
+        ]
+        U_df = pd.DataFrame(u_values)
 
-    return X_df, B_df, U_df, F_df, G_df
+        f_values = [
+            [f[i, j].Xn for j in range(n_mutations)]
+            for i in range(n_clusters)
+        ]
+        F_df = pd.DataFrame(f_values)
+
+        g_values = [
+            [g[i, j].Xn for j in range(n_mutations)]
+            for i in range(n_clusters)
+        ]
+        G_df = pd.DataFrame(g_values)
+
+        solutions.append((X_df, B_df, U_df, F_df, G_df))
+
+    return solutions
 
 
 
