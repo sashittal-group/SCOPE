@@ -21,6 +21,7 @@ def solve_cncff(
     # TODO: Check if F_plus and F_minus have the same clones and mutations
     clusters = F_plus.index.tolist()
     mutations = F_plus.columns.tolist()
+    clones = list(np.arange(n_clones))
 
     n_mutations = len(mutations)
     n_clusters = len(clusters)
@@ -79,6 +80,9 @@ def solve_cncff(
     for j in range(n_mutations):
         for i in range(n_clusters):
             model.addConstr(f[i,j] <= x[j], name=f"f[{l}][{j}] = x[{j}]")
+    
+    for j in range(n_mutations):
+        model.addConstr(quicksum(b[i, j] for i in range(n_clones)) >= x[j], name=f"sum_i b[{i}][{j}] >= x[{j}]")
 
     # (5)
     for j in range(n_mutations):
@@ -118,6 +122,11 @@ def solve_cncff(
                         # b_{jc} + b_{jd} <= 2 - z_{cd}
                         model.addConstr(b[j, c] + b[j, d] <= 2 - z[c,d])
     
+    # (9) ? Fixing clones to mutation for restricting redundant mutation trees
+    for i in range(n_clones):
+        model.addConstr(b[i, i] >= x[i], name=f"b[{i}][{i}] >= x[{i}]")
+    
+
     model.update()
     model.setObjective(quicksum((x[j] * cluster_weights[j]) for j in range(n_mutations)), GRB.MAXIMIZE)
 
@@ -127,6 +136,7 @@ def solve_cncff(
 
     model.optimize()
 
+    # Form Dataframes with solution
     n_solutions_found = model.SolCount
 
     print(f"Number of solutions found: {n_solutions_found}")
@@ -137,31 +147,31 @@ def solve_cncff(
         print(f"Solution {i+1}:")
         print("Objective value:", model.PoolObjVal)
 
-        X_df = pd.DataFrame([x[j].Xn for j in range(n_mutations)])
+        X_df = pd.DataFrame([x[j].Xn for j in range(n_mutations)], index=mutations)
 
         b_values = [
             [b[i, j].Xn for j in range(n_mutations)]
             for i in range(n_clones + n_clusters)
         ]
-        B_df = pd.DataFrame(b_values)
+        B_df = pd.DataFrame(b_values, index=clones + clusters, columns=mutations)
 
         u_values = [
             [u[i, j].Xn for j in range(n_mutations)]
             for i in range(n_clusters)
         ]
-        U_df = pd.DataFrame(u_values)
+        U_df = pd.DataFrame(u_values, index=clusters, columns=clones)
 
         f_values = [
             [f[i, j].Xn for j in range(n_mutations)]
             for i in range(n_clusters)
         ]
-        F_df = pd.DataFrame(f_values)
+        F_df = pd.DataFrame(f_values, index=clusters, columns=mutations)
 
         g_values = [
             [g[i, j].Xn for j in range(n_mutations)]
             for i in range(n_clusters)
         ]
-        G_df = pd.DataFrame(g_values)
+        G_df = pd.DataFrame(g_values, index=clusters, columns=mutations)
 
         solutions.append((X_df, B_df, U_df, F_df, G_df))
 
