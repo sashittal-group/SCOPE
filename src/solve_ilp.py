@@ -126,6 +126,10 @@ def solve_cncff(
     for i in range(n_clones):
         model.addConstr(b[i, i] >= x[i], name=f"b[{i}][{i}] >= x[{i}]")
     
+    # (10) ? At least one cluster should have mutation frequency of 0.05 to avoid all-zero solution
+    for j in range(n_mutations):
+        model.addConstr(quicksum(f[i, j] for i in range(n_clusters)) * 20 >= x[j], name=f"sum_i f[{i}][{j}] >= 0.05 * x[{j}]")
+    
 
     model.update()
     model.setObjective(quicksum((x[j] * cluster_weights[j]) for j in range(n_mutations)), GRB.MAXIMIZE)

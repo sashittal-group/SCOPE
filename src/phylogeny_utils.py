@@ -28,7 +28,10 @@ def generate_perfect_phylogeny(df_binary):
                 solT_cell.add_edge(curr_node, column)
                 curr_node = column
 
-        solT_cell.add_edge(curr_node, cell_id)   
+        has_digit = any(char.isdigit() for char in cell_id)
+
+        if not has_digit:
+            solT_cell.add_edge(curr_node, cell_id)   
 
     return solT_mut, solT_cell
 
