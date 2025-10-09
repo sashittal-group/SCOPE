@@ -3,12 +3,6 @@ import numpy as np
 import gurobipy as gp
 from gurobipy import Model, GRB, quicksum
 
-params = {
-    "WLSACCESSID": '85dfeec1-65a1-402f-9425-7465d0f3a229',
-    "WLSSECRET": 'f755a3a4-dba0-444d-8bc8-d8e781d8a05c',
-    "LICENSEID": 2687964,
-}
-env = gp.Env(params=params)
 
 def solve_cncff(
     F_plus: pd.DataFrame,
@@ -18,6 +12,13 @@ def solve_cncff(
     n_solutions: int = 10,
     time_limit: int = 600,
 ):
+    params = {
+        "WLSACCESSID": '85dfeec1-65a1-402f-9425-7465d0f3a229',
+        "WLSSECRET": 'f755a3a4-dba0-444d-8bc8-d8e781d8a05c',
+        "LICENSEID": 2687964,
+    }
+    env = gp.Env(params=params)
+
     # TODO: Check if F_plus and F_minus have the same clones and mutations
     clusters = F_plus.index.tolist()
     mutations = F_plus.columns.tolist()
@@ -122,9 +123,15 @@ def solve_cncff(
                         # b_{jc} + b_{jd} <= 2 - z_{cd}
                         model.addConstr(b[j, c] + b[j, d] <= 2 - z[c,d])
     
-    # (9) ? Fixing clones to mutation for restricting redundant mutation trees
-    for i in range(n_clones):
-        model.addConstr(b[i, i] >= x[i], name=f"b[{i}][{i}] >= x[{i}]")
+    # (9) ? bit-encoded ordering
+    for i in range(n_clones-1):
+        lhs = sum((2**j) * b[i,j]     for j in range(n_mutations))
+        rhs = sum((2**j) * b[i+1,j]   for j in range(n_mutations)) - 1
+        model.addConstr(lhs <= rhs, name=f"order_{i}")
+        
+
+    for j in range(n_mutations):
+        model.addConstr(quicksum(b[i, j] for i in range(n_clones)) >= x[i])
     
     # (10) ? At least one cluster should have mutation frequency of 0.05 to avoid all-zero solution
     for j in range(n_mutations):
