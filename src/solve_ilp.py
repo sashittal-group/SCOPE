@@ -123,11 +123,15 @@ def solve_cncff(
                         # b_{jc} + b_{jd} <= 2 - z_{cd}
                         model.addConstr(b[j, c] + b[j, d] <= 2 - z[c,d])
     
+    # (9) ? Fixing clones to mutation for restricting redundant mutation trees
+    for i in range(n_clones):
+        model.addConstr(b[i, i] >= x[i], name=f"b[{i}][{i}] >= x[{i}]")
+    
     # (9) ? bit-encoded ordering
-    for i in range(n_clones-1):
-        lhs = sum((2**j) * b[i,j]     for j in range(n_mutations))
-        rhs = sum((2**j) * b[i+1,j]   for j in range(n_mutations)) - 1
-        model.addConstr(lhs <= rhs, name=f"order_{i}")
+    # for i in range(n_clones-1):
+    #     lhs = sum((2**j) * b[i,j]     for j in range(n_mutations))
+    #     rhs = sum((2**j) * b[i+1,j]   for j in range(n_mutations)) - 1
+    #     model.addConstr(lhs <= rhs, name=f"order_{i}")
         
 
     for j in range(n_mutations):

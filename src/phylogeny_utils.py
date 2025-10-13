@@ -1,6 +1,11 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.cluster import SpectralBiclustering
+import numpy as np
+import seaborn as sns
+import pandas as pd
+
 
 
 def generate_perfect_phylogeny(df_binary):
@@ -65,3 +70,141 @@ def build_phylogeny(B):
         node_map[taxa_set] = node_name
 
     return G
+
+
+
+def plot_spectral_clustering(F):
+    model = SpectralBiclustering(n_clusters=7, method='log', random_state=0)
+    model.fit(F.values)
+
+    frac_biclust = F.iloc[np.argsort(model.row_labels_)]
+    frac_biclust = frac_biclust.iloc[:, np.argsort(model.column_labels_)]
+
+    sns.heatmap(frac_biclust, cmap='coolwarm')
+
+    # Get where the cluster boundaries are
+    row_order = np.argsort(model.row_labels_)
+    col_order = np.argsort(model.column_labels_)
+
+    row_clusters, row_counts = np.unique(model.row_labels_[row_order], return_counts=True)
+    col_clusters, col_counts = np.unique(model.column_labels_[col_order], return_counts=True)
+
+    row_lines = np.cumsum(row_counts)[:-1]
+    col_lines = np.cumsum(col_counts)[:-1]
+
+    # Plot with boundaries
+    plt.figure(figsize=(6, 5))
+    ax = sns.heatmap(frac_biclust, cmap='viridis', cbar=True)
+
+    # Draw horizontal lines
+    for r in row_lines:
+        ax.axhline(r, color='white', lw=2)
+
+    # Draw vertical lines
+    for c in col_lines:
+        ax.axvline(c, color='white', lw=2)
+
+    plt.title("Spectral Biclustering of CF")
+    plt.xlabel("Mutations")
+    plt.ylabel("CN Cluster IDs")
+    plt.show()
+
+
+import networkx as nx
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+import matplotlib.patches as mpatches
+
+
+
+def draw_clone_tree(T):
+
+    # Create labels with concise formatting
+    labels = {node: str(node) for node in T.nodes()}
+
+    # Use graphviz 'dot' layout for hierarchical structure
+    pos = nx.nx_agraph.graphviz_layout(T, prog="dot", args="-Gnodesep=.5 -Granksep=50")
+
+    letter_nodes = {n for n in T.nodes if str(n).isalpha() and len(str(n)) == 1}
+
+    # --- Step 2: assign color group by closest ancestor letter ---
+    color_by_ancestor = {}
+
+    # Perform BFS from each letter node to assign descendants
+    for letter in letter_nodes:
+        for node in nx.descendants(T, letter):
+            # If node not yet assigned or this letter is closer (shallower)
+            if node not in color_by_ancestor:
+                color_by_ancestor[node] = letter
+            else:
+                # choose the closer ancestor (shorter path)
+                old_letter = color_by_ancestor[node]
+                if nx.shortest_path_length(T, letter, node) < nx.shortest_path_length(T, old_letter, node):
+                    color_by_ancestor[node] = letter
+
+    # Letter nodes are their own color
+    for letter in letter_nodes:
+        color_by_ancestor[letter] = letter
+
+    # --- Step 3: map letters to colors ---
+    import matplotlib.cm as cm
+    import matplotlib.colors as mcolors
+
+    unique_letters = sorted(letter_nodes)
+    cmap = cm.get_cmap('tab10', len(unique_letters))
+    color_map = {letter: mcolors.to_hex(cmap(i)) for i, letter in enumerate(unique_letters)}
+
+    node_colors = [color_map.get(color_by_ancestor.get(n, 'root'), '#cccccc') for n in T.nodes]
+
+    # Create figure with adjusted size
+    plt.figure(figsize=(6, 4))
+
+    # Draw the tree with node colors
+    nx.draw(
+        T,
+        pos,
+        labels=labels,
+        font_size=7,
+        font_weight="bold",
+        node_size=1000,
+        edge_color="#555555",
+        width=1.5,
+        arrows=True,
+        node_color=node_colors
+    )
+
+
+    plt.tight_layout()
+    plt.show()
+
+def fix_T(B: pd.DataFrame, G: pd.DataFrame, T):
+
+    nodes = T.nodes()
+   
+    for cluster, muts in G.iterrows():
+        gained_muts = muts.index[muts == 1].tolist()
+
+        gained_muts = [m for m in gained_muts if m in nodes]
+
+        root_muts = []
+
+        for m in gained_muts:
+            has_parent = False
+            for mo in gained_muts:
+                if m == mo: continue
+
+                if np.all(B[mo] >= B[m]):
+                    has_parent = True
+                    break
+
+            if not has_parent:
+                root_muts.append(m)
+        
+        root_muts = np.array(root_muts)
+
+        for m in root_muts:
+            old_parent = next(T.predecessors(m))
+            T.remove_edge(old_parent, m)
+            T.add_edge(cluster, m)
+
+    return T
