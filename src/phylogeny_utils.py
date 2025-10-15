@@ -216,7 +216,6 @@ def add_clusters_to_clonal_T(T: nx.DiGraph, X: pd.DataFrame, G: pd.DataFrame, B:
 
             deepest_mut = max(muts, key=lambda n: depths.get(n, -1))
 
-            print(cluster, muts, deepest_mut)
             T.add_edge(deepest_mut, cluster)
             # children = list(T.successors(deepest_mut))
             # for child in children:

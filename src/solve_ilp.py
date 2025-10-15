@@ -132,7 +132,14 @@ def solve_cncff(
     #     lhs = sum((2**j) * b[i,j]     for j in range(n_mutations))
     #     rhs = sum((2**j) * b[i+1,j]   for j in range(n_mutations)) - 1
     #     model.addConstr(lhs <= rhs, name=f"order_{i}")
-        
+
+    # for j in range(n_mutations):
+    #     model.addConstr(b[n_clones, j] >= b[n_clones + 1, j], name=f"order_0_{j}")
+
+    # lhs = sum(b[n_clones, j] for j in range(n_mutations))
+    # rhs = sum(b[n_clones + 1, j] for j in range(n_mutations))
+    # model.addConstr(lhs >= rhs, name=f"order_{n_clones}")
+
 
     for j in range(n_mutations):
         model.addConstr(quicksum(b[i, j] for i in range(n_clones)) >= x[i])
