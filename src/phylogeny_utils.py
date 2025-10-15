@@ -177,6 +177,88 @@ def draw_clone_tree(T):
     plt.tight_layout()
     plt.show()
 
+
+def add_clusters_to_clonal_T(T: nx.DiGraph, X: pd.DataFrame, G: pd.DataFrame, B: pd.DataFrame,  ):
+    selected_muts = X[X>0.5].dropna().index.tolist()
+    depths = dict(nx.single_source_shortest_path_length(T, 'root'))
+
+    G_sub = G.loc[:, selected_muts]
+    for cluster, muts in G_sub.iterrows():
+        T.add_node(cluster)
+        gained_muts = muts.index[muts == 1].tolist()
+        if gained_muts:
+            
+            root_muts = []
+            for m in gained_muts:
+                has_parent = False
+                for mo in gained_muts:
+                    if m == mo: continue
+
+                    if np.all(B[mo] >= B[m]):
+                        has_parent = True
+                        break
+
+                if not has_parent:
+                    root_muts.append(m)
+            
+            root_muts = np.array(root_muts)
+
+            for m in root_muts:
+                old_parent = next(T.predecessors(m))
+                T.remove_edge(old_parent, m)
+                T.add_edge(cluster, m)
+                if not T.has_edge(old_parent, cluster):
+                    T.add_edge(old_parent, cluster)
+        
+        else:
+            B_cluster = B.loc[cluster]
+            muts = B_cluster[B_cluster == 1].index.tolist()
+
+            deepest_mut = max(muts, key=lambda n: depths.get(n, -1))
+
+            print(cluster, muts, deepest_mut)
+            T.add_edge(deepest_mut, cluster)
+            # children = list(T.successors(deepest_mut))
+            # for child in children:
+            #     print("reassigning child", cluster, deepest_mut, child)
+            #     if T.has_edge(deepest_mut, child):
+            #         T.remove_edge(deepest_mut, child)
+                # T.add_edge(cluster, child)
+    
+    return T
+
+    nodes = T.nodes()
+   
+    for cluster, muts in G.iterrows():
+        gained_muts = muts.index[muts == 1].tolist()
+
+        gained_muts = [m for m in gained_muts if m in nodes]
+
+        root_muts = []
+
+        for m in gained_muts:
+            has_parent = False
+            for mo in gained_muts:
+                if m == mo: continue
+
+                if np.all(B[mo] >= B[m]):
+                    has_parent = True
+                    break
+
+            if not has_parent:
+                root_muts.append(m)
+        
+        root_muts = np.array(root_muts)
+
+        for m in root_muts:
+            old_parent = next(T.predecessors(m))
+            T.remove_edge(old_parent, m)
+            T.add_edge(cluster, m)
+
+    return T
+
+
+
 def fix_T(B: pd.DataFrame, G: pd.DataFrame, T):
 
     nodes = T.nodes()
