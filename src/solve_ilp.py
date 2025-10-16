@@ -93,10 +93,10 @@ def solve_cncff(
     # (6)
     for i in range(n_clusters):
         for j in range(n_mutations):
-            if F_minus.iloc[i, j] == 0:
-                model.addConstr(f[i, j] <= g[i, j], name=f"f[{i}][{j}] <= g[{i}][{j}]")
-            elif F_plus.iloc[i, j] == 1:
+            if F_plus.iloc[i, j] == 1:
                 model.addConstr(f[i, j] >= 1 - g[i, j], name=f"f[{i}][{j}] >= 1 - g[{i}][{j}]")
+            elif F_minus.iloc[i, j] == 0:
+                model.addConstr(f[i, j] <= g[i, j], name=f"f[{i}][{j}] <= g[{i}][{j}]")
             else:
                 model.addConstr(g[i, j] == 1, name=f"g[{i}][{j}] == 1")
 
@@ -135,10 +135,6 @@ def solve_cncff(
 
     # for j in range(n_mutations):
     #     model.addConstr(b[n_clones, j] >= b[n_clones + 1, j], name=f"order_0_{j}")
-
-    # lhs = sum(b[n_clones, j] for j in range(n_mutations))
-    # rhs = sum(b[n_clones + 1, j] for j in range(n_mutations))
-    # model.addConstr(lhs >= rhs, name=f"order_{n_clones}")
 
 
     for j in range(n_mutations):
