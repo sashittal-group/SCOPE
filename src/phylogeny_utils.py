@@ -73,8 +73,8 @@ def build_phylogeny(B):
 
 
 
-def plot_spectral_clustering(F):
-    model = SpectralBiclustering(n_clusters=7, method='log', random_state=0)
+def plot_spectral_clustering(F, n_clusters=7):
+    model = SpectralBiclustering(n_clusters=n_clusters, method='log', random_state=0)
     model.fit(F.values)
 
     frac_biclust = F.iloc[np.argsort(model.row_labels_)]
