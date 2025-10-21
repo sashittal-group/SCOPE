@@ -34,13 +34,13 @@ def solve_cncff(
     # Define variables
     x = model.addVars(n_mutations, vtype=GRB.BINARY, name="x")
     x.start = 0
-    b = model.addVars(n_clones + n_clusters, n_mutations, vtype=GRB.BINARY, name="b")
+    b = model.addVars(n_clones + n_clusters, n_mutations + n_clusters, vtype=GRB.BINARY, name="b")
     u = model.addVars(n_clusters, n_clones, lb=0, ub=1, vtype=GRB.CONTINUOUS, name="u")
     g = model.addVars(n_clusters, n_mutations, vtype=GRB.BINARY, name="g")
     a = model.addVars(n_clusters, n_clones, n_mutations, lb=0, vtype=GRB.CONTINUOUS, name="a")
     f = model.addVars(n_clusters, n_mutations, vtype=GRB.CONTINUOUS, name="f")
-    y = model.addVars(n_mutations, n_mutations, vtype=GRB.BINARY, name="y")
-    z = model.addVars(n_mutations, n_mutations, vtype=GRB.BINARY, name="z")
+    y = model.addVars(n_mutations + n_clusters, n_mutations + n_clusters, vtype=GRB.BINARY, name="y")
+    z = model.addVars(n_mutations + n_clusters, n_mutations + n_clusters, vtype=GRB.BINARY, name="z")
     
     # Ignore all variables in the solution pool except b
     u.PoolIgnore = 1
@@ -110,8 +110,8 @@ def solve_cncff(
 
     # (8)
     for j in range(n_clones + n_clusters):
-        for c in range(n_mutations):
-            for d in range(n_mutations):
+        for c in range(n_mutations + n_clusters):
+            for d in range(n_mutations + n_clusters):
                 if c != d:
                     # b_{jc} <= b_{jd} + (1 - y_{cd})
                     model.addConstr(b[j, c] <= b[j, d] + (1 - y[c,d]))
@@ -119,9 +119,9 @@ def solve_cncff(
                     # y_{cd} + y_{dc} + z_{cd} >= 1
                     model.addConstr(y[c,d] + y[d,c] + z[c,d] >= 1)
 
-                    if c < d:
-                        # b_{jc} + b_{jd} <= 2 - z_{cd}
-                        model.addConstr(b[j, c] + b[j, d] <= 2 - z[c,d])
+                    # if c < d: TODO: Should this if condition be here ?
+                    # b_{jc} + b_{jd} <= 2 - z_{cd}
+                    model.addConstr(b[j, c] + b[j, d] <= 2 - z[c,d])
     
     # (9) ? Fixing clones to mutation for restricting redundant mutation trees
     for i in range(n_clones):
@@ -136,6 +136,18 @@ def solve_cncff(
     # for j in range(n_mutations):
     #     model.addConstr(b[n_clones, j] >= b[n_clones + 1, j], name=f"order_0_{j}")
 
+    # (9) B rows cannot be same
+    d = model.addVars(n_clones, n_clones, n_mutations, vtype=GRB.BINARY, name="d")
+    for i in range(n_clones):
+        for j in range(n_clones):
+            if i < j:
+                for k in range(n_mutations):
+                    model.addConstr(d[i,j,k] >= b[i,k] - b[j,k])
+                    model.addConstr(d[i,j,k] >= b[j,k] - b[i,k])
+                    model.addConstr(d[i,j,k] <= b[i,k] + b[j,k])
+                    model.addConstr(d[i,j,k] <= 2 - (b[i,k] + b[j,k]))
+                
+                model.addConstr(quicksum(d[i, j, k] for k in range(n_mutations)) >= 1, name=f"diff_{i}_{j} >= 1")
 
     for j in range(n_mutations):
         model.addConstr(quicksum(b[i, j] for i in range(n_clones)) >= x[i])
@@ -144,6 +156,16 @@ def solve_cncff(
     for j in range(n_mutations):
         model.addConstr(quicksum(f[i, j] for i in range(n_clusters)) * 20 >= x[j], name=f"sum_i f[{i}][{j}] >= 0.05 * x[{j}]")
     
+
+    # (11)
+    for i in range(n_clusters):
+        l = n_clones + i
+        model.addConstr(b[l, l] == 1, name=f"b[{l}][{l}] == 1")
+    
+    for i in range(n_clusters):
+        for j in range(n_mutations):
+            model.addGenConstrIndicator(g[i, j], 1, b[j, n_clones + i] == 1, name=f"g_indicator_1_{i}_{j}")
+
 
     model.update()
     model.setObjective(quicksum((x[j] * cluster_weights[j]) for j in range(n_mutations)), GRB.MAXIMIZE)
@@ -168,10 +190,10 @@ def solve_cncff(
         X_df = pd.DataFrame([x[j].Xn for j in range(n_mutations)], index=mutations)
 
         b_values = [
-            [b[i, j].Xn for j in range(n_mutations)]
+            [b[i, j].Xn for j in range(n_mutations + n_clusters)]
             for i in range(n_clones + n_clusters)
         ]
-        B_df = pd.DataFrame(b_values, index=clones + clusters, columns=mutations)
+        B_df = pd.DataFrame(b_values, index=clones + clusters, columns=mutations + clusters)
 
         u_values = [
             [u[i, j].Xn for j in range(n_mutations)]

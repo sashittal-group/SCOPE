@@ -179,7 +179,7 @@ def draw_clone_tree(T):
 
 
 def add_clusters_to_clonal_T(T: nx.DiGraph, X: pd.DataFrame, G: pd.DataFrame, B: pd.DataFrame,  ):
-    selected_muts = X[X>0.5].dropna().index.tolist()
+    selected_muts = X[ X > 0.5 ].dropna().index.tolist()
     depths = dict(nx.single_source_shortest_path_length(T, 'root'))
 
     G_sub = G.loc[:, selected_muts]
@@ -225,37 +225,6 @@ def add_clusters_to_clonal_T(T: nx.DiGraph, X: pd.DataFrame, G: pd.DataFrame, B:
                 # T.add_edge(cluster, child)
     
     return T
-
-    nodes = T.nodes()
-   
-    for cluster, muts in G.iterrows():
-        gained_muts = muts.index[muts == 1].tolist()
-
-        gained_muts = [m for m in gained_muts if m in nodes]
-
-        root_muts = []
-
-        for m in gained_muts:
-            has_parent = False
-            for mo in gained_muts:
-                if m == mo: continue
-
-                if np.all(B[mo] >= B[m]):
-                    has_parent = True
-                    break
-
-            if not has_parent:
-                root_muts.append(m)
-        
-        root_muts = np.array(root_muts)
-
-        for m in root_muts:
-            old_parent = next(T.predecessors(m))
-            T.remove_edge(old_parent, m)
-            T.add_edge(cluster, m)
-
-    return T
-
 
 
 def fix_T(B: pd.DataFrame, G: pd.DataFrame, T):
