@@ -34,13 +34,14 @@ def solve_cncff(
     # Define variables
     x = model.addVars(n_mutations, vtype=GRB.BINARY, name="x")
     x.start = 0
-    b = model.addVars(n_clones + n_clusters, n_mutations + n_clusters, vtype=GRB.BINARY, name="b")
+    b = model.addVars(n_clones + n_clusters, n_mutations, vtype=GRB.BINARY, name="b")
     u = model.addVars(n_clusters, n_clones, lb=0, ub=1, vtype=GRB.CONTINUOUS, name="u")
     g = model.addVars(n_clusters, n_mutations, vtype=GRB.BINARY, name="g")
     a = model.addVars(n_clusters, n_clones, n_mutations, lb=0, vtype=GRB.CONTINUOUS, name="a")
     f = model.addVars(n_clusters, n_mutations, vtype=GRB.CONTINUOUS, name="f")
-    y = model.addVars(n_mutations + n_clusters, n_mutations + n_clusters, vtype=GRB.BINARY, name="y")
-    z = model.addVars(n_mutations + n_clusters, n_mutations + n_clusters, vtype=GRB.BINARY, name="z")
+    y = model.addVars(n_mutations, n_mutations, vtype=GRB.BINARY, name="y")
+    z = model.addVars(n_mutations, n_mutations, vtype=GRB.BINARY, name="z")
+    d_vars = model.addVars(n_clones, n_clones, n_mutations, vtype=GRB.BINARY, name="d")
     
     # Ignore all variables in the solution pool except b
     u.PoolIgnore = 1
@@ -49,6 +50,7 @@ def solve_cncff(
     f.PoolIgnore = 1
     y.PoolIgnore = 1
     z.PoolIgnore = 1
+    d_vars.PoolIgnore = 1
 
     # Constraints
     # (1)
@@ -110,8 +112,8 @@ def solve_cncff(
 
     # (8)
     for j in range(n_clones + n_clusters):
-        for c in range(n_mutations + n_clusters):
-            for d in range(n_mutations + n_clusters):
+        for c in range(n_mutations):
+            for d in range(n_mutations):
                 if c != d:
                     # b_{jc} <= b_{jd} + (1 - y_{cd})
                     model.addConstr(b[j, c] <= b[j, d] + (1 - y[c,d]))
@@ -137,17 +139,16 @@ def solve_cncff(
     #     model.addConstr(b[n_clones, j] >= b[n_clones + 1, j], name=f"order_0_{j}")
 
     # (9) B rows cannot be same
-    d = model.addVars(n_clones, n_clones, n_mutations, vtype=GRB.BINARY, name="d")
     for i in range(n_clones):
         for j in range(n_clones):
-            if i < j:
+            if i != j:
                 for k in range(n_mutations):
-                    model.addConstr(d[i,j,k] >= b[i,k] - b[j,k])
-                    model.addConstr(d[i,j,k] >= b[j,k] - b[i,k])
-                    model.addConstr(d[i,j,k] <= b[i,k] + b[j,k])
-                    model.addConstr(d[i,j,k] <= 2 - (b[i,k] + b[j,k]))
+                    model.addConstr(d_vars[i,j,k] >= b[i,k] - b[j,k])
+                    model.addConstr(d_vars[i,j,k] >= b[j,k] - b[i,k])
+                    model.addConstr(d_vars[i,j,k] <= b[i,k] + b[j,k])
+                    model.addConstr(d_vars[i,j,k] <= 2 - (b[i,k] + b[j,k]))
                 
-                model.addConstr(quicksum(d[i, j, k] for k in range(n_mutations)) >= 1, name=f"diff_{i}_{j} >= 1")
+                model.addConstr(quicksum(d_vars[i, j, k] for k in range(n_mutations)) >= 1, name=f"diff_{i}_{j} >= 1")
 
     for j in range(n_mutations):
         model.addConstr(quicksum(b[i, j] for i in range(n_clones)) >= x[i])
@@ -159,13 +160,16 @@ def solve_cncff(
 
     # (11)
     for i in range(n_clusters):
-        l = n_clones + i
-        model.addConstr(b[l, l] == 1, name=f"b[{l}][{l}] == 1")
-    
-    for i in range(n_clusters):
-        for j in range(n_mutations):
-            model.addGenConstrIndicator(g[i, j], 1, b[j, n_clones + i] == 1, name=f"g_indicator_1_{i}_{j}")
+        l = i + n_clones
+        for k in range(n_clones):
+            for j in range(n_mutations):
+                model.addConstr(b[k, j] >= b[l, j] * g[i, k], name=f"cluster {i} -> cluster {k}")
 
+    model.update()
+
+    for v in model.getVars():
+        if not (v.VarName.startswith('b') or v.VarName.startswith('x')):
+            v.PoolIgnore = 1
 
     model.update()
     model.setObjective(quicksum((x[j] * cluster_weights[j]) for j in range(n_mutations)), GRB.MAXIMIZE)
@@ -173,6 +177,7 @@ def solve_cncff(
     model.Params.TimeLimit = time_limit
     model.Params.PoolSearchMode = 2
     model.Params.PoolSolutions = n_solutions
+    model.Params.PoolGap = 0
 
     model.optimize()
 
@@ -190,10 +195,10 @@ def solve_cncff(
         X_df = pd.DataFrame([x[j].Xn for j in range(n_mutations)], index=mutations)
 
         b_values = [
-            [b[i, j].Xn for j in range(n_mutations + n_clusters)]
+            [b[i, j].Xn for j in range(n_mutations)]
             for i in range(n_clones + n_clusters)
         ]
-        B_df = pd.DataFrame(b_values, index=clones + clusters, columns=mutations + clusters)
+        B_df = pd.DataFrame(b_values, index=clones + clusters, columns=mutations)
 
         u_values = [
             [u[i, j].Xn for j in range(n_mutations)]
