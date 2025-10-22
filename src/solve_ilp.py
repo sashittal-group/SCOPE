@@ -42,6 +42,7 @@ def solve_cncff(
     y = model.addVars(n_mutations, n_mutations, vtype=GRB.BINARY, name="y")
     z = model.addVars(n_mutations, n_mutations, vtype=GRB.BINARY, name="z")
     d_vars = model.addVars(n_clones, n_clones, n_mutations, vtype=GRB.BINARY, name="d")
+    c_vars = model.addVars(n_clusters, n_clones, vtype=GRB.BINARY, name="c")
     
     # Ignore all variables in the solution pool except b
     u.PoolIgnore = 1
@@ -158,12 +159,38 @@ def solve_cncff(
         model.addConstr(quicksum(f[i, j] for i in range(n_clusters)) * 20 >= x[j], name=f"sum_i f[{i}][{j}] >= 0.05 * x[{j}]")
     
 
-    # (11)
+    # (11) If clone gained in cluster then in Tree cluster -> clone
     for i in range(n_clusters):
         l = i + n_clones
         for k in range(n_clones):
             for j in range(n_mutations):
                 model.addConstr(b[k, j] >= b[l, j] * g[i, k], name=f"cluster {i} -> cluster {k}")
+    
+    # (12) If in Tree cluster -> clone then clone gained in cluster 
+    # share = model.addVars(n_clusters, n_clones, vtype=GRB.BINARY, name="share")
+    # more  = model.addVars(n_clusters, n_clones, vtype=GRB.BINARY, name="more")
+    # child = model.addVars(n_clusters, n_clones, vtype=GRB.BINARY, name="child")
+    # M = n_mutations
+
+    # for i in range(n_clusters):
+    #     l = i + n_clones
+    #     for k in range(n_clones):
+    #         for j in range(n_mutations):
+    #             model.addConstr(b[l, j] + b[k, j] - 1 >= share[i, k])
+    
+    # for i in range(n_clusters):
+    #     l = i + n_clones
+    #     for k in range(n_clones):
+    #         diff = quicksum(b[l,j] - b[k,j] for j in range(n_mutations))
+    #         model.addConstr(diff >= 0 - M*(1-more[i,k]))
+    #         model.addConstr(diff <= M*more[i,k])
+    
+    # for i in range(n_clusters):
+    #     for k in range(n_clones):
+    #         model.addConstr(child[i,k] <= share[i,k])
+    #         model.addConstr(child[i,k] <= more[i,k])
+    #         model.addConstr(child[i,k] >= share[i,k] + more[i,k] - 1)
+    #         model.addConstr(child[i,k] <= g[i, k])
 
     model.update()
 
