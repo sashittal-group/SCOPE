@@ -126,46 +126,53 @@ def solve_cncff(
                     # b_{jc} + b_{jd} <= 2 - z_{cd}
                     model.addConstr(b[j, c] + b[j, d] <= 2 - z[c,d])
     
-    # (9) ? Fixing clones to mutation for restricting redundant mutation trees
-    for i in range(n_clones):
-        model.addConstr(b[i, i] >= x[i], name=f"b[{i}][{i}] >= x[{i}]")
-    
-    # (9) ? bit-encoded ordering
-    # for i in range(n_clones-1):
-    #     lhs = sum((2**j) * b[i,j]     for j in range(n_mutations))
-    #     rhs = sum((2**j) * b[i+1,j]   for j in range(n_mutations)) - 1
-    #     model.addConstr(lhs <= rhs, name=f"order_{i}")
-
-    # for j in range(n_mutations):
-    #     model.addConstr(b[n_clones, j] >= b[n_clones + 1, j], name=f"order_0_{j}")
-
-    # (9) B rows cannot be same
-    for i in range(n_clones):
-        for j in range(n_clones):
-            if i != j:
-                for k in range(n_mutations):
-                    model.addConstr(d_vars[i,j,k] >= b[i,k] - b[j,k])
-                    model.addConstr(d_vars[i,j,k] >= b[j,k] - b[i,k])
-                    model.addConstr(d_vars[i,j,k] <= b[i,k] + b[j,k])
-                    model.addConstr(d_vars[i,j,k] <= 2 - (b[i,k] + b[j,k]))
-                
-                model.addConstr(quicksum(d_vars[i, j, k] for k in range(n_mutations)) >= 1, name=f"diff_{i}_{j} >= 1")
-
-    for j in range(n_mutations):
-        model.addConstr(quicksum(b[i, j] for i in range(n_clones)) >= x[i])
     
     # (10) ? At least one cluster should have mutation frequency of 0.05 to avoid all-zero solution
     for j in range(n_mutations):
         model.addConstr(quicksum(f[i, j] for i in range(n_clusters)) * 20 >= x[j], name=f"sum_i f[{i}][{j}] >= 0.05 * x[{j}]")
     
 
-    # (11) If clone gained in cluster then in Tree cluster -> clone
+    # (9) If clone gained in cluster then in Tree cluster -> clone
     for j1 in range(n_mutations):
         for j2 in range(n_mutations):
             for i in range(n_clusters):
                 l = i + n_clones
                 model.addConstr(y[j2, j1] >= b[l, j1] + g[i, j2] - 1)
+
+    # (10)    
+    for i in range(n_clusters):
+        for j in range(n_mutations):
+            model.addConstr(f[i, j] * 20 >= g[i, j])
+            model.addConstr(f[i, j] * 20 <= 20 - g[i, j])
+
+    # (*) ? Fixing clones to mutation for restricting redundant mutation trees
+    # for i in range(n_clones):
+    #     model.addConstr(b[i, i] >= x[i], name=f"b[{i}][{i}] >= x[{i}]")
     
+    # (*) ? bit-encoded ordering
+    for i in range(n_clones-1):
+        lhs = sum((2**j) * b[i,j]     for j in range(n_mutations))
+        rhs = sum((2**j) * b[i+1,j]   for j in range(n_mutations))
+        model.addConstr(lhs <= rhs - 1 , name=f"order_{i}")
+        if i == 0: model.addConstr(lhs >= 1)
+
+    # (*) B rows cannot be same
+    # for i in range(n_clones):
+    #     for j in range(n_clones):
+    #         if i != j:
+    #             for k in range(n_mutations):
+    #                 model.addConstr(d_vars[i,j,k] >= b[i,k] - b[j,k])
+    #                 model.addConstr(d_vars[i,j,k] >= b[j,k] - b[i,k])
+    #                 model.addConstr(d_vars[i,j,k] <= b[i,k] + b[j,k])
+    #                 model.addConstr(d_vars[i,j,k] <= 2 - (b[i,k] + b[j,k]))
+                
+    #             model.addConstr(quicksum(d_vars[i, j, k] for k in range(n_mutations)) >= 1, name=f"diff_{i}_{j} >= 1")
+
+    # for j in range(n_mutations):
+    #     model.addConstr(quicksum(b[i, j] for i in range(n_clones)) >= x[i])
+    
+
+
     # (12) If in Tree cluster -> clone then clone gained in cluster 
     # share = model.addVars(n_clusters, n_clones, vtype=GRB.BINARY, name="share")
     # more  = model.addVars(n_clusters, n_clones, vtype=GRB.BINARY, name="more")
