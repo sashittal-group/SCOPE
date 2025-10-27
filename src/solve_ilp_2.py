@@ -42,7 +42,6 @@ def solve_cncff(
     y = model.addVars(n_mutations, n_mutations, vtype=GRB.BINARY, name="y")
     z = model.addVars(n_mutations, n_mutations, vtype=GRB.BINARY, name="z")
     d_vars = model.addVars(n_clones, n_clones, n_mutations, vtype=GRB.BINARY, name="d")
-    c_vars = model.addVars(n_clusters, n_clones, vtype=GRB.BINARY, name="c")
     
     # Ignore all variables in the solution pool except b
     u.PoolIgnore = 1
@@ -142,36 +141,37 @@ def solve_cncff(
     # (10)    
     for i in range(n_clusters):
         for j in range(n_mutations):
-            model.addConstr(f[i, j] * 20 >= g[i, j])
-            model.addConstr(f[i, j] * 20 <= 20 - g[i, j])
+            model.addConstr(f[i, j] * 20 >= g[i, j] * x[j])
+            model.addConstr(f[i, j] * 20 <= 20 - g[i, j] * x[j])
 
     # (*) ? Fixing clones to mutation for restricting redundant mutation trees
-    # for i in range(n_clones):
-    #     model.addConstr(b[i, i] >= x[i], name=f"b[{i}][{i}] >= x[{i}]")
+    for i in range(n_clones):
+        model.addConstr(b[i, i] >= x[i], name=f"b[{i}][{i}] >= x[{i}]")
+    
+    for i in range(n_clones):
+        for j in range(n_mutations):
+            model.addConstr(b[i, j] <= x[i])
+            model.addConstr(b[i, j] <= x[j])
     
     # (*) ? bit-encoded ordering
-    for i in range(n_clones-1):
-        lhs = sum((2**j) * b[i,j]     for j in range(n_mutations))
-        rhs = sum((2**j) * b[i+1,j]   for j in range(n_mutations))
-        model.addConstr(lhs <= rhs - 1 , name=f"order_{i}")
-        if i == 0: model.addConstr(lhs >= 1)
+    # for i in range(n_clones-1):
+    #     lhs = sum((2**j) * b[i,j]     for j in range(n_mutations))
+    #     rhs = sum((2**j) * b[i+1,j]   for j in range(n_mutations))
+    #     model.addConstr(lhs <= rhs - 1 , name=f"order_{i}")
+    #     if i == 0: model.addConstr(lhs >= 1)
 
     # (*) B rows cannot be same
-    # for i in range(n_clones):
-    #     for j in range(n_clones):
-    #         if i != j:
-    #             for k in range(n_mutations):
-    #                 model.addConstr(d_vars[i,j,k] >= b[i,k] - b[j,k])
-    #                 model.addConstr(d_vars[i,j,k] >= b[j,k] - b[i,k])
-    #                 model.addConstr(d_vars[i,j,k] <= b[i,k] + b[j,k])
-    #                 model.addConstr(d_vars[i,j,k] <= 2 - (b[i,k] + b[j,k]))
+    for i in range(n_clones):
+        for j in range(n_clones):
+            if i != j:
+                for k in range(n_mutations):
+                    model.addConstr(d_vars[i,j,k] >= b[i,k] * x[k] - b[j,k] * x[k])
+                    model.addConstr(d_vars[i,j,k] >= b[j,k] * x[k] - b[i,k] * x[k])
+                    model.addConstr(d_vars[i,j,k] * x[k] <= b[i,k] + b[j,k])
+                    model.addConstr(d_vars[i,j,k] * x[k] <= 2 - (b[i,k] + b[j,k]))
                 
-    #             model.addConstr(quicksum(d_vars[i, j, k] for k in range(n_mutations)) >= 1, name=f"diff_{i}_{j} >= 1")
-
-    # for j in range(n_mutations):
-    #     model.addConstr(quicksum(b[i, j] for i in range(n_clones)) >= x[i])
+                model.addConstr(quicksum(d_vars[i, j, k] for k in range(n_mutations)) >= x[i] * x[j], name=f"diff_{i}_{j} >= 1")
     
-
 
     # (12) If in Tree cluster -> clone then clone gained in cluster 
     # share = model.addVars(n_clusters, n_clones, vtype=GRB.BINARY, name="share")

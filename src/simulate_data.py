@@ -236,7 +236,7 @@ def main(args):
 
         prev_num_children = num_children[:node_index].flatten()
         weights_a = (np.arange(start=1, stop=node_index+1, step=1, dtype=float) ** 10)
-        weights_b = 1 / (0.0001 + 10 * prev_num_children * prev_num_children)  # prefer fewer children
+        weights_b = 1 / (0.01 + 10 * prev_num_children * prev_num_children)  # prefer fewer children
         weights = weights_a * weights_b
         weights /= weights.sum()
         
