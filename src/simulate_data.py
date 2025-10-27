@@ -215,11 +215,15 @@ def main(args):
 
     loss_counter = np.zeros((ncharacters, 1))
     loss_dictionary = {f'd{cluster_index}': [] for cluster_index in range(1, nclusters)}
+
+    nbins = 6000
     
     B = np.zeros((ncharacters + nclusters, ncharacters + 1), dtype=int)
-    R = np.zeros((nclusters, ncharacters), dtype=int)    
+    R = np.zeros((nclusters, ncharacters), dtype=int)
+    Rb = np.zeros((nclusters, nbins), dtype=int)
     # TODO: Map mutations to bins and assign CN for bins
-    R[0, :] = np.random.randint(max_cn - max_losses - 1, size = ncharacters) + max_losses + 1
+    Rb[0, :] = np.random.randint(max_cn - max_losses - 1, size = nbins) + max_losses + 1
+    mut_to_bin = {}
 
     Tc_parent = {
         "d2": "d1",
@@ -266,6 +270,7 @@ def main(args):
         T.add_edge(parent_node, event)
         num_children[parent_node_index] += 1
         B[node_index, :] = B[parent_node_index, :]
+    
         if event.startswith('d'):
             cluster_id = int(event.lstrip('d'))
             B[node_index, -1] = cluster_id
