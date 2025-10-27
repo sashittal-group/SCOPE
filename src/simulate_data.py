@@ -213,18 +213,12 @@ def main(args):
             event_order[i] = f"d{cn_event}"
             cn_event += 1
 
-    loss_counter = np.zeros((ncharacters, 1))
-    loss_dictionary = {f'd{cluster_index}': [] for cluster_index in range(1, nclusters)}
-
     nbins = 6000
     
     B = np.zeros((ncharacters + nclusters, ncharacters + 1), dtype=int)
-    R = np.zeros((nclusters, ncharacters), dtype=int)
     Rb = np.zeros((nclusters, nbins), dtype=int)
-    # TODO: Map mutations to bins and assign CN for bins
     Rb[0, :] = np.random.randint(max_cn - max_losses - 1, size = nbins) + max_losses + 1
-    mut_to_bin = {}
-
+    
     Tc_parent = {
         "d2": "d1",
         "d3": "d2",
@@ -276,15 +270,6 @@ def main(args):
             B[node_index, -1] = cluster_id
             parent_cluster_id = B[parent_node_index, -1]
             Tc.add_edge(parent_cluster_id, cluster_id)
-            R[cluster_id, :] = R[parent_cluster_id, :]
-
-            for mutation in range(ncharacters):
-                if B[parent_node_index, mutation] == 1 and loss_counter[mutation] < max_losses:
-                    if np.random.rand() < mutation_rate:
-                        B[node_index, mutation] = loss_counter[mutation] + 2
-                        loss_counter[mutation] += 1
-                        loss_dictionary[event].append(mutation)
-                        R[cluster_id, mutation] -= 1
 
         elif event.startswith('c'):
             mutation = int(event.lstrip('c'))
@@ -294,34 +279,30 @@ def main(args):
             print(parent_node_index, parent_node, node_index, event)
 
     # randomize the copy number states for mutations that have never been lost
-    # TODO: Place into clusters.
-    for mutation in range(nmutations):
-        if loss_counter[mutation] == 0:
-            for cluster_id in range(nclusters):
-                R[cluster_id, mutation] = np.random.randint(max_cn - 1) + 1
+    # TODO: Place into bins.
+    mut_to_bin = { mut: np.random.randint(0, nbins) for mut in range(ncharacters) }
+
+    for cluster_id in range(nclusters):
+        for bin in range(nbins):
+            Rb[cluster_id, bin] = np.random.randint(max_cn - 1) + 1
+
+    R = np.zeros((nclusters, ncharacters), dtype=int)
+    for cluster_id in range(nclusters):
+        for mutation in range(ncharacters):
+            bin = mut_to_bin[mutation]
+            R[cluster_id, mutation] = Rb[cluster_id, bin]
 
     # check that all copy number states are non-zero positive
     assert(len(np.where(R == 0)[0]) == 0)
     
     # check all SNV losses are supported by CNVs
-    for cn_edge in Tc.edges:
-        for mutation in loss_dictionary[f'd{cn_edge[1]}']:
-            assert(R[cn_edge[0], mutation] > R[cn_edge[1], mutation])    
-
+    
     if args.v:
-        print('-'*50)
-        print('loss counter')
-        print('-'*50)
-        print(loss_counter)
-        print('-'*50)
-        print('loss dictionary')
-        print('-'*50)
-        print(loss_dictionary)
         print('-'*50)
         print('copy number states')
         print('-'*50)
         print(R)
-            
+
     # assign cells and generate character-state matrix
     leaf_indices = []
     for idx, node in enumerate(T.nodes):
@@ -440,7 +421,10 @@ def main(args):
                         columns = [f'c{idx}' for idx in range(ncharacters)], dtype=int)    
     
     df_CNs = pd.DataFrame(CNs, index=[f's{idx}' for idx in range(ncells)],
-                        columns = [f'c{idx}' for idx in range(ncharacters)], dtype=int)    
+                        columns = [f'c{idx}' for idx in range(ncharacters)], dtype=int)
+    
+    df_mut_to_bin = pd.DataFrame.from_dict(mut_to_bin, orient='index', columns=['bin'])
+    df_mut_to_bin.to_csv(f'{prefix}_mutation_to_bin_mapping.csv')
 
     df_B.to_csv(f'{prefix}_multi_state_tree_node_character_matrix.csv')
     df_Bcell.to_csv(f'{prefix}_multi_state_character_matrix.csv')
