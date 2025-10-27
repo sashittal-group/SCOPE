@@ -7,7 +7,6 @@ from gurobipy import Model, GRB, quicksum
 def solve_cncff(
     F_plus: pd.DataFrame,
     F_minus: pd.DataFrame,
-    n_clones: int,
     cluster_weights: list = None,
     n_solutions: int = 10,
     time_limit: int = 600,
@@ -22,10 +21,11 @@ def solve_cncff(
     # TODO: Check if F_plus and F_minus have the same clones and mutations
     clusters = F_plus.index.tolist()
     mutations = F_plus.columns.tolist()
-    clones = list(np.arange(n_clones))
+    clones = mutations
 
     n_mutations = len(mutations)
     n_clusters = len(clusters)
+    n_clones = len(clones)
 
     if cluster_weights is None:
         cluster_weights = [1] * n_clusters
