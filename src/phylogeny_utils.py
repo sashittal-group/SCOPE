@@ -23,8 +23,8 @@ def generate_perfect_phylogeny(df_binary):
             continue
 
         curr_node = 'root'
-        for column in df_binary.columns[row.values == 1]:
-            if column in solT_mut[curr_node]:
+        for column in df_binary.columns[row.values > 0.5]:
+            if solT_mut.has_edge(curr_node, column):
                 curr_node = column
             else:
                 if column in solT_mut.nodes:
@@ -185,16 +185,16 @@ def add_clusters_to_clonal_T(T: nx.DiGraph, X: pd.DataFrame, G: pd.DataFrame, B:
     G_sub = G.loc[:, selected_muts]
     for cluster, muts in G_sub.iterrows():
         T.add_node(cluster)
-        gained_muts = muts.index[muts == 1].tolist()
-        if gained_muts:
-            
+        gained_muts = muts.index[muts > 0.5].tolist()
+
+        if gained_muts:    
             root_muts = []
             for m in gained_muts:
                 has_parent = False
                 for mo in gained_muts:
                     if m == mo: continue
 
-                    if np.all(B[mo] >= B[m]):
+                    if np.all(B[mo] + 0.5 >= B[m]): # TODO: Rethink
                         has_parent = True
                         break
 
@@ -212,7 +212,7 @@ def add_clusters_to_clonal_T(T: nx.DiGraph, X: pd.DataFrame, G: pd.DataFrame, B:
         
         else:
             B_cluster = B.loc[cluster]
-            muts = B_cluster[B_cluster == 1].index.tolist()
+            muts = B_cluster[B_cluster > 0.5].index.tolist()
 
             deepest_mut = max(muts, key=lambda n: depths.get(n, -1))
 

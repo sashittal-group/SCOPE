@@ -7,6 +7,7 @@ from gurobipy import Model, GRB, quicksum
 def solve_cncff(
     F_plus: pd.DataFrame,
     F_minus: pd.DataFrame,
+    n_clones: int,
     cluster_weights: list = None,
     n_solutions: int = 10,
     time_limit: int = 600,
@@ -21,12 +22,11 @@ def solve_cncff(
     # TODO: Check if F_plus and F_minus have the same clones and mutations
     clusters = F_plus.index.tolist()
     mutations = F_plus.columns.tolist()
-    clones = mutations
+    clones = np.arange(n_clones).tolist()
 
     n_mutations = len(mutations)
     n_clusters = len(clusters)
-    n_clones = len(clones)
-
+    
     if cluster_weights is None:
         cluster_weights = [1] * n_clusters
 
@@ -73,7 +73,7 @@ def solve_cncff(
     
     # (3)
     for l in range(n_clusters):
-        model.addConstr(quicksum(u[l, j] for j in range(n_mutations)) == 1)
+        model.addConstr(quicksum(u[l, j] for j in range(n_clones)) == 1)
 
     # (4)
     for j in range(n_mutations):
@@ -145,32 +145,32 @@ def solve_cncff(
             model.addConstr(f[i, j] * 20 <= 20 - g[i, j] * x[j])
 
     # (*) ? Fixing clones to mutation for restricting redundant mutation trees
-    for i in range(n_clones):
-        model.addConstr(b[i, i] >= x[i], name=f"b[{i}][{i}] >= x[{i}]")
+    # for i in range(n_clones):
+    #     model.addConstr(b[i, i] >= x[i], name=f"b[{i}][{i}] >= x[{i}]")
     
-    for i in range(n_clones):
-        for j in range(n_mutations):
-            model.addConstr(b[i, j] <= x[i])
-            model.addConstr(b[i, j] <= x[j])
+    # for i in range(n_clones):
+    #     for j in range(n_mutations):
+    #         model.addConstr(b[i, j] <= x[i])
+    #         model.addConstr(b[i, j] <= x[j])
     
     # (*) ? bit-encoded ordering
-    # for i in range(n_clones-1):
-    #     lhs = sum((2**j) * b[i,j]     for j in range(n_mutations))
-    #     rhs = sum((2**j) * b[i+1,j]   for j in range(n_mutations))
-    #     model.addConstr(lhs <= rhs - 1 , name=f"order_{i}")
-    #     if i == 0: model.addConstr(lhs >= 1)
+    for i in range(n_clones-1):
+        lhs = sum((2**j) * b[i,j]     for j in range(n_mutations))
+        rhs = sum((2**j) * b[i+1,j]   for j in range(n_mutations))
+        model.addConstr(lhs <= rhs - 1 , name=f"order_{i}")
+        if i == 0: model.addConstr(lhs >= x[i])
 
     # (*) B rows cannot be same
-    for i in range(n_clones):
-        for j in range(n_clones):
-            if i != j:
-                for k in range(n_mutations):
-                    model.addConstr(d_vars[i,j,k] >= b[i,k] * x[k] - b[j,k] * x[k])
-                    model.addConstr(d_vars[i,j,k] >= b[j,k] * x[k] - b[i,k] * x[k])
-                    model.addConstr(d_vars[i,j,k] * x[k] <= b[i,k] + b[j,k])
-                    model.addConstr(d_vars[i,j,k] * x[k] <= 2 - (b[i,k] + b[j,k]))
+    # for i in range(n_clones):
+    #     for j in range(n_clones):
+    #         if i != j:
+    #             for k in range(n_mutations):
+    #                 model.addConstr(d_vars[i,j,k] >= b[i,k] * x[k] - b[j,k] * x[k])
+    #                 model.addConstr(d_vars[i,j,k] >= b[j,k] * x[k] - b[i,k] * x[k])
+    #                 model.addConstr(d_vars[i,j,k] * x[k] <= b[i,k] + b[j,k])
+    #                 model.addConstr(d_vars[i,j,k] * x[k] <= 2 - (b[i,k] + b[j,k]))
                 
-                model.addConstr(quicksum(d_vars[i, j, k] for k in range(n_mutations)) >= x[i] * x[j], name=f"diff_{i}_{j} >= 1")
+    #             model.addConstr(quicksum(d_vars[i, j, k] for k in range(n_mutations)) >= x[i] * x[j], name=f"diff_{i}_{j} >= 1")
     
 
     # (12) If in Tree cluster -> clone then clone gained in cluster 
@@ -235,7 +235,7 @@ def solve_cncff(
         B_df = pd.DataFrame(b_values, index=clones + clusters, columns=mutations)
 
         u_values = [
-            [u[i, j].Xn for j in range(n_mutations)]
+            [u[i, j].Xn for j in range(n_clones)]
             for i in range(n_clusters)
         ]
         U_df = pd.DataFrame(u_values, index=clusters, columns=clones)
