@@ -125,32 +125,32 @@ def draw_clone_tree(T):
     # Use graphviz 'dot' layout for hierarchical structure
     pos = nx.nx_agraph.graphviz_layout(T, prog="dot", args="-Gnodesep=.5 -Granksep=50")
 
-    letter_nodes = {n for n in T.nodes if str(n).isalpha() and len(str(n)) == 1}
+    cna_nodes = {n for n in T.nodes if str(n).startswith("CN")}
 
     # --- Step 2: assign color group by closest ancestor letter ---
     color_by_ancestor = {}
 
     # Perform BFS from each letter node to assign descendants
-    for letter in letter_nodes:
-        for node in nx.descendants(T, letter):
+    for cna_node in cna_nodes:
+        for node in nx.descendants(T, cna_node):
             # If node not yet assigned or this letter is closer (shallower)
             if node not in color_by_ancestor:
-                color_by_ancestor[node] = letter
+                color_by_ancestor[node] = cna_node
             else:
                 # choose the closer ancestor (shorter path)
                 old_letter = color_by_ancestor[node]
-                if nx.shortest_path_length(T, letter, node) < nx.shortest_path_length(T, old_letter, node):
-                    color_by_ancestor[node] = letter
+                if nx.shortest_path_length(T, cna_node, node) < nx.shortest_path_length(T, old_letter, node):
+                    color_by_ancestor[node] = cna_node
 
     # Letter nodes are their own color
-    for letter in letter_nodes:
-        color_by_ancestor[letter] = letter
+    for cna_node in cna_nodes:
+        color_by_ancestor[cna_node] = cna_node
 
     # --- Step 3: map letters to colors ---
     import matplotlib.cm as cm
     import matplotlib.colors as mcolors
 
-    unique_letters = sorted(letter_nodes)
+    unique_letters = sorted(cna_nodes)
     cmap = cm.get_cmap('tab10', len(unique_letters))
     color_map = {letter: mcolors.to_hex(cmap(i)) for i, letter in enumerate(unique_letters)}
 
@@ -182,9 +182,12 @@ def add_clusters_to_clonal_T(T: nx.DiGraph, X: pd.DataFrame, G: pd.DataFrame, B:
     selected_muts = X[ X > 0.5 ].dropna().index.tolist()
     depths = dict(nx.single_source_shortest_path_length(T, 'root'))
 
+    def get_cluster_name(cluster):
+        return f"CN_{cluster}"
+
     G_sub = G.loc[:, selected_muts]
     for cluster, muts in G_sub.iterrows():
-        T.add_node(cluster)
+        T.add_node(get_cluster_name(cluster))
         gained_muts = muts.index[muts > 0.5].tolist()
 
         if gained_muts:    
@@ -206,9 +209,9 @@ def add_clusters_to_clonal_T(T: nx.DiGraph, X: pd.DataFrame, G: pd.DataFrame, B:
             for m in root_muts:
                 old_parent = next(T.predecessors(m))
                 T.remove_edge(old_parent, m)
-                T.add_edge(cluster, m)
+                T.add_edge(get_cluster_name(cluster), m)
                 if not T.has_edge(old_parent, cluster):
-                    T.add_edge(old_parent, cluster)
+                    T.add_edge(old_parent, get_cluster_name(cluster))
         
         else:
             B_cluster = B.loc[cluster]
@@ -217,13 +220,7 @@ def add_clusters_to_clonal_T(T: nx.DiGraph, X: pd.DataFrame, G: pd.DataFrame, B:
             if muts: deepest_mut = max(muts, key=lambda n: depths.get(n, -1))
             else: deepest_mut = 'root'
 
-            T.add_edge(deepest_mut, cluster)
-            # children = list(T.successors(deepest_mut))
-            # for child in children:
-            #     print("reassigning child", cluster, deepest_mut, child)
-            #     if T.has_edge(deepest_mut, child):
-            #         T.remove_edge(deepest_mut, child)
-                # T.add_edge(cluster, child)
+            T.add_edge(deepest_mut, get_cluster_name(cluster))
     
     return T
 
