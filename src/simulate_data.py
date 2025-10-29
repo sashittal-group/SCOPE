@@ -1,188 +1,39 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jun 29 2022
-
-@author: Palash Sashittal
-"""
-
 import pandas as pd
 import sys
 import argparse
-import itertools
 import math
 import numpy as np
 from scipy.stats import betabinom
-from collections import defaultdict
-
 import networkx as nx
-
-def connected_node_groups(G, nodes):
-    subG = G.subgraph(nodes).to_undirected()
-    groups = list(nx.connected_components(subG))
-
-    ordered_groups = []
-    for group in groups:
-        subG = G.subgraph(group)
-        order = list(nx.topological_sort(subG))
-        ordered_groups.append(order)
-    return ordered_groups
-    
-
-def merge_linear_paths(G):
-    G = G.copy()
-    nodes = []
-    for n in G.nodes:
-        if str(n).startswith("c"):
-            event_children = 0
-            for child in list(G.successors(n)):
-                if not str(child).startswith('s'):
-                    event_children += 1
-            if event_children <= 1:
-                nodes.append(n)
-
-    connected_nodes = connected_node_groups(G, nodes)
-
-    for group in connected_nodes:
-        main_node = group[0]
-        for node in group[1:]:
-            G = nx.contracted_nodes(G, main_node, node, self_loops=False)
-        
-        new_name = f"{main_node} (+{len(group)})"
-        nx.relabel_nodes(G, {main_node: new_name}, copy=False)
-    
-    return G
-
-
-def merge_cell_leaves(G: nx.DiGraph):
-    G = G.copy()
-    parent_mut = defaultdict(list)
-    for n in G.nodes:
-        if str(n).startswith("s"):
-            p = list(G.predecessors(n))[0]
-            parent_mut[p].append(str(n))
-
-    for mut, cells in parent_mut.items():
-        for cell in cells:
-            G.remove_node(cell)
-        G.add_edge(mut, f"{cells[0]} (+{len(cells)})")
-
-    return G
-
-
-def writeDOT(T, dot_file):
-    with open(dot_file, 'w') as output:
-
-        output.write(f'digraph N {{\n')
-        output.write(f"\toverlap=\"false\"\n")
-        output.write(f"\trankdir=\"TB\"\n")
-
-        idx_dict = {}
-        idx = 0
-        for node in T.nodes:
-            idx_dict[node] = idx
-            output.write(f'\t{idx} [label=\"{node}\", style=\"bold\"];\n')
-            idx += 1
-        
-        for edge in T.edges:
-            output.write(f"\t{idx_dict[edge[0]]} -> {idx_dict[edge[1]]} [style=\"bold\"];\n")
-        
-        output.write(f'}}')    
-
-def tree_to_newick(T, root=None):
-    if root is None:
-        roots = list(filter(lambda p: p[1] == 0, T.in_degree()))
-        assert 1 == len(roots)
-        root = roots[0][0]
-    subgs = []
-    while len(T[root]) == 1:
-        root = list(T[root])[0]
-    for child in T[root]:
-        while len(T[child]) == 1:
-            child = list(T[child])[0]
-        if len(T[child]) > 0:
-            child_newick = tree_to_newick(T, root=child)
-            if child_newick != '()':
-                subgs.append(child_newick)
-        else:
-            if child.startswith('s'):
-                subgs.append(child)
-    # return "(" + ','.join(map(str, subgs)) + ")"
-    if len(subgs) == 1:
-        return str(subgs[0])
-    else:
-        return "(" + ','.join(map(str, subgs)) + ")"
-
-def draw_clone_tree(T, filename):
-    import matplotlib.pyplot as plt
-    import matplotlib.colors as mcolors
-    import networkx as nx
-
-    # Assign a color to each unique first letter
-    letters = sorted({str(node)[0] for node in T.nodes})
-    cmap = plt.cm.get_cmap('tab10', len(letters))
-    letter_to_color = {letter: mcolors.to_hex(cmap(i)) for i, letter in enumerate(letters)}
-
-    # Map each node to its corresponding color
-    node_colors = [letter_to_color[str(node)[0]] for node in T.nodes]
-
-    # Compute layout and draw
-    pos = nx.nx_agraph.graphviz_layout(T, prog='dot')
-    plt.figure(figsize=(6, 6))
-    nx.draw(
-        T, pos, with_labels=True, arrows=True,
-        node_size=1000, node_color=node_colors,
-        font_size=10, font_weight='bold', arrowsize=10,
-        alpha=0.5
-    )
-
-    # Optional: add a legend for first-letter colors
-    for letter, color in letter_to_color.items():
-        plt.scatter([], [], color=color, label=letter)
-    plt.legend(title="First Letter", loc="upper left")
-
-    plt.savefig(filename)
-    plt.close()
-
-
-
-def draw_tree(T, filename):
-    import matplotlib.pyplot as plt
-    import matplotlib.colors as mcolors
-    import networkx as nx
-
-    # Assign a color to each unique first letter
-    letters = sorted({str(node)[0] for node in T.nodes})
-    cmap = plt.cm.get_cmap('tab10', len(letters))
-    letter_to_color = {letter: mcolors.to_hex(cmap(i)) for i, letter in enumerate(letters)}
-
-    # Map each node to its corresponding color
-    node_colors = [letter_to_color[str(node)[0]] for node in T.nodes]
-
-    # Compute layout and draw
-    pos = nx.nx_agraph.graphviz_layout(T, prog='dot')
-    plt.figure(figsize=(12, 24))
-    nx.draw(
-        T, pos, with_labels=True, arrows=True,
-        node_size=800, node_color=node_colors,
-        font_size=10, font_weight='bold', arrowsize=10,
-        alpha=0.5
-    )
-
-    # Optional: add a legend for first-letter colors
-    for letter, color in letter_to_color.items():
-        plt.scatter([], [], color=color, label=letter)
-    plt.legend(title="First Letter", loc="upper left")
-
-    plt.savefig(filename)
-    plt.close()
-
-  
+from simulation_helpers import draw_tree, draw_clone_tree, writeDOT, tree_to_newick, merge_cell_leaves
+ 
 
 def main(args):
 
     np.random.seed(args.s)
 
+    n_mutation_groups = args.m
+    nclusters = args.p
+    max_losses = args.k
+    max_cn = args.maxcn
+    mutation_rate = args.l
+    mutation_grp_mean_size = args.size
+    nnodes = n_mutation_groups + nclusters
+    nbins = 1000
+    
+    event_order = list(np.random.permutation(['c'] * n_mutation_groups + ['d'] * (nclusters - 1)))
+
+    cn_event_count = 1
+    snv_event_count = 0
+    for i in range(len(event_order)):
+        if event_order[i] == 'c':
+            event_order[i] = f"c{snv_event_count}"
+            snv_event_count += 1
+        else:
+            event_order[i] = f"d{cn_event_count}"
+            cn_event_count += 1
+
+    # build tree
     T = nx.DiGraph() # mutation tree
     Tc = nx.DiGraph() # copy number tree
 
@@ -190,51 +41,16 @@ def main(args):
     T.add_node('root')
     Tc.add_node(0)
 
-    # build tree
-    ncharacters = args.m
-    nmutations = ncharacters
-    nclusters = args.p
-    max_losses = args.k
-    max_cn = args.maxcn
-    mutation_rate = args.l
-    nnodes = ncharacters + nclusters
-    
-    character_list = [f'c{character_index}' for character_index in range(ncharacters)]
-    cluster_list = [f'd{cluster_index}' for cluster_index in range(1, nclusters)]
-    # TODO: Move CN events to front to avoid no mutations from a CN
-    first_n_event = int(nnodes * 1)
-    permutated_characters = np.random.permutation(character_list).astype(str).tolist()
-    event_order = np.random.permutation(permutated_characters[:first_n_event] + cluster_list).astype(str).tolist() + \
-        np.random.permutation(permutated_characters[first_n_event:]).astype(str).tolist()
-
-    cn_event = 1
-    for i in range(len(event_order)):
-        if event_order[i].startswith("d"):
-            event_order[i] = f"d{cn_event}"
-            cn_event += 1
-
-    nbins = 6000
-    
-    B = np.zeros((ncharacters + nclusters, ncharacters + 1), dtype=int)
-    Rb = np.zeros((nclusters, nbins), dtype=int)
-    Rb[0, :] = np.random.randint(max_cn - max_losses - 1, size = nbins) + max_losses + 1
-    
-    Tc_parent = {
-        "d2": "d1",
-        "d3": "d2",
-        "d6": "d5",
-        "d7": "d5",
-        "d8": "d5",
-    }
-    
+    B = np.zeros((n_mutation_groups + nclusters, n_mutation_groups + 1), dtype=int)
     num_children = np.zeros((nnodes, 1), dtype=int)
+
     for node_index, event in enumerate(event_order):
         nprev_mutations = sum([1 for x in event_order[:node_index] if x.startswith('c')])
         node_index += 1
 
         prev_num_children = num_children[:node_index].flatten()
-        weights_a = (np.arange(start=1, stop=node_index+1, step=1, dtype=float) ** 10)
-        weights_b = 1 / (0.01 + 10 * prev_num_children * prev_num_children)  # prefer fewer children
+        weights_a = (np.arange(start=1, stop=node_index+1, step=1, dtype=float) ** 3)
+        weights_b = 1 / (1 + prev_num_children * prev_num_children)
         weights = weights_a * weights_b
         weights /= weights.sum()
         
@@ -245,15 +61,6 @@ def main(args):
                 if not (event1.startswith('d') or event1 == 'root'):
                     choice_indices.append(node_index1)
             
-            if event in Tc_parent:
-                parent_cluster = Tc_parent[event]
-                filtered_choice_indices = []
-                for i in choice_indices:
-                    node = T_nodes[i]
-                    if nx.has_path(T, parent_cluster, node):
-                        filtered_choice_indices.append(i)
-                choice_indices = filtered_choice_indices
-
             weights_norm = weights[choice_indices]
             weights_norm = weights_norm / weights_norm.sum()
             parent_node_index = np.random.choice(choice_indices, p=weights_norm)
@@ -277,20 +84,36 @@ def main(args):
 
         if args.v:
             print(parent_node_index, parent_node, node_index, event)
+    
+    draw_clone_tree(Tc, "Tc.jpg")
+    draw_tree(T, "T.jpg")
 
-    # randomize the copy number states for mutations that have never been lost
-    # TODO: Place into bins.
-    mut_to_bin = { mut: np.random.randint(0, nbins) for mut in range(ncharacters) }
+    mutation_group_sizes = np.random.poisson(lam=mutation_grp_mean_size, size=n_mutation_groups).tolist()
+    n_mutations = sum(mutation_group_sizes)
 
+    mutation_list = np.arange(n_mutations)
+    mutation_list = list(np.random.permutation(mutation_list))
+    
+    mutation_group = np.repeat(np.arange(len(mutation_group_sizes)), mutation_group_sizes)
+
+    df_mutation_group = pd.DataFrame({
+        'mutation': mutation_list,
+        'mutation_group': mutation_group
+    }).sort_values('mutation').reset_index(drop=True)
+
+    Rb = np.zeros((nclusters, nbins), dtype=int)
+    Rb[0, :] = np.random.randint(max_cn - max_losses - 1, size = nbins) + max_losses + 1
     for cluster_id in range(nclusters):
         for bin in range(nbins):
             Rb[cluster_id, bin] = np.random.randint(max_cn - 1) + 1
-
-    R = np.zeros((nclusters, ncharacters), dtype=int)
+    
+    mut_to_bin = { mut: np.random.randint(0, nbins) for mut in range(n_mutation_groups) }
+    R = np.zeros((nclusters, n_mutation_groups), dtype=int)
     for cluster_id in range(nclusters):
-        for mutation in range(ncharacters):
+        for mutation in range(n_mutation_groups):
             bin = mut_to_bin[mutation]
             R[cluster_id, mutation] = Rb[cluster_id, bin]
+    
 
     # check that all copy number states are non-zero positive
     assert(len(np.where(R == 0)[0]) == 0)
@@ -301,7 +124,7 @@ def main(args):
         print('-'*50)
         print('copy number states')
         print('-'*50)
-        print(R)
+        print(R)    
 
     # assign cells and generate character-state matrix
     leaf_indices = []
@@ -312,27 +135,30 @@ def main(args):
     
     ncells = args.n
     assert(ncells > nclusters)
-    print(ncharacters, ncells, nleaves)
-    if ncells > nleaves:
-        cell_assignment = np.random.randint(ncharacters, size=ncells-nleaves)
-        complete_cell_assignment = list(cell_assignment) + leaf_indices
-    else:
-        cell_assignment = np.random.randint(ncharacters, size=ncells-1)
-        complete_cell_assignment = list(cell_assignment) + leaf_indices[-1:]
+    print('n_mutation_groups:', n_mutation_groups, 'n_cells:', ncells, 'n_leaves:', nleaves)
+    assert(ncells > nleaves)
+    cell_assignment = np.random.randint(n_mutation_groups + nclusters, size=ncells-nleaves)
+    complete_cell_assignment = list(cell_assignment) + leaf_indices
     
     Bcell = B[complete_cell_assignment, :]
-        
+
     # observed matrix
     A = B.copy()
-    for mutation in range(ncharacters):
+    for mutation in range(n_mutation_groups):
         A[A[:,mutation] > 1, mutation] = 0
     Acell = A[complete_cell_assignment, :]
+
+    Acell_muts = np.zeros((Acell.shape[0], n_mutations + 1), dtype=int)
+    for cell in range(Acell_muts.shape[0]):
+        for mut in range(n_mutations):
+            mutation_group = df_mutation_group.at[mut, 'mutation_group']
+            Acell_muts[cell, mut] = Acell[cell, mutation_group]
+    Acell_muts[:, -1] = Acell[:, -1]
     
     # cell tree
     celltree = T.copy()
     for cell_id, assigned_node_index in enumerate(complete_cell_assignment):
         celltree.add_edge(list(T.nodes)[assigned_node_index], f's{cell_id}')
-
         
     # generate read counts
     mean_coverage = args.cov
@@ -340,14 +166,16 @@ def main(args):
     fn_rate = args.b
     ado_precision = args.ado
 
-    Rtotal = np.zeros((ncells, nmutations), dtype=int)
-    Vcount = np.zeros((ncells, nmutations), dtype=int)
-    CNs = np.zeros((ncells, nmutations), dtype=int)
+    Rtotal = np.zeros((ncells, n_mutations), dtype=int)
+    Vcount = np.zeros((ncells, n_mutations), dtype=int)
+    CNs = np.zeros((ncells, n_mutations), dtype=int)
     for cell in range(ncells):
-        for mutation in range(nmutations):
-            cluster_id = Acell[cell, -1]
-            nvariant = Acell[cell, mutation]
-            ntotal = R[cluster_id, mutation]
+        for mutation in range(n_mutations):
+            cluster_id = Acell_muts[cell, -1]
+            mutation_group = int(df_mutation_group.at[mutation, 'mutation_group'])
+
+            nvariant = Acell_muts[cell, mutation]
+            ntotal = R[cluster_id, mutation_group]
 
             latent_vaf = nvariant / ntotal
 
@@ -367,19 +195,19 @@ def main(args):
     variant_read_threshold = args.readthreshold
     VAF_mat = Vcount / Rtotal
     mutation_mat = ((VAF_mat >= vaf_threshold) & (Vcount >= variant_read_threshold)).astype(int)
-    mutation_mat = np.hstack((mutation_mat, Acell[:,-1][:,np.newaxis]))
+    mutation_mat = np.hstack((mutation_mat, Acell_muts[:,-1][:,np.newaxis]))
     
     # introduce missing entries
-    Acell_missing = Acell.copy()
+    Acell_missing = Acell_muts.copy()
     Rtotal_missing = Rtotal.copy()
     Vcount_missing = Vcount.copy()
     Acell_noisy = mutation_mat.copy()
 
     missing_rate = args.d
-    n_entries = ncells * ncharacters
+    n_entries = ncells * n_mutations
     nmissing = math.floor(missing_rate * n_entries)
     selected_cell_indices = np.random.randint(ncells, size=nmissing)
-    selected_character_indices = np.random.randint(ncharacters, size=nmissing)
+    selected_character_indices = np.random.randint(n_mutations, size=nmissing)
     Acell_missing[selected_cell_indices, selected_character_indices] = -1
     Rtotal_missing[selected_cell_indices, selected_character_indices] = 0
     Vcount_missing[selected_cell_indices, selected_character_indices] = 0
@@ -396,32 +224,25 @@ def main(args):
     
     writeDOT(celltree, f'{prefix}_tree.dot')
 
-    draw_tree(celltree, f'{prefix}_tree.png')
+    draw_tree(merge_cell_leaves(celltree), f'{prefix}_merged_tree.png')
 
-    draw_tree(merge_cell_leaves(merge_linear_paths(celltree)), f'{prefix}_merged_tree.png')
+    draw_clone_tree(Tc, f'{prefix}_cn_tree.png')
 
-    draw_clone_tree(Tc, f'{prefix}_copy_number_tree.png')
+    mutation_group_cn_cluster_columns = [f'c{idx}' for idx in range(n_mutation_groups)] + ['cluster_id']
+    mutation_columns = [f'm{idx}' for idx in range(n_mutations)]
+    mutation_cn_cluster_columns = mutation_columns  + ['cluster_id']
+    cell_indices = [f's{idx}' for idx in range(ncells)]
 
     df_B = pd.DataFrame(B, index=list(T.nodes),
-                        columns = [f'c{idx}' for idx in range(ncharacters)] + ['cluster_id'], dtype=int)            
-    df_Bcell = pd.DataFrame(Bcell, index=[f's{idx}' for idx in range(ncells)],
-                            columns = [f'c{idx}' for idx in range(ncharacters)] + ['cluster_id'], dtype=int)            
-    df_Acell = pd.DataFrame(Acell, index=[f's{idx}' for idx in range(ncells)],
-                            columns = [f'c{idx}' for idx in range(ncharacters)] + ['cluster_id'], dtype=int)    
-    df_Acell_noisy = pd.DataFrame(Acell_noisy, index=[f's{idx}' for idx in range(ncells)],
-                                  columns = [f'c{idx}' for idx in range(ncharacters)] + ['cluster_id'], dtype=int)
-    
-    df_Rtotal = pd.DataFrame(Rtotal, index=[f's{idx}' for idx in range(ncells)],
-                        columns = [f'c{idx}' for idx in range(ncharacters)], dtype=int)
-    df_Vcount = pd.DataFrame(Vcount, index=[f's{idx}' for idx in range(ncells)],
-                        columns = [f'c{idx}' for idx in range(ncharacters)], dtype=int)    
-    df_Rtotal_missing = pd.DataFrame(Rtotal_missing, index=[f's{idx}' for idx in range(ncells)],
-                        columns = [f'c{idx}' for idx in range(ncharacters)], dtype=int)
-    df_Vcount_missing = pd.DataFrame(Vcount_missing, index=[f's{idx}' for idx in range(ncells)],
-                        columns = [f'c{idx}' for idx in range(ncharacters)], dtype=int)    
-    
-    df_CNs = pd.DataFrame(CNs, index=[f's{idx}' for idx in range(ncells)],
-                        columns = [f'c{idx}' for idx in range(ncharacters)], dtype=int)
+                        columns = mutation_group_cn_cluster_columns, dtype=int)            
+    df_Bcell = pd.DataFrame(Bcell, index=cell_indices, columns = mutation_group_cn_cluster_columns, dtype=int)            
+    df_Acell = pd.DataFrame(Acell_muts, index=cell_indices, columns = mutation_cn_cluster_columns, dtype=int)    
+    df_Acell_noisy = pd.DataFrame(Acell_noisy, index=cell_indices, columns = mutation_cn_cluster_columns, dtype=int)
+    df_Rtotal = pd.DataFrame(Rtotal, index=cell_indices, columns = mutation_columns, dtype=int)
+    df_Vcount = pd.DataFrame(Vcount, index=cell_indices, columns = mutation_columns, dtype=int)    
+    df_Rtotal_missing = pd.DataFrame(Rtotal_missing, index=cell_indices, columns = mutation_columns, dtype=int)
+    df_Vcount_missing = pd.DataFrame(Vcount_missing, index=cell_indices, columns = mutation_columns, dtype=int)    
+    df_CNs = pd.DataFrame(CNs, index=cell_indices, columns = mutation_columns, dtype=int)
     
     df_mut_to_bin = pd.DataFrame.from_dict(mut_to_bin, orient='index', columns=['bin'])
     df_mut_to_bin.to_csv(f'{prefix}_mutation_to_bin_mapping.csv')
@@ -446,6 +267,7 @@ if __name__ == "__main__":
     parser.add_argument('-k', type=int, help='number of SNV losses per character [0]', default = 0)
     parser.add_argument('-o', type=str, help='output prefix', default='sample')
     parser.add_argument('-s', type=int, help='seed [0]', default = 0)
+    parser.add_argument('--size', type=int, help='mutation group size [100]', default = 100)
     parser.add_argument('-d', type=float, help='missing data rate [0.0]', default=0)
     parser.add_argument('--cov', type=float, help='coverage of read count [50]', default = 50)
     parser.add_argument('-a', type=float, help='false positive error rate', default = 0)
