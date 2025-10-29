@@ -73,7 +73,7 @@ def build_phylogeny(B):
 
 
 
-def plot_spectral_clustering(F, n_clusters=7):
+def plot_spectral_clustering(F, n_clusters=7, filepath=None):
     model = SpectralBiclustering(n_clusters=n_clusters, method='log', random_state=0)
     model.fit(F.values)
 
@@ -107,7 +107,10 @@ def plot_spectral_clustering(F, n_clusters=7):
     plt.title("Spectral Biclustering of CF")
     plt.xlabel("Mutations")
     plt.ylabel("CN Cluster IDs")
-    plt.show()
+    
+    if filepath is None: plt.show()
+    else: plt.savefig(filepath)
+    plt.close()
 
 
 import networkx as nx

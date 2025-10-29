@@ -2,11 +2,14 @@ import pandas as pd
 import sys
 import argparse
 import math
-import numpy as np
 from scipy.stats import betabinom
 import networkx as nx
+import matplotlib.pyplot as plt 
+import numpy as np
+
 from simulation_helpers import draw_tree, draw_clone_tree, writeDOT, tree_to_newick, merge_cell_leaves
- 
+from phylogeny_utils import plot_spectral_clustering 
+
 
 def main(args):
 
@@ -85,9 +88,6 @@ def main(args):
         if args.v:
             print(parent_node_index, parent_node, node_index, event)
     
-    draw_clone_tree(Tc, "Tc.jpg")
-    draw_tree(T, "T.jpg")
-
     mutation_group_sizes = np.random.poisson(lam=mutation_grp_mean_size, size=n_mutation_groups).tolist()
     n_mutations = sum(mutation_group_sizes)
 
@@ -224,8 +224,8 @@ def main(args):
     
     writeDOT(celltree, f'{prefix}_tree.dot')
 
+    draw_tree(T, f"{prefix}_T.jpg")
     draw_tree(merge_cell_leaves(celltree), f'{prefix}_merged_tree.png')
-
     draw_clone_tree(Tc, f'{prefix}_cn_tree.png')
 
     mutation_group_cn_cluster_columns = [f'c{idx}' for idx in range(n_mutation_groups)] + ['cluster_id']
@@ -257,6 +257,67 @@ def main(args):
     df_Rtotal_missing.to_csv(f'{prefix}_read_count.csv')
     df_Vcount_missing.to_csv(f'{prefix}_variant_count.csv')
     df_CNs.to_csv(f'{prefix}_copy_numbers.csv')
+    df_mutation_group.to_csv(f'{prefix}_mutation_group.csv')
+
+    # Generate cell fraction
+    df_total = df_Rtotal_missing
+    df_variant = df_Vcount_missing
+    df = df_Acell
+    df_cluster = df[['cluster_id']]
+    df_total = df_total.join(df_cluster, how='left')
+    total_table = df_total.groupby('cluster_id').sum(numeric_only=True)
+    df_variant = df_variant.join(df_cluster, how='left')
+    alt_table = df_variant.groupby('cluster_id').sum(numeric_only=True)
+    vaf = alt_table.div(total_table).replace(np.nan, 0)
+    df_copy_number = df_CNs
+    df_copy_number = df_copy_number.join(df_cluster, how='left')
+    df_cn = df_copy_number.groupby('cluster_id').mean()
+    F = (vaf * df_cn).clip(upper=1)
+
+    print(F)
+    
+    plot_spectral_clustering(F, n_clusters=F.shape[0], filepath=f"{prefix}_spectral_clustering.jpg")
+
+    clones = sorted(df_mutation_group["mutation_group"].unique())
+    n_clones = len(clones)
+
+    # Set up subplot grid: 2 columns
+    n_cols = 4
+    n_rows = (n_clones + 5) // n_cols
+
+    fig, axes = plt.subplots(
+        nrows=n_rows, ncols=n_cols,
+        figsize=(12, 4 * n_rows),
+        sharex=True
+    )
+
+    axes = axes.flatten()
+
+    # Define explicit CN cluster order
+    cn_order = sorted(F.index.unique())[::-1]  # or use a fixed list if known: ['A','B','C','D','E','F','G','H','I']
+
+    for i, clone in enumerate(clones):
+        ax = axes[i]
+
+        mutations_in_clone = df_mutation_group[df_mutation_group["mutation_group"] == clone]["mutation"].to_list()
+
+        df = F.iloc[:, mutations_in_clone]
+        df = df.loc[cn_order]
+
+        ax.boxplot(df.T.values, vert=False, labels=df.index)
+
+        ax.set_ylabel("CN Clusters")
+        ax.set_xlabel("CF")
+        ax.set_title(f"{df.shape[1]} mutations from\nground truth clone {clone}")
+
+    # Hide any unused subplots
+    for j in range(i + 1, len(axes)):
+        fig.delaxes(axes[j])
+
+    plt.tight_layout()
+    plt.savefig(f"{prefix}_clone_cluster_cell_fractions.jpg")
+    plt.close()
+
 
 
 if __name__ == "__main__":
