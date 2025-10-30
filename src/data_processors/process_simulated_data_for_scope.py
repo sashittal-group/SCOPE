@@ -44,6 +44,7 @@ def main(args):
     df_variant = pd.read_csv(f"{input_prefix}_variant_count.csv", index_col=0)
     df = pd.read_csv(f"{input_prefix}_character_matrix_without_noise.csv", index_col=0)
     df_copy_number = pd.read_csv(f"{input_prefix}_copy_numbers.csv", index_col=0)
+    df_mutation_group = pd.read_csv(f"{input_prefix}_mutation_group.csv", index_col=0)
     
     df_cluster = df[['cluster_id']]
 
@@ -70,9 +71,12 @@ def main(args):
 
     os.makedirs(output_prefix, exist_ok=True)
 
+    mutation_group_sizes = df_mutation_group.groupby('mutation_group').size()
+
     F_hi.to_csv(f"{output_prefix}/F_plus.csv")
     F_lo.to_csv(f"{output_prefix}/F_minus.csv")
     F_bar.to_csv(f"{output_prefix}/F_bar.csv")
+    mutation_group_sizes.to_csv(f"{output_prefix}/clone_sizes.csv")
 
 
 if __name__ == "__main__":

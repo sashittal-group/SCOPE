@@ -19,7 +19,7 @@ def main(args):
     F_minus = pd.read_csv(f"{input_prefix}/F_minus.csv", index_col=0)
     clone_sizes = pd.read_csv(f"{input_prefix}/clone_sizes.csv", index_col=0)
 
-    clone_sizes_list = clone_sizes['count'].to_list()
+    clone_sizes_list = clone_sizes['0'].to_list()
 
     F_plus.index = list(string.ascii_uppercase[:len(F_plus)])
     F_minus.index = list(string.ascii_uppercase[:len(F_minus)])

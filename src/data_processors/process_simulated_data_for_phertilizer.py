@@ -12,13 +12,14 @@ def main(args):
     output_prefix = output_root_prefix + input_folder
     os.makedirs(output_prefix, exist_ok=True)
 
-
     df_read_counts = pd.read_csv(f"{input_prefix}_read_count.csv", index_col=0)
     df_variant_counts = pd.read_csv(f"{input_prefix}_variant_count.csv", index_col=0)
     df_mut_bin = pd.read_csv(f"{input_prefix}_mutation_to_bin_mapping.csv", index_col=0)
     
     df_total_long = df_read_counts.reset_index().melt(id_vars='index', var_name='mutation', value_name='total')
     df_total_long = df_total_long.rename(columns={'index': 'cell_id'})
+
+    df_total_long = df_total_long[df_total_long['total'] != 0]
 
     df_var_long = df_variant_counts.reset_index().melt(id_vars='index', var_name='mutation', value_name='variant')
     df_var_long = df_var_long.rename(columns={'index': 'cell_id'})
@@ -39,8 +40,6 @@ def main(args):
     phertilizer_snv_counts.to_csv(f"{output_prefix}/snv_counts.tsv", index=False, header=False, sep='\t')
 
     df_long = pd.merge(df_long, df_mut_bin, on="mutation", how='left')
-
-    # print(df_long)
 
     df_binned_counts = df_long.rename(columns={"cell_id": "cell"}).pivot_table(index='cell', columns='bin', values='total', fill_value=0).astype(int)
     df_binned_counts.to_csv(f"{output_prefix}/binned_read_counts.csv")
