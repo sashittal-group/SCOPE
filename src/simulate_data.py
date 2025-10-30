@@ -108,12 +108,8 @@ def main(args):
             Rb[cluster_id, bin] = np.random.randint(max_cn - 1) + 1
     
     mut_to_bin = { mut: np.random.randint(0, nbins) for mut in range(n_mutations) }
-    R = np.zeros((nclusters, n_mutations), dtype=int)
-    for cluster_id in range(nclusters):
-        for mutation in range(n_mutations):
-            bin = mut_to_bin[mutation]
-            R[cluster_id, mutation] = Rb[cluster_id, bin]
-    
+    mut_bins = np.array([mut_to_bin[mut] for mut in range(n_mutations)])
+    R = Rb[:, mut_bins]
 
     # check that all copy number states are non-zero positive
     assert(len(np.where(R == 0)[0]) == 0)
@@ -148,12 +144,9 @@ def main(args):
         A[A[:,mutation] > 1, mutation] = 0
     Acell = A[complete_cell_assignment, :]
 
-    Acell_muts = np.zeros((Acell.shape[0], n_mutations + 1), dtype=int)
-    for cell in range(Acell_muts.shape[0]):
-        for mut in range(n_mutations):
-            mutation_group = df_mutation_group.at[mut, 'mutation_group']
-            Acell_muts[cell, mut] = Acell[cell, mutation_group]
-    Acell_muts[:, -1] = Acell[:, -1]
+    mut_groups = df_mutation_group["mutation_group"].to_numpy()
+    Acell_muts = Acell[:, mut_groups]
+    Acell_muts = np.hstack((Acell_muts, Acell[:, [-1]]))
     
     # cell tree
     celltree = T.copy()
@@ -166,29 +159,21 @@ def main(args):
     fn_rate = args.b
     ado_precision = args.ado
 
-    Rtotal = np.zeros((ncells, n_mutations), dtype=int)
-    Vcount = np.zeros((ncells, n_mutations), dtype=int)
-    CNs = np.zeros((ncells, n_mutations), dtype=int)
-    for cell in range(ncells):
-        for mutation in range(n_mutations):
-            cluster_id = Acell_muts[cell, -1]
-            
-            nvariant = Acell_muts[cell, mutation]
-            ntotal = R[cluster_id, mutation]
+    cluster_ids = Acell_muts[:, -1]
+    nvariant = Acell_muts[:, :-1]
 
-            latent_vaf = nvariant / ntotal
+    ntotal = R[cluster_ids[:, None], np.arange(n_mutations)[None, :]]
 
-            nreads = np.random.poisson(mean_coverage)
-            Rtotal[cell, mutation] = int(nreads)
+    latent_vaf = nvariant / ntotal
 
-            post_error_vaf = fp_rate + (1 - fp_rate - fn_rate) * latent_vaf
-            ado_alpha = post_error_vaf * ado_precision
-            ado_beta = ado_precision * (1 - post_error_vaf)
-            nvariant_reads = betabinom.rvs(nreads, ado_alpha, ado_beta)
+    Rtotal = np.random.poisson(mean_coverage, size=(ncells, n_mutations))
+    post_error_vaf = fp_rate + (1 - fp_rate - fn_rate) * latent_vaf
+    ado_alpha = post_error_vaf * ado_precision
+    ado_beta = ado_precision * (1 - post_error_vaf)
 
-            Vcount[cell, mutation] = int(nvariant_reads)
-            CNs[cell, mutation] = ntotal
-
+    Vcount = betabinom.rvs(Rtotal, ado_alpha, ado_beta)
+    CNs = ntotal
+    
     # generate the binarized mutation matrix
     vaf_threshold = args.vafthreshold
     variant_read_threshold = args.readthreshold
@@ -273,7 +258,7 @@ def main(args):
     df_cn = df_copy_number.groupby('cluster_id').mean()
     F = (vaf * df_cn).clip(upper=1)
 
-    print(F)
+    # print(F)
     
     plot_spectral_clustering(F, n_clusters=F.shape[0], filepath=f"{prefix}_spectral_clustering.svg")
 
