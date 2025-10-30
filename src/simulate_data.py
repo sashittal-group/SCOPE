@@ -107,10 +107,10 @@ def main(args):
         for bin in range(nbins):
             Rb[cluster_id, bin] = np.random.randint(max_cn - 1) + 1
     
-    mut_to_bin = { mut: np.random.randint(0, nbins) for mut in range(n_mutation_groups) }
-    R = np.zeros((nclusters, n_mutation_groups), dtype=int)
+    mut_to_bin = { mut: np.random.randint(0, nbins) for mut in range(n_mutations) }
+    R = np.zeros((nclusters, n_mutations), dtype=int)
     for cluster_id in range(nclusters):
-        for mutation in range(n_mutation_groups):
+        for mutation in range(n_mutations):
             bin = mut_to_bin[mutation]
             R[cluster_id, mutation] = Rb[cluster_id, bin]
     
@@ -172,10 +172,9 @@ def main(args):
     for cell in range(ncells):
         for mutation in range(n_mutations):
             cluster_id = Acell_muts[cell, -1]
-            mutation_group = int(df_mutation_group.at[mutation, 'mutation_group'])
-
+            
             nvariant = Acell_muts[cell, mutation]
-            ntotal = R[cluster_id, mutation_group]
+            ntotal = R[cluster_id, mutation]
 
             latent_vaf = nvariant / ntotal
 
