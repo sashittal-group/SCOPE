@@ -120,7 +120,7 @@ import matplotlib.patches as mpatches
 
 
 
-def draw_clone_tree(T):
+def draw_clone_tree(T, filepath: str = None):
 
     # Create labels with concise formatting
     labels = {node: str(node) for node in T.nodes()}
@@ -178,7 +178,9 @@ def draw_clone_tree(T):
 
 
     plt.tight_layout()
-    plt.show()
+    if filepath: plt.savefig(filepath)
+    else: plt.show()
+    plt.close()
 
 
 def add_clusters_to_clonal_T(T: nx.DiGraph, X: pd.DataFrame, G: pd.DataFrame, B: pd.DataFrame,  ):
@@ -259,3 +261,17 @@ def fix_T(B: pd.DataFrame, G: pd.DataFrame, T):
             T.add_edge(cluster, m)
 
     return T
+
+def canonical_form(G):
+    if not nx.is_tree(G):
+        raise ValueError("Graph must be a tree")
+    if "root" not in G:
+        raise ValueError("Tree must contain a node named 'root'")
+    return _encode_tree(G, "root", None)
+
+def _encode_tree(G, node, parent):
+    children = [n for n in G.neighbors(node) if n != parent]
+    encoded_children = sorted(_encode_tree(G, c, node) for c in children)
+    # include the current node label in the encoding
+    return f"{node}({''.join(encoded_children)})"
+

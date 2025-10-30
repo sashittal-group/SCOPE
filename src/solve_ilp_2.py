@@ -253,8 +253,12 @@ def solve_cncff(
         G_df = pd.DataFrame(g_values, index=clusters, columns=mutations)
 
         solutions.append((X_df, B_df, U_df, F_df, G_df))
+    
+    best_objective = None
+    if model.Status == gp.GRB.OPTIMAL or model.Status == gp.GRB.TIME_LIMIT:
+        best_objective = model.objVal
 
-    return solutions
+    return solutions, best_objective
 
 
 
