@@ -26,9 +26,7 @@ def main(args):
     df_long = pd.merge(df_total_long, df_var_long, on=['cell_id', 'mutation'])
     df_long = df_long[df_long['total'] != 0]
 
-    df_mut_bin["mutation"] = "c" + df_mut_bin.index.astype(str)
-
-    print(df_mut_bin)
+    df_mut_bin["mutation"] = "m" + df_mut_bin.index.astype(str)
 
     phertilizer_snv_counts = pd.DataFrame({
         'chr': ['X'] * df_long.shape[0],

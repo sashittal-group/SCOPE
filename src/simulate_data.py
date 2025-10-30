@@ -223,9 +223,9 @@ def main(args):
     
     writeDOT(celltree, f'{prefix}_tree.dot')
 
-    draw_tree(T, f"{prefix}_T.jpg")
-    draw_tree(merge_cell_leaves(celltree), f'{prefix}_merged_tree.png')
-    draw_clone_tree(Tc, f'{prefix}_cn_tree.png')
+    draw_tree(T, f"{prefix}_T.svg")
+    draw_tree(merge_cell_leaves(celltree), f'{prefix}_merged_tree.svg')
+    draw_clone_tree(Tc, f'{prefix}_cn_tree.svg')
 
     mutation_group_cn_cluster_columns = [f'c{idx}' for idx in range(n_mutation_groups)] + ['cluster_id']
     mutation_columns = [f'm{idx}' for idx in range(n_mutations)]
@@ -275,7 +275,7 @@ def main(args):
 
     print(F)
     
-    plot_spectral_clustering(F, n_clusters=F.shape[0], filepath=f"{prefix}_spectral_clustering.jpg")
+    plot_spectral_clustering(F, n_clusters=F.shape[0], filepath=f"{prefix}_spectral_clustering.svg")
 
     clones = sorted(df_mutation_group["mutation_group"].unique())
     n_clones = len(clones)
@@ -314,7 +314,7 @@ def main(args):
         fig.delaxes(axes[j])
 
     plt.tight_layout()
-    plt.savefig(f"{prefix}_clone_cluster_cell_fractions.jpg")
+    plt.savefig(f"{prefix}_clone_cluster_cell_fractions.svg")
     plt.close()
 
 
