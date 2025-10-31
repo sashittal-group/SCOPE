@@ -227,21 +227,23 @@ def main(args):
     df_Rtotal_missing = pd.DataFrame(Rtotal_missing, index=cell_indices, columns = mutation_columns, dtype=int)
     df_Vcount_missing = pd.DataFrame(Vcount_missing, index=cell_indices, columns = mutation_columns, dtype=int)    
     df_CNs = pd.DataFrame(CNs, index=cell_indices, columns = mutation_columns, dtype=int)
-    
-    df_mut_to_bin = pd.DataFrame.from_dict(mut_to_bin, orient='index', columns=['bin'])
-    df_mut_to_bin.to_csv(f'{prefix}_mutation_to_bin_mapping.csv')
 
-    df_B.to_csv(f'{prefix}_multi_state_tree_node_character_matrix.csv')
-    df_Bcell.to_csv(f'{prefix}_multi_state_character_matrix.csv')
-    df_Acell.to_csv(f'{prefix}_character_matrix_without_noise.csv')
-    df_Acell_noisy.to_csv(f'{prefix}_character_matrix.csv')
-    
-    df_Rtotal.to_csv(f'{prefix}_read_count_without_missing.csv')
-    df_Vcount.to_csv(f'{prefix}_variant_count_without_missing.csv')
-    df_Rtotal_missing.to_csv(f'{prefix}_read_count.csv')
-    df_Vcount_missing.to_csv(f'{prefix}_variant_count.csv')
-    df_CNs.to_csv(f'{prefix}_copy_numbers.csv')
-    df_mutation_group.to_csv(f'{prefix}_mutation_group.csv')
+    df_mut_to_bin = pd.DataFrame.from_dict(mut_to_bin, orient='index', columns=['bin'])
+
+    df_mut_to_bin.to_parquet(f'{prefix}_mutation_to_bin_mapping.parquet', index=True)
+    # df_B.to_parquet(f'{prefix}_multi_state_tree_node_character_matrix.parquet', index=True)
+    df_Bcell.to_parquet(f'{prefix}_multi_state_character_matrix.parquet', index=True)
+    df_Acell.to_parquet(f'{prefix}_character_matrix_without_noise.parquet', index=True)
+    # df_Acell_noisy.to_parquet(f'{prefix}_character_matrix.parquet', index=True)
+
+    # df_Rtotal.to_csv(f'{prefix}_read_count_without_missing.csv')
+    # df_Vcount.to_csv(f'{prefix}_variant_count_without_missing.csv')
+
+    df_Rtotal_missing.to_parquet(f'{prefix}_read_count.parquet', index=True)
+    df_Vcount_missing.to_parquet(f'{prefix}_variant_count.parquet', index=True)
+    df_CNs.to_parquet(f'{prefix}_copy_numbers.parquet', index=True)
+    df_mutation_group.to_parquet(f'{prefix}_mutation_group.parquet', index=False)
+
 
     # Generate cell fraction
     df_total = df_Rtotal_missing

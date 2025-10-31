@@ -17,7 +17,7 @@ import itertools
 rule all:
     input:
         # # simulation
-        # expand('data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_read_count.csv', \
+        # expand('data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_read_count.parquet', \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
         #     nclusters=config['nclusters'], cov=config['coverage']),
         # # scope input
@@ -40,12 +40,12 @@ rule all:
 
 rule simulate:
     output:
-        readcount_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_read_count.csv",
-        variantcount_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_variant_count.csv",
-        character_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_character_matrix_without_noise.csv",
-        copy_number_table="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_copy_numbers.csv",
-        mutation_group_table="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_mutation_group.csv",
-        mutation_to_bin_table="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_mutation_to_bin_mapping.csv",
+        readcount_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_read_count.parquet",
+        variantcount_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_variant_count.parquet",
+        character_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_character_matrix_without_noise.parquet",
+        copy_number_table="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_copy_numbers.parquet",
+        mutation_group_table="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_mutation_group.parquet",
+        mutation_to_bin_table="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_mutation_to_bin_mapping.parquet",
     params:
         prefix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim",
         fn=config['fn'],
@@ -67,12 +67,14 @@ rule simulate:
 
 rule phertilizer_input:
     input:
-        readcount_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_read_count.csv",
-        variantcount_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_variant_count.csv",
-        mutation_to_bin_table="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_mutation_to_bin_mapping.csv",
+        readcount_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_read_count.parquet",
+        variantcount_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_variant_count.parquet",
+        mutation_to_bin_table="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_mutation_to_bin_mapping.parquet",
     output:
         snv_counts="data/simulation/phertilizer_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/snv_counts.tsv",
         binned_counts="data/simulation/phertilizer_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/binned_read_counts.csv",
+    resources:
+        mem_mb=10240
     log:
         std="data/simulation/phertilizer_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/log",
         err="data/simulation/phertilizer_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/err.log",
@@ -84,11 +86,11 @@ rule phertilizer_input:
 
 rule scope_input:
     input:
-        character_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_character_matrix_without_noise.csv",
-        readcount_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_read_count.csv",
-        variantcount_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_variant_count.csv",
-        copy_number_table="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_copy_numbers.csv",
-        mutation_group_table="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_mutation_group.csv",
+        character_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_character_matrix_without_noise.parquet",
+        readcount_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_read_count.parquet",
+        variantcount_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_variant_count.parquet",
+        copy_number_table="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_copy_numbers.parquet",
+        mutation_group_table="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_mutation_group.parquet",
     output:
         F_plus="data/simulation/scope_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_plus.csv",
         F_minus="data/simulation/scope_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_minus.csv",
@@ -100,7 +102,7 @@ rule scope_input:
     benchmark: "data/simulation/scope_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/benchmark",
     shell:
         "python src/data_processors/process_simulated_data_for_scope.py -i data/simulation/ground_truth/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/sim "
-        " -o data/simulation/scope_input/ --clone-table _mutation_group.csv"
+        " -o data/simulation/scope_input/ --clone-table _mutation_group.parquet"
         " > {log.std} 2> {log.err}"
 
 rule scope_on_simulation:

@@ -40,12 +40,12 @@ def main(args):
     clone_table_file = args.clone_table
     output_root_prefix = args.o
 
-    df_total = pd.read_csv(f"{input_prefix}_read_count.csv", index_col=0)
-    df_variant = pd.read_csv(f"{input_prefix}_variant_count.csv", index_col=0)
-    df = pd.read_csv(f"{input_prefix}_character_matrix_without_noise.csv", index_col=0)
-    df_copy_number = pd.read_csv(f"{input_prefix}_copy_numbers.csv", index_col=0)
-    df_mutation_group = pd.read_csv(f"{input_prefix}_mutation_group.csv", index_col=0)
-    
+    df_total = pd.read_parquet(f"{input_prefix}_read_count.parquet")
+    df_variant = pd.read_parquet(f"{input_prefix}_variant_count.parquet")
+    df = pd.read_parquet(f"{input_prefix}_character_matrix_without_noise.parquet")
+    df_copy_number = pd.read_parquet(f"{input_prefix}_copy_numbers.parquet")
+    df_mutation_group = pd.read_parquet(f"{input_prefix}_mutation_group.parquet")
+
     df_cluster = df[['cluster_id']]
 
     df_total = df_total.join(df_cluster, how='left')
@@ -62,7 +62,7 @@ def main(args):
 
     if clone_table_file is None: return
     
-    df_clone = pd.read_csv(f"{input_prefix}{clone_table_file}", index_col=0)
+    df_clone = pd.read_parquet(f"{input_prefix}{clone_table_file}")
     F_bar, F_hi, F_lo = get_F_boundaries(F, df_clone, 0.75)
 
     input_folder = input_prefix.split('/')[-2]
