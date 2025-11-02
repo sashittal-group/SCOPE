@@ -18,14 +18,15 @@ def main(args):
 
     df_read_counts = df_read_counts.loc[:, (df_read_counts != 0).any()]
 
-    df_read_counts.columns.name = "mutation"
-    df_variant_counts.columns.name = "mutation"
+    df_total_long = df_read_counts.reset_index().melt(id_vars='index', var_name='mutation', value_name='total')
+    df_total_long = df_total_long.rename(columns={'index': 'cell_id'})
 
-    df_total_long = df_read_counts.stack().rename("total").reset_index()
-    df_var_long = df_variant_counts.stack().rename("variant").reset_index()
+    df_total_long = df_total_long[df_total_long['total'] != 0]
 
-    df_long = pd.merge(df_total_long, df_var_long, on='mutation', how='left')
-    df_long = df_long.rename(columns={'index': 'cell_id'})
+    df_var_long = df_variant_counts.reset_index().melt(id_vars='index', var_name='mutation', value_name='variant')
+    df_var_long = df_var_long.rename(columns={'index': 'cell_id'})
+
+    df_long = pd.merge(df_total_long, df_var_long, on=['cell_id', 'mutation'])
     df_long = df_long[df_long['total'] != 0]
 
     df_mut_bin["mutation"] = "m" + df_mut_bin.index.astype(str)
@@ -44,6 +45,7 @@ def main(args):
 
     df_binned_counts = (
         df_long.rename(columns={"cell_id": "cell"})
+        .groupby(["cell", "bin"], as_index=False)["total"].sum()
         .pivot(index="cell", columns="bin", values="total")
         .fillna(0)
         .astype(int)
