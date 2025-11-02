@@ -258,7 +258,7 @@ def solve_cncff(
     if model.Status == gp.GRB.OPTIMAL or model.Status == gp.GRB.TIME_LIMIT:
         best_objective = model.objVal
 
-    return solutions, best_objective
+    return solutions, best_objective, model.Status
 
 
 
