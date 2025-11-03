@@ -30,7 +30,7 @@ def main(args):
     print(clone_sizes)
     print(clone_sizes_list)
 
-    total_clones = len(clone_sizes_list)
+    total_clones = len(clone_sizes_list) + 1 # +1 for root node
 
     n_clones = total_clones 
     while n_clones >= 1:
