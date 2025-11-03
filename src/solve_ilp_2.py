@@ -227,13 +227,13 @@ def solve_cncff(
         print(f"Solution {i+1}:")
         print("Objective value:", model.PoolObjVal)
 
-        X_df = pd.DataFrame([x[j].Xn for j in range(n_mutations)], index=mutations, dtype=int)
+        X_df = pd.DataFrame([x[j].Xn for j in range(n_mutations)], index=mutations)
 
         b_values = [
             [b[i, j].Xn for j in range(n_mutations)]
             for i in range(n_clones + n_clusters)
         ]
-        B_df = pd.DataFrame(b_values, index=clones + clusters, columns=mutations, dtype=int)
+        B_df = pd.DataFrame(b_values, index=clones + clusters, columns=mutations)
 
         u_values = [
             [u[i, j].Xn for j in range(n_clones)]
@@ -251,7 +251,7 @@ def solve_cncff(
             [g[i, j].Xn for j in range(n_mutations)]
             for i in range(n_clusters)
         ]
-        G_df = pd.DataFrame(g_values, index=clusters, columns=mutations, dtype=int)
+        G_df = pd.DataFrame(g_values, index=clusters, columns=mutations)
 
         solutions.append((X_df, B_df, U_df, F_df, G_df))
     

@@ -231,13 +231,13 @@ def main(args):
     df_mut_to_bin = pd.DataFrame.from_dict(mut_to_bin, orient='index', columns=['bin'])
 
     df_mut_to_bin.to_parquet(f'{prefix}_mutation_to_bin_mapping.parquet', index=True)
-    # df_B.to_parquet(f'{prefix}_multi_state_tree_node_character_matrix.parquet', index=True)
+    df_B.to_parquet(f'{prefix}_multi_state_tree_node_character_matrix.parquet', index=True)
     df_Bcell.to_parquet(f'{prefix}_multi_state_character_matrix.parquet', index=True)
     df_Acell.to_parquet(f'{prefix}_character_matrix_without_noise.parquet', index=True)
-    # df_Acell_noisy.to_parquet(f'{prefix}_character_matrix.parquet', index=True)
+    df_Acell_noisy.to_parquet(f'{prefix}_character_matrix.parquet', index=True)
 
-    # df_Rtotal.to_csv(f'{prefix}_read_count_without_missing.csv')
-    # df_Vcount.to_csv(f'{prefix}_variant_count_without_missing.csv')
+    df_Rtotal.to_parquet(f'{prefix}_read_count_without_missing.parquet', index=True)
+    df_Vcount.to_parquet(f'{prefix}_variant_count_without_missing.parquet', index=True)
 
     df_Rtotal_missing.to_parquet(f'{prefix}_read_count.parquet', index=True)
     df_Vcount_missing.to_parquet(f'{prefix}_variant_count.parquet', index=True)
