@@ -14,8 +14,8 @@ def main(args):
     output_prefix = output_root_prefix + input_folder
     os.makedirs(output_prefix, exist_ok=True)
 
-    df_read_counts = pd.read_csv(f"{input_prefix}_read_count.csv", index_col=0)
-    df_variant_counts = pd.read_csv(f"{input_prefix}_variant_count.csv", index_col=0)
+    df_read_counts = pd.read_parquet(f"{input_prefix}_read_count.parquet")
+    df_variant_counts = pd.read_parquet(f"{input_prefix}_variant_count.parquet")
 
     vaf = df_variant_counts.div(df_read_counts).replace(np.nan, 0)
 
@@ -30,10 +30,6 @@ def main(args):
 
     sbm_input.to_csv(f"{output_prefix}/matrix.csv", index=False, header=False)
 
-
-
-
-    
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
