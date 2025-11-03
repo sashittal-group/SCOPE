@@ -158,7 +158,7 @@ def solve_cncff(
         lhs = sum((2**j) * b[i,j]     for j in range(n_mutations))
         rhs = sum((2**j) * b[i+1,j]   for j in range(n_mutations))
         model.addConstr(lhs <= rhs - 1 , name=f"order_{i}")
-        if i == 0: model.addConstr(lhs >= x[i])
+        if i == 0: model.addConstr(lhs >= 1)
 
     # (*) B rows cannot be same
     # for i in range(n_clones):
