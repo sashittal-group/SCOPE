@@ -25,13 +25,13 @@ rule all:
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
         #     nclusters=config['nclusters'], cov=config['coverage']),
         # # scope input kmeans
-        expand("data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_clones.csv", \
-            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-            nclusters=config['nclusters'], cov=config['coverage']),
-        # # scope input kmeans known k
-        expand("data/simulation/scope_input_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_clones.csv", \
-            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-            nclusters=config['nclusters'], cov=config['coverage']),
+        # expand("data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_clones.csv", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage']),
+        # # # scope input kmeans known k
+        # expand("data/simulation/scope_input_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_clones.csv", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage']),
         # # phertilizer input
         # # expand("data/simulation/phertilizer_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/snv_counts.tsv", \
         # #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
@@ -41,13 +41,13 @@ rule all:
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
         #     nclusters=config['nclusters'], cov=config['coverage']),
         # scope kmeans on simulation
-        # expand("data/simulation/scope_output_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt", \
-        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-        #     nclusters=config['nclusters'], cov=config['coverage']),
+        expand("data/simulation/scope_output_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt", \
+            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+            nclusters=config['nclusters'], cov=config['coverage']),
         # scope kmeans known k on simulation
-        # expand("data/simulation/scope_output_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt", \
-        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-        #     nclusters=config['nclusters'], cov=config['coverage']),
+        expand("data/simulation/scope_output_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt", \
+            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+            nclusters=config['nclusters'], cov=config['coverage']),
         # phertilizer on simulation
         # expand("data/simulation/phertilizer_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/cell_clusters.csv", \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
