@@ -39,9 +39,9 @@ def main(args):
         if status == gp.GRB.TIME_LIMIT:
             solutions, best_objective, status = solve_cncff(F_plus, F_minus, n_clones=total_clones, n_solutions=5,
                                 cluster_weights=clone_sizes_list, time_limit=10*60)
-        if status == gp.GRB.TIME_LIMIT:
-            solutions, best_objective, status = solve_cncff(F_plus, F_minus, n_clones=total_clones, n_solutions=1,
-                                cluster_weights=clone_sizes_list, time_limit=30*60)
+        # if status == gp.GRB.TIME_LIMIT:
+        #     solutions, best_objective, status = solve_cncff(F_plus, F_minus, n_clones=total_clones, n_solutions=1,
+        #                         cluster_weights=clone_sizes_list, time_limit=30*60)
         print("CLONES:", n_clones, ", SOLUTION COUNT:", len(solutions))
         if len(solutions) > 0:
             break

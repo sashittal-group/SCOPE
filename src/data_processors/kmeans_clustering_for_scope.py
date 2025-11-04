@@ -118,6 +118,7 @@ def main(args):
     F_lo.to_csv(f"{output_prefix}/F_minus.csv")
     F_bar.to_csv(f"{output_prefix}/F_bar.csv")
     mutation_group_sizes.to_csv(f"{output_prefix}/clone_sizes.csv")
+    kmeans_labels.to_csv(f"{output_prefix}/kmeans_clones.csv")
 
 
     clones = sorted(kmeans_labels["mutation_group"].unique())
