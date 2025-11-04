@@ -80,7 +80,7 @@ def plot_spectral_clustering(F, n_clusters=7, filepath=None):
     frac_biclust = F.iloc[np.argsort(model.row_labels_)]
     frac_biclust = frac_biclust.iloc[:, np.argsort(model.column_labels_)]
 
-    sns.heatmap(frac_biclust, cmap='coolwarm')
+    # sns.heatmap(frac_biclust, cmap='coolwarm')
 
     # Get where the cluster boundaries are
     row_order = np.argsort(model.row_labels_)
