@@ -157,7 +157,7 @@ def solve_cncff(
     for i in range(n_clones-1):
         lhs = sum((2**j) * b[i,j]     for j in range(n_mutations))
         rhs = sum((2**j) * b[i+1,j]   for j in range(n_mutations))
-        model.addConstr(lhs <= rhs - 1 , name=f"order_{i}")
+        # model.addConstr(lhs <= rhs - 1 , name=f"order_{i}")
         if   i == 0: model.addConstr(lhs == 0)
         elif i == 1: model.addConstr(lhs >= 1)
 
