@@ -5,7 +5,7 @@ import os
 import string
 import gurobipy as gp
 
-from src.solve_ilp_3 import solve_cncff
+from src.solve_ilp_2 import solve_cncff
 from src.phylogeny_utils import *
 
 
@@ -34,10 +34,10 @@ def main(args):
 
     n_clones = total_clones 
     while n_clones >= 1:
-        solutions, best_objective, status = solve_cncff(F_plus, F_minus, n_clones=total_clones, n_solutions=1,
+        solutions, best_objective, status = solve_cncff(F_plus, F_minus, n_clones=n_clones, n_solutions=1,
                                 cluster_weights=clone_sizes_list, time_limit=2*60)
         if status == gp.GRB.TIME_LIMIT:
-            solutions, best_objective, status = solve_cncff(F_plus, F_minus, n_clones=total_clones, n_solutions=1,
+            solutions, best_objective, status = solve_cncff(F_plus, F_minus, n_clones=n_clones, n_solutions=1,
                                 cluster_weights=clone_sizes_list, time_limit=10*60)
         # if status == gp.GRB.TIME_LIMIT:
         #     solutions, best_objective, status = solve_cncff(F_plus, F_minus, n_clones=total_clones, n_solutions=1,
