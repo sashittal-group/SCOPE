@@ -157,7 +157,7 @@ def solve_cncff(
     for i in range(n_clones-1):
         lhs = sum((2**j) * b[i,j]     for j in range(n_mutations))
         rhs = sum((2**j) * b[i+1,j]   for j in range(n_mutations))
-        # model.addConstr(lhs <= rhs - 1 , name=f"order_{i}")
+        model.addConstr(lhs <= rhs - 1 , name=f"order_{i}")
         if   i == 0: model.addConstr(lhs == 0)
         elif i == 1: model.addConstr(lhs >= 1)
 
@@ -205,6 +205,10 @@ def solve_cncff(
     for v in model.getVars():
         if not (v.VarName.startswith('b') or v.VarName.startswith('x')):
             v.PoolIgnore = 1
+    
+    for i in range(n_clusters):
+        for j in range(n_mutations):
+            b[i + n_clones, j].PoolIgnore = 1
 
     model.update()
     model.setObjective(quicksum((x[j] * cluster_weights[j]) for j in range(n_mutations)), GRB.MAXIMIZE)
