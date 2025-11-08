@@ -275,3 +275,21 @@ def _encode_tree(G, node, parent):
     # include the current node label in the encoding
     return f"{node}({''.join(encoded_children)})"
 
+
+def read_phertilizer_tree(filename):
+
+    with open(filename) as f:
+        lines = f.read().strip().splitlines()
+
+    num_edges = int(lines[0].split()[0])
+    edge_lines = lines[1:1 + num_edges]
+    edges = [tuple(map(int, line.split())) for line in edge_lines]
+
+    num_leaves = int(lines[1 + num_edges].split()[0])
+    leaf_lines = lines[2 + num_edges:2 + num_edges + num_leaves]
+    leaves = [int(line.strip()) for line in leaf_lines]
+
+    G = nx.Graph()
+    G.add_edges_from(edges)
+
+    return G
