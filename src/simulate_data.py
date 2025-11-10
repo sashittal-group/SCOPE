@@ -13,6 +13,8 @@ from phylogeny_utils import plot_spectral_clustering
 
 def main(args):
 
+    print(args)
+
     np.random.seed(args.s)
 
     n_mutation_groups = args.m
@@ -52,8 +54,8 @@ def main(args):
         node_index += 1
 
         prev_num_children = num_children[:node_index].flatten()
-        weights_a = (np.arange(start=1, stop=node_index+1, step=1, dtype=float) ** 3)
-        weights_b = 1 / (1 + prev_num_children * prev_num_children)
+        weights_a = (np.arange(start=1, stop=node_index+1, step=1, dtype=float) ** 2)
+        weights_b = 1 / (10 + prev_num_children * prev_num_children)
         weights = weights_a * weights_b
         weights /= weights.sum()
         
