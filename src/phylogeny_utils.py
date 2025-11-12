@@ -289,7 +289,7 @@ def read_phertilizer_tree(filename):
     leaf_lines = lines[2 + num_edges:2 + num_edges + num_leaves]
     leaves = [int(line.strip()) for line in leaf_lines]
 
-    G = nx.Graph()
+    G = nx.DiGraph()
     G.add_edges_from(edges)
 
     return G

@@ -24,7 +24,7 @@ def main(args):
     mutation_rate = args.l
     mutation_grp_mean_size = args.size
     nnodes = n_mutation_groups + nclusters
-    nbins = 1000
+    nbins = args.nbins
     
     event_order = list(np.random.permutation(['c'] * n_mutation_groups + ['d'] * (nclusters - 1)))
 
@@ -229,6 +229,7 @@ def main(args):
     df_Rtotal_missing = pd.DataFrame(Rtotal_missing, index=cell_indices, columns = mutation_columns, dtype=int)
     df_Vcount_missing = pd.DataFrame(Vcount_missing, index=cell_indices, columns = mutation_columns, dtype=int)    
     df_CNs = pd.DataFrame(CNs, index=cell_indices, columns = mutation_columns, dtype=int)
+    df_copy_number_of_segments = pd.DataFrame(Rb, dtype=int)
 
     df_mut_to_bin = pd.DataFrame.from_dict(mut_to_bin, orient='index', columns=['bin'])
 
@@ -245,6 +246,8 @@ def main(args):
     df_Vcount_missing.to_parquet(f'{prefix}_variant_count.parquet', index=True)
     df_CNs.to_parquet(f'{prefix}_copy_numbers.parquet', index=True)
     df_mutation_group.to_parquet(f'{prefix}_mutation_group.parquet', index=False)
+
+    df_copy_number_of_segments.to_parquet(f'{prefix}_copy_numbers_of_segments.parquet', index=False)
 
 
     # Generate cell fraction
@@ -326,6 +329,7 @@ if __name__ == "__main__":
     parser.add_argument('--readthreshold', type=int, help='variant read count threshold for generating the mutation matrix [5]', default=5)
     parser.add_argument('--vafthreshold', type=float, help='VAF threshold for generating the mutation matrix [0.1]', default = 0.1)
     parser.add_argument('-l', type=float, help='rate of mutation loss [0.8]', default = 0.8)
+    parser.add_argument('--nbins', type=int, help='number of bins', default = 1000)
     parser.add_argument('-v', action='store_true', default=False)
     args = parser.parse_args(None if sys.argv[1:] else ['-h'])
     
