@@ -20,10 +20,6 @@ rule all:
         # expand('data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_multi_state_tree_node_character_matrix.parquet', \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
         #     nclusters=config['nclusters'], cov=config['coverage']),
-        # simulation with low segments for pharming
-        expand('data/simulation/ground_truth_pharming/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_multi_state_tree_node_character_matrix.parquet', \
-            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-            nclusters=config['nclusters'], cov=config['coverage']),
         # scope input
         # expand("data/simulation/scope_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_plus.csv", \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
@@ -52,7 +48,7 @@ rule all:
         # expand("data/simulation/scope_output_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt", \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
         #     nclusters=config['nclusters'], cov=config['coverage']),
-        # phertilizer on simulation
+        # # phertilizer on simulation
         # expand("data/simulation/phertilizer_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/cell_clusters.csv", \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
         #     nclusters=config['nclusters'], cov=config['coverage']),
@@ -64,6 +60,10 @@ rule all:
         # expand("data/simulation/scope_post_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_cleaned_clones.csv", \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
         #     nclusters=config['nclusters'], cov=config['coverage']),
+        # post williams
+        expand("data/williams/scratch/{sample_ids}/scope_mut/summary.txt", \
+            itertools.product, sample_ids=config['sample_ids']),
+
 
 
 rule simulate:
@@ -93,36 +93,6 @@ rule simulate:
         " -n {wildcards.ncells} -m {wildcards.n_mutation_groups} -d {params.missing} --size {wildcards.mutation_group_sizes}" 
         " -p {wildcards.nclusters} -a {params.fp} -b {params.fn} -k {params.k} -l {params.mutation_rate} --cov {wildcards.cov} --maxcn 6"
         " > {log.std} 2> {log.err}"
-
-rule simulate_for_pharming:
-    output:
-        readcount_matrix="data/simulation/ground_truth_pharming/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_read_count.parquet",
-        variantcount_matrix="data/simulation/ground_truth_pharming/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_variant_count.parquet",
-        character_matrix="data/simulation/ground_truth_pharming/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_character_matrix_without_noise.parquet",
-        copy_number_table="data/simulation/ground_truth_pharming/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_copy_numbers.parquet",
-        mutation_group_table="data/simulation/ground_truth_pharming/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_mutation_group.parquet",
-        mutation_to_bin_table="data/simulation/ground_truth_pharming/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_mutation_to_bin_mapping.parquet",
-        B_truth="data/simulation/ground_truth_pharming/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_multi_state_tree_node_character_matrix.parquet",
-    params:
-        prefix="data/simulation/ground_truth_pharming/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim",
-        fn=config['fn'],
-        fp=config['fp'],
-        mutation_rate=config['lambda'],
-        vaf_threshold=config['vaf_threshold'],
-        read_threshold=config['read_threshold'],
-        missing=config['missing_rate'],
-        k=config['k']
-    log:
-        std="data/simulation/ground_truth_pharming/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim.log", 
-        err="data/simulation/ground_truth_pharming/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim.err.log",
-    benchmark: "data/simulation/ground_truth_pharming/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim.benchmark", 
-    shell:
-        "python src/simulate_data.py -s {wildcards.seed} -o {params.prefix} "
-        " -n {wildcards.ncells} -m {wildcards.n_mutation_groups} -d {params.missing} --size {wildcards.mutation_group_sizes}" 
-        " -p {wildcards.nclusters} -a {params.fp} -b {params.fn} -k {params.k} -l {params.mutation_rate} --cov {wildcards.cov} --maxcn 6"
-        " --nbins 25"
-        " > {log.std} 2> {log.err}"
-
 
 rule phertilizer_input:
     input:
@@ -303,4 +273,15 @@ rule phertilizer_on_simulation:
         " -n data/simulation/phertilizer_output/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/cell_clusters.csv "
         " -m data/simulation/phertilizer_output/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/snv_clusters.csv "
         " -j 10 -s 4 "
+        " > {log.std} 2> {log.err}"
+
+rule williams:
+    output:
+        williams_scope="data/williams/scratch/{sample_ids}/scope_mut/summary.txt",
+    log:
+        std="data/williams/scratch/{sample_ids}/scope_mut/log",
+        err="data/williams/scratch/{sample_ids}/scope_mut/err.log",
+    benchmark: "data/williams/scratch/{sample_ids}/scope_mut/benchmark",
+    shell:
+        "python -m src.run_williams --sample {wildcards.sample_ids} "
         " > {log.std} 2> {log.err}"
