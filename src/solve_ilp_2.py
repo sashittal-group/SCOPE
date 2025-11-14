@@ -14,6 +14,7 @@ def solve_cncff(
     only_mutation_tree_variant: bool = False,
     cluster_parent_restriction_pairs = None,
     cluster_not_at_root: bool= True,
+    found_Bs: list[np.array]= None,
 ):
     params = {
         "WLSACCESSID": '85dfeec1-65a1-402f-9425-7465d0f3a229',
@@ -230,10 +231,23 @@ def solve_cncff(
 
 
     # Cluster cannot be at root
-    if cluster_not_at_root:
-        for i in range(n_clusters):
-            model.addConstr(quicksum(b[i + n_clones, j] for j in range(n_mutations)) >= 1)
+    # if cluster_not_at_root:
+    #     for i in range(n_clusters):
+    #         model.addConstr(quicksum(b[i + n_clones, j] for j in range(n_mutations)) >= 1)
 
+
+    # Do not allow previously found solutions
+    if found_Bs is not None:
+        for found_B in found_Bs:
+            expr = gp.LinExpr()
+            for i in range(n_clones + n_clusters):
+                for j in range(n_mutations):
+                    if found_B[i, j] > 0.5: 
+                        expr += (1 - b[i, j])
+                    else:
+                        expr += b[i, j]
+            
+            model.addConstr(expr >= 1, "new solution")
 
     model.update()
 
@@ -299,7 +313,7 @@ def solve_cncff(
     if model.Status == gp.GRB.OPTIMAL or model.Status == gp.GRB.TIME_LIMIT:
         best_objective = model.objVal
 
-    return solutions, best_objective, model.Status
+    return solutions, best_objective, model.Status, model
 
 
 

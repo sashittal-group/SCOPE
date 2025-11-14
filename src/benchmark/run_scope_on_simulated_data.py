@@ -5,7 +5,7 @@ import os
 import string
 import gurobipy as gp
 
-from src.solve_ilp_2 import solve_cncff
+from src.solve_ilp import solve_cncff
 from src.phylogeny_utils import *
 
 

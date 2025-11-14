@@ -7,7 +7,7 @@ from sklearn.metrics import silhouette_score
 
 from src.phylogeny_utils import plot_spectral_clustering
 
-from src.solve_ilp_2 import solve_cncff
+from src.solve_ilp import solve_cncff
 import gurobipy as gp
 from src.phylogeny_utils import generate_perfect_phylogeny, draw_clone_tree, add_clusters_to_clonal_T, canonical_form
 import os
