@@ -14,6 +14,10 @@ import itertools
 #
 # filtered_product = filter_combinator(itertools.product)
 
+K = range(7, 26)
+T = [0.60, 0.65, 0.70, 0.72, 0.75, 0.80]
+F = [0.1, 0.2, 0.25, 0.3, 0.4]
+
 rule all:
     input:
         # # simulation
@@ -61,8 +65,12 @@ rule all:
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
         #     nclusters=config['nclusters'], cov=config['coverage']),
         # post williams
-        expand("data/williams/scratch/{sample_ids}/scope_mut/summary.txt", \
-            itertools.product, sample_ids=config['sample_ids']),
+        # expand("data/williams/scratch/{sample_ids}/scope_mut/summary.txt", \
+        #     itertools.product, sample_ids=config['sample_ids']),
+        # scope on laks
+        expand("data/laks/scope/outputs/k_{k}_t_{t}/summary.txt", k=K, t=T),
+        # scope on laks filtered
+        expand("data/laks/scope/outputs/filtered/k_{k}_t_{t}_f_{f}/summary.txt", k=K, t=T, f=F)
 
 
 
@@ -285,3 +293,50 @@ rule williams:
     shell:
         "python -m src.run_williams --sample {wildcards.sample_ids} "
         " > {log.std} 2> {log.err}"
+
+rule scope_laks:
+    input:
+        loh="data/laks/scope/loh-counts.csv",
+        F_plus="data/laks/scope/cell_fractions/k_{k}_t_{t}/F_plus.csv",
+        F_minus="data/laks/scope/cell_fractions/k_{k}_t_{t}/F_minus.csv",
+        labels="data/laks/scope/kmeans_labels/k_{k}.csv",
+    output:
+        summary_file_laks="data/laks/scope/outputs/k_{k}_t_{t}/summary.txt"
+    log:
+        std="data/laks/scope/outputs/k_{k}_t_{t}/log",
+        err="data/laks/scope/outputs/k_{k}_t_{t}/err.log",
+    benchmark: "data/laks/scope/outputs/k_{k}_t_{t}/benchmark",
+    shell:
+        """
+        python -m src.laks.run_scope \
+            --loh_conflicts_filepath {input.loh} \
+            --F_plus_filepath {input.F_plus} \
+            --F_minus_filepath {input.F_minus} \
+            --mutation_labels_filepath {input.labels} \
+            --output_directory data/laks/scope/outputs/k_{wildcards.k}_t_{wildcards.t} \
+            > {log.std} 2> {log.err}
+        """
+
+rule scope_laks_filtered:
+    input:
+        loh="data/laks/scope/loh-counts.csv",
+        F_plus="data/laks/scope/cell_fractions/filtered/k_{k}_t_{t}_f_{f}/F_plus.csv",
+        F_minus="data/laks/scope/cell_fractions/filtered/k_{k}_t_{t}_f_{f}/F_minus.csv",
+        labels="data/laks/scope/kmeans_labels/filtered/k_{k}_t_{t}_f_{f}.csv",
+    output:
+        summary_file_laks_filtered="data/laks/scope/outputs/filtered/k_{k}_t_{t}_f_{f}/summary.txt"
+    log:
+        std="data/laks/scope/outputs/filtered/k_{k}_t_{t}_f_{f}/log",
+        err="data/laks/scope/outputs/filtered/k_{k}_t_{t}_f_{f}/err.log",
+    benchmark: "data/laks/scope/outputs/filtered/k_{k}_t_{t}_f_{f}/benchmark",
+    shell:
+        """
+        python -m src.laks.run_scope \
+            --loh_conflicts_filepath {input.loh} \
+            --F_plus_filepath {input.F_plus} \
+            --F_minus_filepath {input.F_minus} \
+            --mutation_labels_filepath {input.labels} \
+            --output_directory data/laks/scope/outputs/filtered/k_{wildcards.k}_t_{wildcards.t}_f_{wildcards.f} \
+            > {log.std} 2> {log.err}
+        """
+

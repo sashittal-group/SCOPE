@@ -9,9 +9,7 @@ def solve_cncff(
     F_minus: pd.DataFrame,
     n_clones: int,
     cluster_weights: list = None,
-    n_solutions: int = 10,
     time_limit: int = 600,
-    only_mutation_tree_variant: bool = False,
     cluster_parent_restriction_pairs = None,
     cluster_not_at_root: bool= True,
     found_Bs: list[np.array]= None,
@@ -231,9 +229,9 @@ def solve_cncff(
 
 
     # Cluster cannot be at root
-    # if cluster_not_at_root:
-    #     for i in range(n_clusters):
-    #         model.addConstr(quicksum(b[i + n_clones, j] for j in range(n_mutations)) >= 1)
+    if cluster_not_at_root:
+        for i in range(n_clusters):
+            model.addConstr(quicksum(b[i + n_clones, j] for j in range(n_mutations)) >= 1)
 
 
     # Do not allow previously found solutions
@@ -255,65 +253,44 @@ def solve_cncff(
         if not (v.VarName.startswith('b') or v.VarName.startswith('x')):
             v.PoolIgnore = 1
     
-    if only_mutation_tree_variant:
-        for i in range(n_clusters):
-            for j in range(n_mutations):
-                b[i + n_clones, j].PoolIgnore = 1
-
     model.update()
     model.setObjective(quicksum((x[j] * cluster_weights[j]) for j in range(n_mutations)), GRB.MAXIMIZE)
 
     model.Params.TimeLimit = time_limit
-    model.Params.PoolSearchMode = 2
-    model.Params.PoolSolutions = n_solutions
-    model.Params.PoolGap = 0
-
+    
     model.optimize()
 
-    # Form Dataframes with solution
-    n_solutions_found = model.SolCount
-
-    print(f"Number of solutions found: {n_solutions_found}")
-
-    solutions = []
-    for i in range(n_solutions_found):
-        model.setParam(GRB.Param.SolutionNumber, i)
-        print(f"Solution {i+1}:")
-        print("Objective value:", model.PoolObjVal)
-
-        X_df = pd.DataFrame([x[j].Xn for j in range(n_mutations)], index=mutations)
+    solution = None
+    if model.Status == gp.GRB.OPTIMAL:
+        X_df = pd.DataFrame([x[j].X for j in range(n_mutations)], index=mutations)
 
         b_values = [
-            [b[i, j].Xn for j in range(n_mutations)]
+            [b[i, j].X for j in range(n_mutations)]
             for i in range(n_clones + n_clusters)
         ]
         B_df = pd.DataFrame(b_values, index=clones + clusters, columns=mutations)
 
         u_values = [
-            [u[i, j].Xn for j in range(n_clones)]
+            [u[i, j].X for j in range(n_clones)]
             for i in range(n_clusters)
         ]
         U_df = pd.DataFrame(u_values, index=clusters, columns=clones)
 
         f_values = [
-            [f[i, j].Xn for j in range(n_mutations)]
+            [f[i, j].X for j in range(n_mutations)]
             for i in range(n_clusters)
         ]
         F_df = pd.DataFrame(f_values, index=clusters, columns=mutations)
 
         g_values = [
-            [g[i, j].Xn for j in range(n_mutations)]
+            [g[i, j].X for j in range(n_mutations)]
             for i in range(n_clusters)
         ]
         G_df = pd.DataFrame(g_values, index=clusters, columns=mutations)
 
-        solutions.append((X_df, B_df, U_df, F_df, G_df))
+        solution = (X_df, B_df, U_df, F_df, G_df)
     
-    best_objective = None
-    if model.Status == gp.GRB.OPTIMAL or model.Status == gp.GRB.TIME_LIMIT:
-        best_objective = model.objVal
-
-    return solutions, best_objective, model.Status, model
+    return solution, model
 
 
 

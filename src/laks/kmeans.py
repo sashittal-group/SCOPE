@@ -34,5 +34,5 @@ if __name__ == "__main__":
     F = pd.read_csv("data/laks/scope/F.csv", index_col=0)
     for k in range(7, 26):
         kmeans_labels = run_kmeans_on_laks(F, k)
-        kmeans_labels.to_csv(f"data/laks/scope/kmeans_clusters/kmeans_labels_{k}.csv")
+        kmeans_labels.to_csv(f"data/laks/scope/kmeans_labels/k_{k}.csv")
 
