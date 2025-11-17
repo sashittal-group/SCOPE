@@ -23,7 +23,7 @@ def run_scope(F_plus, F_minus, mutation_cluster_labels, loh_conflicts=None, clus
     while n_clones >= 1:
         print(f"TRYING {n_clones} CLONES")
         solution, model = solve_cncff(F_plus, F_minus, n_clones=n_clones,
-                                        cluster_weights=cluster_weights, time_limit=60 * 30, 
+                                        cluster_weights=cluster_weights, time_limit=60 * 60 * 24, 
                                         cluster_parent_restriction_pairs=restriction_pairs, 
                                         cluster_not_at_root=cluster_not_at_root)
         if solution is None: n_clones -= 1
@@ -31,18 +31,24 @@ def run_scope(F_plus, F_minus, mutation_cluster_labels, loh_conflicts=None, clus
 
     print(f"THERE IS A SOLUTION WITH {n_clones} CLONES")
 
+    X, _, _, _, _ = solution
+    X = X.to_numpy().T[0]
+
+    print(f"THERE IS A SOLUTION WITH {n_clones} CLONES")
+
     found_Bs = []
     solutions = []
     best_val = 0
-    for i in range(100):    
+    for i in range(1000):    
         solution, model = solve_cncff(F_plus, F_minus, n_clones=n_clones,
-                                                cluster_weights=cluster_weights, time_limit=60 * 10, 
+                                                cluster_weights=cluster_weights, time_limit=24* 60 * 10, 
                                                 cluster_parent_restriction_pairs=restriction_pairs, 
                                                 cluster_not_at_root=cluster_not_at_root,
-                                                found_Bs=found_Bs)
+                                                found_Bs=found_Bs, Xs=X)
         if solution is None:
             break
         
+        print("SOLUTION", i)
         found_B = solution[1].astype(int).to_numpy()
         found_Bs.append(found_B)
         solutions.append(solution)

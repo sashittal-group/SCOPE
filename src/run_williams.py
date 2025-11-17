@@ -7,7 +7,7 @@ from sklearn.metrics import silhouette_score
 
 from src.phylogeny_utils import plot_spectral_clustering
 
-from src.solve_ilp import solve_cncff
+from src.solve_ilp_2 import solve_cncff
 import gurobipy as gp
 from src.phylogeny_utils import generate_perfect_phylogeny, draw_clone_tree, add_clusters_to_clonal_T, canonical_form
 import os
@@ -72,8 +72,8 @@ def run_for_sample(SAMPLE_ID):
 
     filtered_existing = [f for f in filtered if f in F_hi.index and f in F_lo.index]
 
-    F_hi = F_hi.loc[filtered_existing, :]
-    F_lo = F_lo.loc[filtered_existing, :]
+    F_plus = F_hi.loc[filtered_existing, :]
+    F_minus = F_lo.loc[filtered_existing, :]
 
     n_clones = F_hi.shape[1] + 1
 
@@ -81,28 +81,40 @@ def run_for_sample(SAMPLE_ID):
     only_mutation_tree_variant = True
 
     while n_clones >= 1:
-        solutions, best_objective, status = solve_cncff(F_hi, F_lo, n_clones=n_clones, n_solutions=1,
-                                cluster_weights=cluster_weights, time_limit=2*60, cluster_not_at_root=cluster_not_at_root,
-                                only_mutation_tree_variant=only_mutation_tree_variant)
-        if status == gp.GRB.TIME_LIMIT:
-            solutions, best_objective, status = solve_cncff(F_hi, F_lo, n_clones=n_clones, n_solutions=1,
-                                cluster_weights=cluster_weights, time_limit=10*60, cluster_not_at_root=cluster_not_at_root,
-                                only_mutation_tree_variant=only_mutation_tree_variant)
-        # if status == gp.GRB.TIME_LIMIT:
-        #     solutions, best_objective, status = solve_cncff(F_plus, F_minus, n_clones=total_clones, n_solutions=1,
-        #                         cluster_weights=clone_sizes_list, time_limit=30*60)
-        print("CLONES:", n_clones, ", SOLUTION COUNT:", len(solutions))
-        if len(solutions) > 0:
-            solutions, best_objective, status = solve_cncff(F_hi, F_lo, n_clones=n_clones, n_solutions=250,
-                                cluster_weights=cluster_weights, time_limit=12*60*60, cluster_not_at_root=cluster_not_at_root,
-                                only_mutation_tree_variant=only_mutation_tree_variant)
+        print(f"TRYING {n_clones} CLONES")
+        solution, model = solve_cncff(F_plus, F_minus, n_clones=n_clones,
+                                        cluster_weights=cluster_weights, time_limit=60 * 60 * 24, 
+                                        cluster_not_at_root=cluster_not_at_root,
+                                        only_mutation_tree_variant=only_mutation_tree_variant)
+        if solution is None: n_clones -= 1
+        else: break
+    
+    X, _, _, _, _ = solution
+    X = X.to_numpy().T[0]
+
+    print(f"THERE IS A SOLUTION WITH {n_clones} CLONES")
+
+    found_Bs = []
+    solutions = []
+    best_val = 0
+    for i in range(1000):    
+        solution, model = solve_cncff(F_plus, F_minus, n_clones=n_clones,
+                                                cluster_weights=cluster_weights, time_limit=60 * 60 * 24, 
+                                                cluster_not_at_root=cluster_not_at_root,
+                                                found_Bs=found_Bs, only_mutation_tree_variant=only_mutation_tree_variant, Xs=X)
+        if solution is None:
             break
-        n_clones -= 1
+        
+        print("SOLUTION", i)
+        found_B = solution[1].astype(int).to_numpy()
+        found_Bs.append(found_B)
+        solutions.append(solution)
+        best_val = max(best_val, model.ObjVal)
 
     unique_solutions = []
     solution_strs = {}
 
-    out_path = f"data/williams/scratch/{SAMPLE_ID}/scope_mut"
+    out_path = f"data/williams/scratch/{SAMPLE_ID}/scope_mut_2"
     os.makedirs(out_path, exist_ok=True)
 
     for i, solution in enumerate(solutions):
@@ -122,7 +134,7 @@ def run_for_sample(SAMPLE_ID):
             fixed_T = add_clusters_to_clonal_T(solT_mut, X, G, B)
             T_code = canonical_form(fixed_T)
 
-            draw_clone_tree(fixed_T, f"{solution_path}/T.svg")
+            draw_clone_tree(fixed_T, f"{solution_path}/T.pdf")
 
             if T_code not in solution_strs:
                 print(i)
@@ -134,10 +146,8 @@ def run_for_sample(SAMPLE_ID):
         except Exception as e:
             print(e)
 
-    print_status = ""
-    if status == gp.GRB.TIME_LIMIT: print_status = "(TIME LIMIT)"
     with open(f"{out_path}/summary.txt", 'w') as f:
-        print(f"#UNIQUE SOLUTIONS: {len(unique_solutions)} WITH VALUE {best_objective} {print_status} {status}", file=f)
+        print(f"#UNIQUE SOLUTIONS: {len(unique_solutions)} WITH VALUE {best_val}", file=f)
 
 
 
