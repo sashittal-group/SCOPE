@@ -73,46 +73,6 @@ def build_phylogeny(B):
 
 
 
-def plot_spectral_clustering(F, n_clusters=7, filepath=None):
-    model = SpectralBiclustering(n_clusters=n_clusters, method='log', random_state=0)
-    model.fit(F.values)
-
-    frac_biclust = F.iloc[np.argsort(model.row_labels_)]
-    frac_biclust = frac_biclust.iloc[:, np.argsort(model.column_labels_)]
-
-    # sns.heatmap(frac_biclust, cmap='coolwarm')
-
-    # Get where the cluster boundaries are
-    row_order = np.argsort(model.row_labels_)
-    col_order = np.argsort(model.column_labels_)
-
-    row_clusters, row_counts = np.unique(model.row_labels_[row_order], return_counts=True)
-    col_clusters, col_counts = np.unique(model.column_labels_[col_order], return_counts=True)
-
-    row_lines = np.cumsum(row_counts)[:-1]
-    col_lines = np.cumsum(col_counts)[:-1]
-
-    # Plot with boundaries
-    plt.figure(figsize=(6, 5))
-    ax = sns.heatmap(frac_biclust, cmap='viridis', cbar=True)
-
-    # Draw horizontal lines
-    for r in row_lines:
-        ax.axhline(r, color='white', lw=2)
-
-    # Draw vertical lines
-    for c in col_lines:
-        ax.axvline(c, color='white', lw=2)
-
-    plt.title("Spectral Biclustering of CF")
-    plt.xlabel("Mutations")
-    plt.ylabel("CN Cluster IDs")
-    
-    if filepath is None: plt.show()
-    else: plt.savefig(filepath)
-    plt.close()
-
-
 import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
@@ -183,7 +143,7 @@ def draw_clone_tree(T, filepath: str = None):
     plt.close()
 
 
-def add_clusters_to_clonal_T(T: nx.DiGraph, X: pd.DataFrame, G: pd.DataFrame, B: pd.DataFrame,  ):
+def add_clusters_to_mutation_T(T: nx.DiGraph, X: pd.DataFrame, G: pd.DataFrame, B: pd.DataFrame,  ):
     selected_muts = X[ X > 0.5 ].dropna().index.tolist()
     depths = dict(nx.single_source_shortest_path_length(T, 'root'))
 
