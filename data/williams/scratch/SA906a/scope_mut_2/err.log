@@ -1,0 +1,22 @@
+/Users/samin/workspace/scWGS-Tumor-Phylogeny/src/phylogeny_utils.py:180: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  plt.tight_layout()
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/src/run_williams.py", line 162, in <module>
+    run_for_sample(sample)
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/src/run_williams.py", line 137, in run_for_sample
+    draw_clone_tree(fixed_T, f"{solution_path}/T.pdf")
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/src/phylogeny_utils.py", line 129, in draw_clone_tree
+    pos = nx.nx_agraph.graphviz_layout(T, prog="dot", args="-Gnodesep=.5 -Granksep=50")
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/.venv/lib/python3.13/site-packages/networkx/drawing/nx_agraph.py", line 256, in graphviz_layout
+    return pygraphviz_layout(G, prog=prog, root=root, args=args)
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/.venv/lib/python3.13/site-packages/networkx/drawing/nx_agraph.py", line 306, in pygraphviz_layout
+    A.layout(prog=prog, args=args)
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/.venv/lib/python3.13/site-packages/pygraphviz/agraph.py", line 1479, in layout
+    data = self._run_prog(prog, " ".join([args, "-T", output_fmt]))
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/.venv/lib/python3.13/site-packages/pygraphviz/agraph.py", line 1396, in _run_prog
+    t.join()
+  File "/opt/homebrew/Cellar/python@3.13/3.13.7/Frameworks/Python.framework/Versions/3.13/lib/python3.13/threading.py", line 1094, in join
+    self._handle.join(timeout)
+KeyboardInterrupt

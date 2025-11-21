@@ -51,32 +51,65 @@ def run_for_sample(SAMPLE_ID):
 
     PATH = f"data/williams/scratch/{SAMPLE_ID}"
 
-    kmeans_labels = pd.read_csv(f"{PATH}/kmeans_labels.csv", index_col=0)
+    input_suffix = ""
+    loh_count_threshold = 100
+
+    kmeans_labels = pd.read_csv(f"{PATH}/kmeans_labels{input_suffix}.csv", index_col=0)
     cluster_weights = kmeans_labels.groupby("clone").size().tolist()
 
     cn_cell_df = pd.read_csv(f"data/williams/signatures_dataset/clones_trees/{SAMPLE_ID}_clones.tsv", sep='\t')
 
+    loh_conflicts = pd.read_csv(f"data/williams/scratch/{SAMPLE_ID}/loh-conficts.csv", index_col=0)
+    loh_conflicts = (loh_conflicts > loh_count_threshold).astype(int)
+
     counts = cn_cell_df['clone_id'].value_counts()
+
+    print(counts)
+
     proportions = counts / counts.sum()
+
+    print(proportions)
 
     n_clusters = len(cn_cell_df['clone_id'].unique())
 
     threshold = (1 / 3) * (1 / n_clusters)
 
+    print(threshold)
+
     filtered = proportions[proportions > threshold]
+    # filtered = counts[counts >= 50]
     filtered = filtered.sort_index().index.to_list()
     print(filtered)
 
-    F_hi = pd.read_csv(f"{PATH}/F_hi.csv", index_col=0)
-    F_lo = pd.read_csv(f"{PATH}/F_lo.csv", index_col=0)
+    F_hi = pd.read_csv(f"{PATH}/F_hi{input_suffix}.csv", index_col=0)
+    F_lo = pd.read_csv(f"{PATH}/F_lo{input_suffix}.csv", index_col=0)
 
     filtered_existing = [f for f in filtered if f in F_hi.index and f in F_lo.index]
 
     F_plus = F_hi.loc[filtered_existing, :]
     F_minus = F_lo.loc[filtered_existing, :]
+    loh_conflicts = (
+        loh_conflicts
+        .reindex(index=filtered_existing, columns=filtered_existing, fill_value=0)
+    )
+    print(loh_conflicts)
+
+    restriction_pairs = []
+
+    if loh_conflicts is not None:
+        for i in range(loh_conflicts.shape[0]):
+            for j in range(loh_conflicts.shape[1]):
+                if loh_conflicts.iloc[i, j] > 0.5: restriction_pairs.append((j, i))
+        restriction_pairs = sorted(restriction_pairs)
+    
+    # print(restriction_pairs)
+
+    print(F_plus)
+
+    # return
 
     n_clones = F_hi.shape[1] + 1
-
+    
     cluster_not_at_root = False
     only_mutation_tree_variant = True
 
@@ -85,23 +118,34 @@ def run_for_sample(SAMPLE_ID):
         solution, model = solve_cncff(F_plus, F_minus, n_clones=n_clones,
                                         cluster_weights=cluster_weights, time_limit=60 * 60 * 24, 
                                         cluster_not_at_root=cluster_not_at_root,
-                                        only_mutation_tree_variant=only_mutation_tree_variant)
+                                        only_mutation_tree_variant=only_mutation_tree_variant, 
+                                        cluster_parent_restriction_pairs=restriction_pairs)
         if solution is None: n_clones -= 1
         else: break
     
-    X, _, _, _, _ = solution
-    X = X.to_numpy().T[0]
+    best_val = model.ObjVal
 
-    print(f"THERE IS A SOLUTION WITH {n_clones} CLONES")
+    print(f"THERE IS A SOLUTION WITH {n_clones} CLONES WITH VALUE {best_val}")
 
     found_Bs = []
     solutions = []
-    best_val = 0
+    unique_solutions = []
+    solution_strs = {}
+
+    X, _, _, _, _ = solution
+    Xs = X.to_numpy().T[0]
+
+    out_path = f"data/williams/scratch/{SAMPLE_ID}/scope_mut_3"
+    os.makedirs(out_path, exist_ok=True)
+
     for i in range(1000):    
         solution, model = solve_cncff(F_plus, F_minus, n_clones=n_clones,
                                                 cluster_weights=cluster_weights, time_limit=60 * 60 * 24, 
                                                 cluster_not_at_root=cluster_not_at_root,
-                                                found_Bs=found_Bs, only_mutation_tree_variant=only_mutation_tree_variant, Xs=X)
+                                                found_Bs=found_Bs, Xs=Xs, 
+                                                cluster_parent_restriction_pairs=restriction_pairs,
+                                                only_cn_tree_variant=False,
+                                                only_mutation_tree_variant=True)
         if solution is None:
             break
         
@@ -109,15 +153,7 @@ def run_for_sample(SAMPLE_ID):
         found_B = solution[1].astype(int).to_numpy()
         found_Bs.append(found_B)
         solutions.append(solution)
-        best_val = max(best_val, model.ObjVal)
 
-    unique_solutions = []
-    solution_strs = {}
-
-    out_path = f"data/williams/scratch/{SAMPLE_ID}/scope_mut_2"
-    os.makedirs(out_path, exist_ok=True)
-
-    for i, solution in enumerate(solutions):
         try:
             solution_path = f"{out_path}/solution_{i}"
             os.makedirs(solution_path, exist_ok=True)
@@ -146,10 +182,8 @@ def run_for_sample(SAMPLE_ID):
         except Exception as e:
             print(e)
 
-    with open(f"{out_path}/summary.txt", 'w') as f:
-        print(f"#UNIQUE SOLUTIONS: {len(unique_solutions)} WITH VALUE {best_val}", file=f)
-
-
+        with open(f"{out_path}/summary.txt", 'w') as f:
+            print(f"#UNIQUE SOLUTIONS: {len(unique_solutions)} WITH VALUE {best_val}", file=f)
 
 
 if __name__ == "__main__":

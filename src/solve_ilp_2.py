@@ -15,6 +15,7 @@ def solve_cncff(
     found_Bs: list[np.array]= None,
     Xs: np.array=None,
     only_mutation_tree_variant=False,
+    only_cn_tree_variant=False,
 ):
     params = {
         "WLSACCESSID": '85dfeec1-65a1-402f-9425-7465d0f3a229',
@@ -237,9 +238,9 @@ def solve_cncff(
 
 
     # Do not allow previously found solutions
-    check_rows = n_clones + n_clusters
-    if only_mutation_tree_variant: check_rows = n_clones
     if found_Bs is not None:
+        check_rows = n_clones + n_clusters
+        if only_mutation_tree_variant: check_rows = n_clones
         for found_B in found_Bs:
             expr = gp.LinExpr()
             for i in range(check_rows):
@@ -250,6 +251,19 @@ def solve_cncff(
                         expr += b[i, j]
             
             model.addConstr(expr >= 1, "new solution")
+        
+        if only_cn_tree_variant:
+            for found_B in found_Bs:
+                expr = gp.LinExpr()
+                for i in range(n_clusters):
+                    l = i + n_clones
+                    for j in range(n_mutations):
+                        if found_B[l, j] > 0.5: 
+                            expr += (1 - b[l, j])
+                        else:
+                            expr += b[l, j]
+                
+                model.addConstr(expr >= 1, "new CN tree")
     
     # Fix X if provided
     if Xs is not None:

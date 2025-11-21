@@ -23,13 +23,9 @@ def recluster(mutation_groups_X, F_bar, mutations_not_selected, mutation_groups_
         columns=df2.columns  # columns of second df
     )
 
-    print(dist_df)
-
     min_col_per_row = dist_df.idxmin(axis=1)
     min_col_df = min_col_per_row.rename('min_column').reset_index()
     min_col_df['mutation'] = min_col_df['index']
-
-    print(min_col_df)
     
     mutation_group_update = pd.merge(mutation_groups_X, min_col_df[['index', 'min_column']], left_on='mutation', right_on='index', how='left')
     mutation_group_update['clone'] = mutation_group_update['min_column'].combine_first(
@@ -66,16 +62,16 @@ def recluster_io(k, t, f):
 
 
 if __name__ == "__main__":
-    # for k in range(7, 26):
-    #     for threshold in (0.60, 0.65, 0.70, 0.72, 0.75):
-    #         for filter_threshold in [0.1, 0.2, 0.25, 0.3, 0.4]:
-    #             try:
-    #                 print(k, threshold, filter_threshold)
-    #                 recluster_io(k, threshold, filter_threshold)
-    #             except Exception as e:
-    #                 print(e)
+    for k in range(7, 26):
+        for threshold in (0.60, 0.65, 0.70, 0.72, 0.75):
+            for filter_threshold in [0.1, 0.2, 0.25, 0.3, 0.4]:
+                try:
+                    print(k, threshold, filter_threshold)
+                    recluster_io(k, threshold, filter_threshold)
+                except Exception as e:
+                    print(e)
 
-    k = 13
-    t = 0.7
-    f = 0.2
-    recluster_io(k, t, f)
+    # k = 13
+    # t = 0.7
+    # f = 0.2
+    # recluster_io(k, t, f)

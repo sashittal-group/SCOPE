@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/src/run_williams.py", line 158, in <module>
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/src/run_williams.py", line 133, in run_for_sample
+    fixed_T = add_clusters_to_clonal_T(solT_mut, X, G, B)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/src/phylogeny_utils.py", line 129, in draw_clone_tree
+    pos = nx.nx_agraph.graphviz_layout(T, prog="dot", args="-Gnodesep=.5 -Granksep=50")
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/.venv/lib/python3.13/site-packages/networkx/drawing/nx_agraph.py", line 256, in graphviz_layout
+    return pygraphviz_layout(G, prog=prog, root=root, args=args)
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/.venv/lib/python3.13/site-packages/networkx/drawing/nx_agraph.py", line 306, in pygraphviz_layout
+    A.layout(prog=prog, args=args)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/.venv/lib/python3.13/site-packages/pygraphviz/agraph.py", line 1479, in layout
+    data = self._run_prog(prog, " ".join([args, "-T", output_fmt]))
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/.venv/lib/python3.13/site-packages/pygraphviz/agraph.py", line 1396, in _run_prog
+    t.join()
+    ~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.7/Frameworks/Python.framework/Versions/3.13/lib/python3.13/threading.py", line 1094, in join
+    self._handle.join(timeout)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyboardInterrupt

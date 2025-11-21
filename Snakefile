@@ -14,9 +14,15 @@ import itertools
 #
 # filtered_product = filter_combinator(itertools.product)
 
-K = range(7, 26)
-T = [0.60, 0.65, 0.70, 0.72, 0.75, 0.80]
-F = [0.1, 0.2, 0.25, 0.3, 0.4]
+# K = range(7, 26)
+# T = [0.60, 0.65, 0.70, 0.72, 0.75]
+# F = [0.1, 0.2, 0.25, 0.3, 0.4]
+
+
+K = [17]
+T = [0.75]
+F = [0.25]
+
 
 rule all:
     input:
@@ -65,10 +71,10 @@ rule all:
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
         #     nclusters=config['nclusters'], cov=config['coverage']),
         # post williams
-        # expand("data/williams/scratch/{sample_ids}/scope_mut/summary.txt", \
+        # expand("data/williams/scratch/{sample_ids}/scope_mut_2/summary.txt", \
         #     itertools.product, sample_ids=config['sample_ids']),
-        # scope on laks
-        expand("data/laks/scope/outputs/k_{k}_t_{t}/summary.txt", k=K, t=T),
+        # # scope on laks
+        # expand("data/laks/scope/outputs/k_{k}_t_{t}/summary.txt", k=K, t=T),
         # scope on laks filtered
         expand("data/laks/scope/outputs/filtered/k_{k}_t_{t}_f_{f}/summary.txt", k=K, t=T, f=F)
 
@@ -285,11 +291,11 @@ rule phertilizer_on_simulation:
 
 rule williams:
     output:
-        williams_scope="data/williams/scratch/{sample_ids}/scope_mut/summary.txt",
+        williams_scope="data/williams/scratch/{sample_ids}/scope_mut_2/summary.txt",
     log:
-        std="data/williams/scratch/{sample_ids}/scope_mut/log",
-        err="data/williams/scratch/{sample_ids}/scope_mut/err.log",
-    benchmark: "data/williams/scratch/{sample_ids}/scope_mut/benchmark",
+        std="data/williams/scratch/{sample_ids}/scope_mut_2/log",
+        err="data/williams/scratch/{sample_ids}/scope_mut_2/err.log",
+    benchmark: "data/williams/scratch/{sample_ids}/scope_mut_2/benchmark",
     shell:
         "python -m src.run_williams --sample {wildcards.sample_ids} "
         " > {log.std} 2> {log.err}"
