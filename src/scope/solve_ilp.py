@@ -4,7 +4,7 @@ import gurobipy as gp
 from gurobipy import Model, GRB, quicksum
 
 
-def solve_cncff(
+def solve_cppme_with_fixed_clones(
     F_plus: pd.DataFrame,
     F_minus: pd.DataFrame,
     n_clones: int,
@@ -243,3 +243,51 @@ def solve_cncff(
         solution = (X_df, B_df, U_df, F_df, G_df)
     
     return solution, model
+
+
+def solve_cppme(F_plus, F_minus, mutation_cluster_labels, forbidden_pairs=None, cluster_not_at_root=False):
+    cluster_weights = mutation_cluster_labels.groupby("mutation_group").size().tolist()
+
+    total_clones = F_plus.shape[1] + 1
+
+    n_clones = total_clones
+    for group in F_plus.columns:
+        mask = (F_plus[group] < 1) & (F_minus[group] > 0)
+        subclonal_clusters = F_plus.index[mask].tolist()
+        if len(subclonal_clusters) > 1: n_clones -= 1
+    
+    while n_clones >= 1:
+        print(f"TRYING {n_clones} CLONES")
+        solution, model = solve_cppme_with_fixed_clones(F_plus, F_minus, n_clones=n_clones,
+                                        cluster_weights=cluster_weights, time_limit=60 * 60 * 24, 
+                                        cluster_parent_restriction_pairs=forbidden_pairs, 
+                                        cluster_not_at_root=cluster_not_at_root)
+        if solution is None: n_clones -= 1
+        else: break
+
+    print(f"THERE IS A SOLUTION WITH {n_clones} CLONES")
+
+    X, _, _, _, _ = solution
+    X = X.to_numpy().T[0]
+
+    print(f"THERE IS A SOLUTION WITH {n_clones} CLONES")
+
+    found_Bs = []
+    solutions = []
+    best_val = 0
+    for i in range(1000):    
+        solution, model = solve_cppme_with_fixed_clones(F_plus, F_minus, n_clones=n_clones,
+                                                cluster_weights=cluster_weights, time_limit=24* 60 * 10, 
+                                                cluster_parent_restriction_pairs=forbidden_pairs, 
+                                                cluster_not_at_root=cluster_not_at_root,
+                                                found_Bs=found_Bs, Xs=X)
+        if solution is None:
+            break
+        
+        print("SOLUTION", i)
+        found_B = solution[1].astype(int).to_numpy()
+        found_Bs.append(found_B)
+        solutions.append(solution)
+        best_val = max(best_val, model.ObjVal)
+        
+    return solutions, best_val

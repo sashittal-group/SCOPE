@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-class Laks():
+class OV2295_Data_Preprocessor():
 
     def __init__(self, DATA_DIR):
         self.df_clone_snvs = pd.read_csv(f"{DATA_DIR}/ov2295_clone_snvs.csv.gz", low_memory=False)
