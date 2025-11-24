@@ -20,4 +20,7 @@ pip install .
 ```
 
 ## Run SCOPE on Ovarian Cancer Dataset
-This notebook [SCOPE on Ovarian Cancer Dataset](https://github.com/sashittal-group/SCOPE/blob/master/notebooks/Ovarian%20Cancer%20Dataset.ipynb) shows how to run SCOPE on Ovarian Cancer Dataset.
+This notebook [SCOPE on Ovarian Cancer Dataset](https://github.com/sashittal-group/SCOPE/blob/master/notebooks/Ovarian%20Cancer%20Dataset.ipynb) shows how to run SCOPE on Ovarian Cancer Dataset. The dataset is from Laks et al. [https://doi.org/10.1016/j.cell.2019.10.026](https://doi.org/10.1016/j.cell.2019.10.026) and can be downloaded from [https://zenodo.org/records/3445364](https://zenodo.org/records/3445364). The smaller files are present in the GitHub repo at [data/laks](https://github.com/sashittal-group/SCOPE/tree/master/data/laks).
+
+## Statistical Tests for Evaluating Phylogenies
+The notebook [Hypothesis Tests for Ovarian Cancer Phylogenies](https://github.com/sashittal-group/SCOPE/blob/master/notebooks/Hypothesis%20Tests%20for%20Ovarian%20Cancer%20Phylogenies.ipynb) shows the results from hypothesis test for evaluating clonal relationships inferred from phylogenies from SCOPE and competing methods.
