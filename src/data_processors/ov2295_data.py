@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 class OV2295_Data_Preprocessor():
 
     def __init__(self, DATA_DIR):
+        self.DATA_DIR = DATA_DIR
         self.df_clone_snvs = pd.read_csv(f"{DATA_DIR}/ov2295_clone_snvs.csv.gz", low_memory=False)
         self.df_clone_cn = pd.read_csv(f"{DATA_DIR}/ov2295_clone_cn.csv.gz")
 
@@ -56,3 +57,15 @@ class OV2295_Data_Preprocessor():
     def get_cell_fractions(self):
         return self.F
 
+
+    def get_cell_mutation_cn_state(self):
+        df_cell_cn = pd.read_csv(f"{self.DATA_DIR}/ov2295_cell_cn.csv.gz")
+        df_cell_snv = pd.read_csv(f"{self.DATA_DIR}/ov2295_snv_counts.csv.gz", low_memory=False)
+        df = df_cell_snv
+        df["bin_start"] = df["coord"] // self.bin_size * self.bin_size + 1
+        df = pd.merge(df, df_cell_cn, left_on=['cell_id', 'chrom', 'bin_start'], right_on=['cell_id', 'chr', 'start'], how='left')
+        df_cell_clusters = pd.read_csv(f"{self.DATA_DIR}/ov2295_clone_clusters.csv.gz")
+        df["mutation"] = df["chrom"].astype(str) + ":" + df["coord"].astype(str) + ":" + df["ref"] + ":" + df["alt"]
+        df = pd.merge(df, df_cell_clusters, on='cell_id', how='left')
+
+        return df
