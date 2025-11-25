@@ -3,6 +3,7 @@ import pandas as pd
 from itertools import combinations
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
+from scipy.spatial.distance import cdist
 
 
 def get_kmeans_cluster_labels(cell_fraction_F, k, num_restarts=10, verbose=False, store=True):
@@ -120,8 +121,6 @@ def filter_mutations_with_multiple_subclonality(
     
     return mutation_group_labels
 
-
-from scipy.spatial.distance import cdist
 
 def assign_unassigned_mutations_to_phylogeny(
         mutation_group_labels, 

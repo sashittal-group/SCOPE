@@ -4,7 +4,35 @@ import pandas as pd
 import numpy as np
 import os
 
-from scope.process_data import get_cell_fraction_boundaries
+def get_F_boundaries(F, mutation_group_mapping, thres=0.75):
+
+    mutation_groups = sorted(mutation_group_mapping["mutation_group"].unique())
+    
+    medians = np.zeros((F.shape[0], len(mutation_groups)))
+    upper_percentiles = np.zeros((F.shape[0], len(mutation_groups)))
+    lower_percentiles = np.zeros((F.shape[0], len(mutation_groups)))
+
+    for i in range(len(mutation_groups)):
+        mut_grp = mutation_groups[i]
+        mutations_in_group = mutation_group_mapping[mutation_group_mapping["mutation_group"] == mut_grp]["mutation"]
+
+        df = F.iloc[:, mutations_in_group]
+        F_clone = df.to_numpy()
+
+        med = np.median(F_clone, axis=1)
+        upp = np.percentile(F_clone, axis=1, q=int(100*thres))
+        low = np.percentile(F_clone, axis=1, q=int(100*(1-thres)))
+
+        medians[:, i] = med
+        upper_percentiles[:, i] = upp
+        lower_percentiles[:, i] = low
+    
+    F_bar = pd.DataFrame(medians, index=F.index, columns=mutation_groups)
+    F_hi  = pd.DataFrame(upper_percentiles, index=F.index, columns=mutation_groups)
+    F_lo  = pd.DataFrame(lower_percentiles, index=F.index, columns=mutation_groups)
+
+    return F_bar, F_hi, F_lo
+
 
 def main(args):
 
@@ -35,7 +63,7 @@ def main(args):
     if clone_table_file is None: return
     
     df_clone = pd.read_parquet(f"{input_prefix}{clone_table_file}")
-    F_bar, F_hi, F_lo = get_cell_fraction_boundaries(F, df_clone, 0.75)
+    F_bar, F_hi, F_lo = get_F_boundaries(F, df_clone, 0.75)
 
     input_folder = input_prefix.split('/')[-2]
 

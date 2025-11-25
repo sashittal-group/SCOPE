@@ -267,7 +267,7 @@ def main(args):
 
     # print(F)
     
-    plot_spectral_clustering(F, n_clusters=F.shape[0], filepath=f"{prefix}_spectral_clustering.svg")
+    plot_spectral_clustering(F, filepath=f"{prefix}_spectral_clustering.svg")
 
     clones = sorted(df_mutation_group["mutation_group"].unique())
     n_clones = len(clones)

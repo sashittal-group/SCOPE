@@ -185,39 +185,6 @@ def add_clusters_to_mutation_T(T: nx.DiGraph, X: pd.DataFrame, G: pd.DataFrame, 
     
     return T
 
-
-def fix_T(B: pd.DataFrame, G: pd.DataFrame, T):
-
-    nodes = T.nodes()
-   
-    for cluster, muts in G.iterrows():
-        gained_muts = muts.index[muts == 1].tolist()
-
-        gained_muts = [m for m in gained_muts if m in nodes]
-
-        root_muts = []
-
-        for m in gained_muts:
-            has_parent = False
-            for mo in gained_muts:
-                if m == mo: continue
-
-                if np.all(B[mo] >= B[m]):
-                    has_parent = True
-                    break
-
-            if not has_parent:
-                root_muts.append(m)
-        
-        root_muts = np.array(root_muts)
-
-        for m in root_muts:
-            old_parent = next(T.predecessors(m))
-            T.remove_edge(old_parent, m)
-            T.add_edge(cluster, m)
-
-    return T
-
 def canonical_form(G):
     if not nx.is_tree(G):
         raise ValueError("Graph must be a tree")
@@ -234,6 +201,24 @@ def _encode_tree(G, node, parent):
 
 def read_phertilizer_tree(filename):
 
+    with open(filename) as f:
+        lines = f.read().strip().splitlines()
+
+    num_edges = int(lines[0].split()[0])
+    edge_lines = lines[1:1 + num_edges]
+    edges = [tuple(map(int, line.split())) for line in edge_lines]
+
+    num_leaves = int(lines[1 + num_edges].split()[0])
+    leaf_lines = lines[2 + num_edges:2 + num_edges + num_leaves]
+    leaves = [int(line.strip()) for line in leaf_lines]
+
+    G = nx.DiGraph()
+    G.add_edges_from(edges)
+
+    return G
+
+
+def read_phertilizer_tree(filename):
     with open(filename) as f:
         lines = f.read().strip().splitlines()
 

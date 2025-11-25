@@ -79,7 +79,7 @@ rule simulate:
         err="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim.err.log",
     benchmark: "data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim.benchmark", 
     shell:
-        "python src/simulation/simulate_data.py -s {wildcards.seed} -o {params.prefix} "
+        "python -m src.simulation.simulate_data -s {wildcards.seed} -o {params.prefix} "
         " -n {wildcards.ncells} -m {wildcards.n_mutation_groups} -d {params.missing} --size {wildcards.mutation_group_sizes}" 
         " -p {wildcards.nclusters} -a {params.fp} -b {params.fn} -k {params.k} -l {params.mutation_rate} --cov {wildcards.cov} --maxcn 6"
         " > {log.std} 2> {log.err}"
@@ -99,7 +99,7 @@ rule phertilizer_input:
         err="data/simulation/phertilizer_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/err.log",
     benchmark: "data/simulation/phertilizer_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/benchmark",
     shell:
-        "python src/simulation/process_simulated_data_for_phertilizer.py -i data/simulation/ground_truth/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/sim "
+        "python -m src.simulation.process_simulated_data_for_phertilizer -i data/simulation/ground_truth/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/sim "
         " -o data/simulation/phertilizer_input/ "
         " > {log.std} 2> {log.err}"
 
@@ -120,7 +120,7 @@ rule scope_input:
         err="data/simulation/scope_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/err.log",
     benchmark: "data/simulation/scope_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/benchmark",
     shell:
-        "python src/simulation/process_simulated_data_for_scope.py -i data/simulation/ground_truth/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/sim "
+        "python -m src.simulation.process_simulated_data_for_scope -i data/simulation/ground_truth/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/sim "
         " -o data/simulation/scope_input/ --clone-table _mutation_group.parquet"
         " > {log.std} 2> {log.err}"
 
@@ -141,7 +141,7 @@ rule scope_input_kmeans:
         err="data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/err.log",
     benchmark: "data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/benchmark",
     shell:
-        "python src/simulation/kmeans_clustering_for_scope.py -i data/simulation/ground_truth/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/sim "
+        "python -m src.simulation.kmeans_clustering_for_scope -i data/simulation/ground_truth/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/sim "
         " -o data/simulation/scope_input_kmeans/ "
         " > {log.std} 2> {log.err}"
 
@@ -162,7 +162,7 @@ rule scope_input_kmeans_known_k:
         err="data/simulation/scope_input_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/err.log",
     benchmark: "data/simulation/scope_input_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/benchmark",
     shell:
-        "python src/simulation/kmeans_clustering_for_scope.py -i data/simulation/ground_truth/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/sim "
+        "python -m src.simulation.kmeans_clustering_for_scope -i data/simulation/ground_truth/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/sim "
         " -o data/simulation/scope_input_kmeans_known_k/ --start_k {wildcards.n_mutation_groups} --end_k {wildcards.n_mutation_groups} "
         " > {log.std} 2> {log.err}"
 
@@ -189,6 +189,7 @@ rule scope_kmeans_on_simulation:
         clone_sizes="data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/clone_sizes.csv",
     output:
         solution_summary="data/simulation/scope_output_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt",
+        X_kmeans="data/simulation/scope_output_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/solution_0/X.csv",
     log:
         std="data/simulation/scope_output_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/log",
         err="data/simulation/scope_output_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/err.log",
@@ -205,6 +206,7 @@ rule scope_kmeans_known_k_on_simulation:
         clone_sizes="data/simulation/scope_input_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/clone_sizes.csv",
     output:
         solution_summary="data/simulation/scope_output_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt",
+        X_kmeans_known_K="data/simulation/scope_output_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/solution_0/X.csv",
     log:
         std="data/simulation/scope_output_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/log",
         err="data/simulation/scope_output_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/err.log",
@@ -217,6 +219,7 @@ rule scope_kmeans_known_k_on_simulation:
 rule post_process_clones:
     input:
         F_bar="data/simulation/scope_input_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_bar.csv",
+        X_kmeans_known_K="data/simulation/scope_output_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/solution_0/X.csv",
     output:
         corrected_clones="data/simulation/scope_post_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_cleaned_clones.csv",
     log:
@@ -224,12 +227,13 @@ rule post_process_clones:
         err="data/simulation/scope_post_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/err.log",
     benchmark: "data/simulation/scope_post_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/benchmark",
     shell:
-        "python src/simulation/post_process_mutation_groups.py -s n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed} "
+        "python -m src.simulation.post_process_mutation_groups -s n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed} "
         " > {log.std} 2> {log.err}"
 
 rule post_process_clones_2:
     input:
         F_bar="data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_bar.csv",
+        X_kmeans="data/simulation/scope_output_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/solution_0/X.csv",
     output:
         corrected_clones="data/simulation/scope_post_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_cleaned_clones.csv",
     log:
@@ -237,7 +241,7 @@ rule post_process_clones_2:
         err="data/simulation/scope_post_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/err.log",
     benchmark: "data/simulation/scope_post_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/benchmark",
     shell:
-        "python src/simulation/post_process_mutation_groups_2.py -s n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed} "
+        "python -m src.simulation.post_process_mutation_groups_2 -s n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed} "
         " > {log.std} 2> {log.err}"
 
 rule phertilizer_on_simulation:
