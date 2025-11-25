@@ -24,3 +24,6 @@ This notebook [SCOPE on Ovarian Cancer Dataset](https://github.com/sashittal-gro
 
 ## Statistical Tests for Evaluating Phylogenies
 The notebook [Hypothesis Tests for Ovarian Cancer Phylogenies](https://github.com/sashittal-group/SCOPE/blob/master/notebooks/Hypothesis%20Tests%20for%20Ovarian%20Cancer%20Phylogenies.ipynb) shows the results from hypothesis test for evaluating clonal relationships inferred from phylogenies from SCOPE and competing methods.
+
+## Running SCOPE and Competing Methods on Simulated Data
+The following snakemake file [Snakemake](https://github.com/sashittal-group/SCOPE/blob/master/Snakefile) has the entire pipeline for generating simulating simulation data, preprocessing the data into the input specification for the methods and running the methods on the data. The results are aggregated and compared in the following notebook: [Simulation Results](https://github.com/sashittal-group/SCOPE/blob/master/notebooks/Simulation%20Results.ipynb).
