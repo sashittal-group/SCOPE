@@ -245,8 +245,12 @@ def solve_cppme_with_fixed_clones(
     return solution, model
 
 
-def solve_cppme(F_plus, F_minus, mutation_cluster_labels, forbidden_pairs=None, cluster_not_at_root=False):
-    cluster_weights = mutation_cluster_labels.groupby("mutation_group").size().tolist()
+def solve_cppme(F_plus, F_minus, mutation_cluster_labels=None, 
+                cluster_weights=None, forbidden_pairs=None, cluster_not_at_root=False):
+    if mutation_cluster_labels:
+        cluster_weights = mutation_cluster_labels.groupby("mutation_group").size().tolist()
+    elif cluster_weights is None:
+        raise ValueError("both mutation cluster labels and cluster weights cannot be None")
 
     total_clones = F_plus.shape[1] + 1
 
