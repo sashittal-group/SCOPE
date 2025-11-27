@@ -131,7 +131,7 @@ def draw_clone_tree(T, edge_labels=None, figsize=(6, 4), filepath: str = None):
         node_color=node_colors
     )
 
-    if edge_labels: nx.draw_networkx_edge_labels(T, pos, edge_labels=edge_labels, font_size=6)
+    if edge_labels is not None: nx.draw_networkx_edge_labels(T, pos, edge_labels=edge_labels, font_size=6)
 
     plt.tight_layout()
     if filepath: plt.savefig(filepath)

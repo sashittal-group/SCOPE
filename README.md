@@ -19,11 +19,19 @@ cd SCOPE
 pip install .
 ```
 
-## Run SCOPE on Ovarian Cancer Dataset
-This notebook [SCOPE on Ovarian Cancer Dataset](https://github.com/sashittal-group/SCOPE/blob/master/notebooks/Ovarian%20Cancer%20Dataset.ipynb) shows how to run SCOPE on Ovarian Cancer Dataset. The dataset is from Laks et al. [https://doi.org/10.1016/j.cell.2019.10.026](https://doi.org/10.1016/j.cell.2019.10.026) and can be downloaded from [https://zenodo.org/records/3445364](https://zenodo.org/records/3445364). The smaller files are present in the GitHub repo at [data/laks](https://github.com/sashittal-group/SCOPE/tree/master/data/laks).
+## Running SCOPE on Ovarian Cancer Dataset
+This notebook [SCOPE on Ovarian Cancer Dataset](https://github.com/sashittal-group/SCOPE/blob/master/notebooks/Ovarian%20Cancer%20Dataset.ipynb) shows how to run SCOPE on Ovarian Cancer Dataset. The dataset is from Laks et al. [https://doi.org/10.1016/j.cell.2019.10.026](https://doi.org/10.1016/j.cell.2019.10.026) and can be downloaded from [https://zenodo.org/records/3445364](https://zenodo.org/records/3445364). The smaller files are present in this GitHub repo at [data/laks](https://github.com/sashittal-group/SCOPE/tree/master/data/laks).
 
 ## Statistical Tests for Evaluating Phylogenies
 The notebook [Hypothesis Tests for Ovarian Cancer Phylogenies](https://github.com/sashittal-group/SCOPE/blob/master/notebooks/Hypothesis%20Tests%20for%20Ovarian%20Cancer%20Phylogenies.ipynb) shows the results from hypothesis test for evaluating clonal relationships inferred from phylogenies from SCOPE and competing methods.
 
 ## Running SCOPE and Competing Methods on Simulated Data
 The following snakemake file [Snakemake](https://github.com/sashittal-group/SCOPE/blob/master/Snakefile) has the entire pipeline for generating simulating simulation data, preprocessing the data into the input specification for the methods and running the methods on the data. The results are aggregated and compared in the following notebook: [Simulation Results](https://github.com/sashittal-group/SCOPE/blob/master/notebooks/Simulation%20Results.ipynb).
+
+
+## Running SCOPE on Meta-Cohort Dataset (Funnell, O'Flanagan, Williams et al.)
+Download the ()(doi) dataset using the following commands
+```bash
+wget -O data/williams/dataset.zip https://zenodo.org/records/6998936/files/signatures_dataset
+unzip -d data/williams data/williams/dataset.zip
+```

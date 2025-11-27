@@ -53,7 +53,7 @@ def main(args):
             T = add_clusters_to_mutation_T(S, X, G, B)
             T_code = canonical_form(T)
 
-            draw_clone_tree(T, f"{solution_path}/T.svg")
+            draw_clone_tree(T, filepath=f"{solution_path}/T.svg")
 
             if T_code not in solution_strs:
                 print(i)

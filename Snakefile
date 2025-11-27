@@ -1,6 +1,7 @@
 configfile: "config.yaml"
 
 seeds = [ i for i in range(config["nseeds"])]
+Ks = [i for i in range(10, 21)]
 
 import itertools
 
@@ -8,52 +9,57 @@ import itertools
 rule all:
     input:
         # simulation
-        expand('data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_multi_state_tree_node_character_matrix.parquet', \
-            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-            nclusters=config['nclusters'], cov=config['coverage']),
-        # scope input
-        expand("data/simulation/scope_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_plus.csv", \
-            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-            nclusters=config['nclusters'], cov=config['coverage']),
-        # scope input kmeans
-        expand("data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_clones.csv", \
-            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-            nclusters=config['nclusters'], cov=config['coverage']),
-        # scope input kmeans known k
-        expand("data/simulation/scope_input_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_clones.csv", \
-            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-            nclusters=config['nclusters'], cov=config['coverage']),
-        # phertilizer input
-        expand("data/simulation/phertilizer_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/snv_counts.tsv", \
-            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-            nclusters=config['nclusters'], cov=config['coverage']),
-        # scope on simulation
-        expand("data/simulation/scope_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt", \
-            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-            nclusters=config['nclusters'], cov=config['coverage']),
-        # scope kmeans on simulation
-        expand("data/simulation/scope_output_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt", \
-            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-            nclusters=config['nclusters'], cov=config['coverage']),
-        # scope kmeans known k on simulation
-        expand("data/simulation/scope_output_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt", \
-            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-            nclusters=config['nclusters'], cov=config['coverage']),
-        # phertilizer on simulation
-        expand("data/simulation/phertilizer_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/cell_clusters.csv", \
-            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-            nclusters=config['nclusters'], cov=config['coverage']),
-        # post process clone
-        expand("data/simulation/scope_post_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_cleaned_clones.csv", \
-            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-            nclusters=config['nclusters'], cov=config['coverage']),
-        # post process clone 2
-        expand("data/simulation/scope_post_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_cleaned_clones.csv", \
-            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-            nclusters=config['nclusters'], cov=config['coverage']),
+        # expand('data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_multi_state_tree_node_character_matrix.parquet', \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage']),
+        # # scope input
+        # expand("data/simulation/scope_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_plus.csv", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage']),
+        # # scope input kmeans
+        # expand("data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_clones.csv", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage']),
+        # # scope input kmeans known k
+        # expand("data/simulation/scope_input_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_clones.csv", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage']),
+        # # phertilizer input
+        # expand("data/simulation/phertilizer_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/snv_counts.tsv", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage']),
+        # # scope on simulation
+        # expand("data/simulation/scope_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage']),
+        # # scope kmeans on simulation
+        # expand("data/simulation/scope_output_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage']),
+        # # scope kmeans known k on simulation
+        # expand("data/simulation/scope_output_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage']),
+        # # phertilizer on simulation
+        # expand("data/simulation/phertilizer_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/cell_clusters.csv", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage']),
+        # # post process clone
+        # expand("data/simulation/scope_post_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_cleaned_clones.csv", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage']),
+        # # post process clone 2
+        # expand("data/simulation/scope_post_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_cleaned_clones.csv", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage']),
+        # # split inputs williams
+        # expand("data/williams/scratch/separate.txt"),
+        # make input williams
+        # expand("outputs/scope/williams/{sample_ids}/mutation_clusters/k_10/F_plus.csv", \
+        #     itertools.product, sample_ids=config['sample_ids']),
         # post williams
-        expand("data/williams/scratch/{sample_ids}/scope_mut_2/summary.txt", \
-            itertools.product, sample_ids=config['sample_ids']),
+        expand("outputs/scope/williams/{sample_ids}/solutions_mut/k_{Ks}/summary.txt", \
+            itertools.product, sample_ids=config['sample_ids'], Ks=Ks),
 
 
 rule simulate:
@@ -269,13 +275,43 @@ rule phertilizer_on_simulation:
         " -j 10 -s 4 "
         " > {log.std} 2> {log.err}"
 
-rule williams:
+rule split_inputs_williams:
     output:
-        williams_scope="data/williams/scratch/{sample_ids}/scope_mut_2/summary.txt",
+        williams_separate="data/williams/scratch/separate.txt",
     log:
-        std="data/williams/scratch/{sample_ids}/scope_mut_2/log",
-        err="data/williams/scratch/{sample_ids}/scope_mut_2/err.log",
-    benchmark: "data/williams/scratch/{sample_ids}/scope_mut_2/benchmark",
+        std="data/williams/scratch/separate.log",
+        err="data/williams/scratch/separate.err.log",
+    benchmark: "data/williams/scratch/separate.benchmark",
     shell:
-        "python -m src.run_williams --sample {wildcards.sample_ids} "
+        "python -m src.williams.split_input_data "
+        " > {log.std} 2> {log.err}"
+
+
+rule make_inputs_williams:
+    output:
+        williams_F_plus="outputs/scope/williams/{sample_ids}/mutation_clusters/k_10/F_plus.csv",
+        williams_F_minus="outputs/scope/williams/{sample_ids}/mutation_clusters/k_10/F_minus.csv",
+        williams_F_loh_counts="outputs/scope/williams/{sample_ids}/loh_conflicts.csv"
+    log:
+        std="outputs/scope/williams/{sample_ids}/log",
+        err="outputs/scope/williams/{sample_ids}/err.log",
+    benchmark: "outputs/scope/williams/{sample_ids}/benchmark",
+    shell:
+        "python -m src.williams.make_input_data --sample {wildcards.sample_ids} "
+        " > {log.std} 2> {log.err}"
+
+
+rule scope_williams:
+    input:
+        williams_F_plus="outputs/scope/williams/{sample_ids}/mutation_clusters/k_{Ks}/F_plus.csv",
+        williams_F_minus="outputs/scope/williams/{sample_ids}/mutation_clusters/k_{Ks}/F_minus.csv",
+        williams_F_loh_counts="outputs/scope/williams/{sample_ids}/loh_conflicts.csv"
+    output:
+        williams_scope="outputs/scope/williams/{sample_ids}/solutions_mut/k_{Ks}/summary.txt",
+    log:
+        std="outputs/scope/williams/{sample_ids}/solutions_mut/k_{Ks}/log",
+        err="outputs/scope/williams/{sample_ids}/solutions_mut/k_{Ks}/err.log",
+    benchmark: "outputs/scope/williams/{sample_ids}/solutions_mut/k_{Ks}/benchmark",
+    shell:
+        "python -m src.williams.run_scope_on_williams --sample {wildcards.sample_ids} -k {wildcards.Ks} "
         " > {log.std} 2> {log.err}"

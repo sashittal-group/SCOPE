@@ -246,7 +246,8 @@ def solve_cppme_with_fixed_clones(
 
 
 def solve_cppme(F_plus, F_minus, mutation_cluster_labels=None, 
-                cluster_weights=None, forbidden_pairs=None, cluster_not_at_root=False):
+                cluster_weights=None, forbidden_pairs=None, cluster_not_at_root=False,
+                only_mutation_tree_variant=False):
     if mutation_cluster_labels:
         cluster_weights = mutation_cluster_labels.groupby("mutation_group").size().tolist()
     elif cluster_weights is None:
@@ -265,7 +266,8 @@ def solve_cppme(F_plus, F_minus, mutation_cluster_labels=None,
         solution, model = solve_cppme_with_fixed_clones(F_plus, F_minus, n_clones=n_clones,
                                         cluster_weights=cluster_weights, time_limit=60 * 60 * 24, 
                                         cluster_parent_restriction_pairs=forbidden_pairs, 
-                                        cluster_not_at_root=cluster_not_at_root)
+                                        cluster_not_at_root=cluster_not_at_root, 
+                                        only_mutation_tree_variant=only_mutation_tree_variant)
         if solution is None: n_clones -= 1
         else: break
 
@@ -284,7 +286,8 @@ def solve_cppme(F_plus, F_minus, mutation_cluster_labels=None,
                                                 cluster_weights=cluster_weights, time_limit=24* 60 * 10, 
                                                 cluster_parent_restriction_pairs=forbidden_pairs, 
                                                 cluster_not_at_root=cluster_not_at_root,
-                                                found_Bs=found_Bs, Xs=X)
+                                                found_Bs=found_Bs, Xs=X, 
+                                                only_mutation_tree_variant=only_mutation_tree_variant)
         if solution is None:
             break
         
