@@ -30,8 +30,12 @@ The following snakemake file [Snakemake](https://github.com/sashittal-group/SCOP
 
 
 ## Running SCOPE on Meta-Cohort Dataset (Funnell, O'Flanagan, Williams et al.)
-Download the ()(doi) dataset using the following commands
+Download the dataset from Funnell, O'Flanagan, Williams et al. [https://doi.org/10.1038/s41586-022-05249-0](https://doi.org/10.1038/s41586-022-05249-0) using the following commands
 ```bash
 wget -O data/williams/dataset.zip https://zenodo.org/records/6998936/files/signatures_dataset
 unzip -d data/williams data/williams/dataset.zip
 ```
+
+To run SCOPE on this data run the rules `split_inputs_williams`, `make_inputs_williams`, `scope_williams` from the following snakemake file [Snakemake](https://github.com/sashittal-group/SCOPE/blob/master/Snakefile).
+
+The results are visualized in the following notebook: [SCOPE on Meta-Cohort](https://github.com/sashittal-group/SCOPE/blob/master/notebooks/SCOPE%20on%20Meta-Cohort.ipynb).
