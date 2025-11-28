@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/src/williams/make_input_data.py", line 204, in <module>
+    make_input_for_sample(sample)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/src/williams/make_input_data.py", line 21, in make_input_for_sample
+    df = pd.merge(df_snv_counts, df_clones, how='left', on='cell_id')
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/.venv/lib/python3.13/site-packages/pandas/core/reshape/merge.py", line 170, in merge
+    op = _MergeOperation(
+        left_df,
+    ...<10 lines>...
+        validate=validate,
+    )
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/.venv/lib/python3.13/site-packages/pandas/core/reshape/merge.py", line 794, in __init__
+    ) = self._get_merge_keys()
+        ~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/.venv/lib/python3.13/site-packages/pandas/core/reshape/merge.py", line 1298, in _get_merge_keys
+    right_keys.append(right._get_label_or_level_values(rk))
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^
+  File "/Users/samin/workspace/scWGS-Tumor-Phylogeny/.venv/lib/python3.13/site-packages/pandas/core/generic.py", line 1914, in _get_label_or_level_values
+    raise KeyError(key)
+KeyError: 'cell_id'
