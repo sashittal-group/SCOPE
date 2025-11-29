@@ -1056,3 +1056,74 @@ Set parameter WLSAccessID
 Set parameter WLSSecret
 Set parameter LicenseID to value 2687964
 Academic license 2687964 - for non-commercial use only - registered to sa___@iict.buet.ac.bd
+[ 0.  1.  0.  0.  1.  1.  1.  0.  1.  0.  0.  1.  0.  0.  0. -0.  1.  0.
+  1.]
+Set parameter TimeLimit to value 14400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (linux64 - "Rocky Linux 9.6 (Blue Onyx)")
+
+CPU model: AMD EPYC 7702 64-Core Processor, instruction set [SSE2|AVX|AVX2]
+Thread count: 128 physical cores, 128 logical processors, using up to 32 threads
+
+Non-default parameters:
+TimeLimit  14400
+
+Academic license 2687964 - for non-commercial use only - registered to sa___@iict.buet.ac.bd
+Optimize a model with 19396 rows, 1860 columns and 57309 nonzeros
+Model fingerprint: 0x82a30986
+Model has 114 quadratic constraints
+Variable types: 777 continuous, 1083 integer (1083 binary)
+Coefficient statistics:
+  Matrix range     [2e-01, 3e+05]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [4e+02, 3e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 3e+00]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 18593 rows and 1624 columns
+Presolve time: 0.43s
+Presolved: 803 rows, 236 columns, 2253 nonzeros
+Variable types: 147 continuous, 89 integer (89 binary)
+
+Root relaxation: objective 8.296000e+03, 188 iterations, 0.00 seconds (0.00 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 8296.00000    0   29          - 8296.00000      -     -    0s
+     0     0 8296.00000    0   24          - 8296.00000      -     -    0s
+     0     0 8296.00000    0    8          - 8296.00000      -     -    1s
+     0     0 8296.00000    0   12          - 8296.00000      -     -    1s
+     0     0 8296.00000    0   12          - 8296.00000      -     -    1s
+     0     0 8296.00000    0    7          - 8296.00000      -     -    1s
+     0     0 8296.00000    0   10          - 8296.00000      -     -    1s
+     0     0 8296.00000    0    9          - 8296.00000      -     -    1s
+     0     0 8296.00000    0   28          - 8296.00000      -     -    1s
+     0     0 8296.00000    0   10          - 8296.00000      -     -    1s
+     0     0 8296.00000    0   23          - 8296.00000      -     -    1s
+     0     0 8296.00000    0    9          - 8296.00000      -     -    1s
+     0     0 8296.00000    0    9          - 8296.00000      -     -    1s
+     0     2 8296.00000    0    9          - 8296.00000      -     -    3s
+
+Cutting planes:
+  Learned: 20
+  Gomory: 1
+  Cover: 72
+  Implied bound: 29
+  MIR: 23
+  Flow cover: 31
+  GUB cover: 11
+  Inf proof: 3
+  RLT: 16
+  Relax-and-lift: 5
+  BQP: 1
+  PSD: 2
+
+Explored 226 nodes (10824 simplex iterations) in 3.52 seconds (0.22 work units)
+Thread count was 32 (of 128 available processors)
+
+Solution count 0
+No other solutions better than -1e+100
+
+Model is infeasible
+Best objective -, best bound -, gap -
