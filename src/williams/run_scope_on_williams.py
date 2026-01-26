@@ -12,7 +12,7 @@ def run_for_sample(SAMPLE_ID, k):
 
     PATH = f"outputs/scope/williams/{SAMPLE_ID}/mutation_clusters/k_{k}"
 
-    loh_count_threshold = 100
+    loh_count_threshold = 50
 
     kmeans_labels = pd.read_csv(f"{PATH}/kmeans_labels.csv", index_col=0)
     cluster_weights = kmeans_labels.groupby("mutation_group").size().tolist()
