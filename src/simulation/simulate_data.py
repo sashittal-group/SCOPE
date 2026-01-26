@@ -6,6 +6,8 @@ from scipy.stats import betabinom
 import networkx as nx
 import matplotlib.pyplot as plt 
 import numpy as np
+from collections import defaultdict
+import random
 
 from src.simulation.simulation_helper_functions import draw_tree, draw_clone_tree, writeDOT, tree_to_newick, merge_cell_leaves
 from src.plotters import plot_spectral_clustering 
@@ -21,7 +23,7 @@ def main(args):
     nclusters = args.p
     max_losses = args.k
     max_cn = args.maxcn
-    mutation_rate = args.l
+    cn_loss_rate = args.l
     mutation_grp_mean_size = args.size
     nnodes = n_mutation_groups + nclusters
     nbins = args.nbins
@@ -105,10 +107,15 @@ def main(args):
 
     Rb = np.zeros((nclusters, nbins), dtype=int)
     Rb[0, :] = np.random.randint(max_cn - max_losses - 1, size = nbins) + max_losses + 1
-    for cluster_id in range(nclusters):
+    Tc_edges = list(nx.bfs_edges(Tc, 0))
+    for parent, child in Tc_edges:
+        Rb[child, :] = Rb[parent, :]
         for bin in range(nbins):
-            Rb[cluster_id, bin] = np.random.randint(max_cn - 1) + 1
-    
+            if random.random() < cn_loss_rate:
+                Rb[child, bin] = max(1, Rb[child, bin] - 1)
+
+    print(Rb)
+
     mut_to_bin = { mut: np.random.randint(0, nbins) for mut in range(n_mutations) }
     mut_bins = np.array([mut_to_bin[mut] for mut in range(n_mutations)])
     R = Rb[:, mut_bins]
@@ -142,6 +149,7 @@ def main(args):
 
     # observed matrix
     A = B.copy()
+    # This loop below is redundant, as we do not have losses by mutation group
     for mutation in range(n_mutation_groups):
         A[A[:,mutation] > 1, mutation] = 0
     Acell = A[complete_cell_assignment, :]
@@ -149,7 +157,43 @@ def main(args):
     mut_groups = df_mutation_group["mutation_group"].to_numpy()
     Acell_muts = Acell[:, mut_groups]
     Acell_muts = np.hstack((Acell_muts, Acell[:, [-1]]))
+
+    # # Add losses
+    # # print(Rb)
+    # # print(Rb.shape)
+    # # print(Tc)
+    # # print(B)
+
+    # df_mut_to_bin = pd.DataFrame(
+    #     {"mutation": list(mut_to_bin.keys()), "bin": list(mut_to_bin.values())}
+    # )
+
+    # mutation_possible_loss_at_cluster = defaultdict(list)
+    # for parent, child in Tc.edges:
+    #     bins = np.where(Rb[parent] > Rb[child])[0]
+    #     ancestor_mutation_groups = list(nx.ancestors(T, f"d{child}"))
+    #     ancestor_mutation_groups = [int(mg[1:]) for mg in ancestor_mutation_groups if mg[0] == 'c']
+    #     ancestor_mutations = df_mutation_group[df_mutation_group["mutation_group"].isin(ancestor_mutation_groups)]['mutation'].to_list()
+    #     in_bin_mutations = df_mut_to_bin[df_mut_to_bin["bin"].isin(bins)]["mutation"].to_list()
+    #     in_bin_ancestor_mutations = list(set(ancestor_mutations) & set(in_bin_mutations))
+
+    #     for mut in in_bin_ancestor_mutations:
+    #         mutation_possible_loss_at_cluster[mut].append(child)
+
+    #     # print(ancestor_mutations)
+    #     # print(parent, child, bins, ancestor_mutation_groups)
     
+    # mutations_possibly_lost = sorted(mutation_possible_loss_at_cluster.keys())
+    # num_mutations_lost = min(len(mutations_possibly_lost), int(mutation_loss_rate * n_mutations))
+    # mutations_lost = sorted(random.sample(mutations_possibly_lost, num_mutations_lost))
+
+    # print(n_mutations, len(mutations_possibly_lost), num_mutations_lost, mutations_lost)
+
+    # # for key, value in mutation_possible_loss_at_cluster.items():
+    # #     print(key, value)
+    # # print(complete_cell_assignment)
+    # # print(event_order)
+
     # cell tree
     celltree = T.copy()
     for cell_id, assigned_node_index in enumerate(complete_cell_assignment):
@@ -295,7 +339,7 @@ def main(args):
         df = F.iloc[:, mutations_in_clone]
         df = df.loc[cn_order]
 
-        ax.boxplot(df.T.values, vert=False, labels=df.index)
+        ax.boxplot(df.T.values, vert=False, tick_labels=df.index)
 
         ax.set_ylabel("CN Clusters")
         ax.set_xlabel("CF")
@@ -329,7 +373,7 @@ if __name__ == "__main__":
     parser.add_argument('--readthreshold', type=int, help='variant read count threshold for generating the mutation matrix [5]', default=5)
     parser.add_argument('--vafthreshold', type=float, help='VAF threshold for generating the mutation matrix [0.1]', default = 0.1)
     parser.add_argument('-l', type=float, help='rate of mutation loss [0.8]', default = 0.8)
-    parser.add_argument('--nbins', type=int, help='number of bins', default = 1000)
+    parser.add_argument('--nbins', type=int, help='number of bins', default = 10)
     parser.add_argument('-v', action='store_true', default=False)
     args = parser.parse_args(None if sys.argv[1:] else ['-h'])
     
