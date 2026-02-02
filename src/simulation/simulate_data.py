@@ -18,6 +18,7 @@ def main(args):
     print(args)
 
     np.random.seed(args.s)
+    random.seed(args.s)
 
     n_mutation_groups = args.m
     nclusters = args.p
@@ -147,52 +148,90 @@ def main(args):
     
     Bcell = B[complete_cell_assignment, :]
 
-    # observed matrix
-    A = B.copy()
-    # This loop below is redundant, as we do not have losses by mutation group
-    for mutation in range(n_mutation_groups):
-        A[A[:,mutation] > 1, mutation] = 0
-    Acell = A[complete_cell_assignment, :]
-
     mut_groups = df_mutation_group["mutation_group"].to_numpy()
-    Acell_muts = Acell[:, mut_groups]
-    Acell_muts = np.hstack((Acell_muts, Acell[:, [-1]]))
+    B_muts = B[:, mut_groups]
 
-    # # Add losses
-    # # print(Rb)
-    # # print(Rb.shape)
-    # # print(Tc)
-    # # print(B)
+    # Add losses
+    if cn_loss_rate > 0:
+        copies = np.empty(Rb.shape, dtype=object)
+        new_copies = np.empty(Rb.shape, dtype=int)
+        for j in range(copies.shape[1]):
+            cps = [i for i in range(Rb[0, j])]
+            copies[0, j] = cps
+            new_copies[0, j] = Rb[0, j]
 
-    # df_mut_to_bin = pd.DataFrame(
-    #     {"mutation": list(mut_to_bin.keys()), "bin": list(mut_to_bin.values())}
-    # )
+        for parent, child in nx.bfs_edges(Tc, source=0):
+            for b in range(nbins):
+                if Rb[parent, b] == Rb[child, b]:
+                    copies[child, b] = copies[parent, b]
+                    new_copies[child, b] = new_copies[parent, b]
+                elif Rb[parent, b] < Rb[child, b]:
+                    copies[child, b] = copies[parent, b] + [new_copies[parent, b]]
+                    new_copies[child, b] = new_copies[parent, b] + 1
+                else:
+                    removed_copy = random.choice(copies[parent, b])
+                    child_copies = [c for c in copies[parent, b] if c != removed_copy]
+                    copies[child, b] = child_copies
+                    new_copies[child, b] = new_copies[parent, b]
 
-    # mutation_possible_loss_at_cluster = defaultdict(list)
-    # for parent, child in Tc.edges:
-    #     bins = np.where(Rb[parent] > Rb[child])[0]
-    #     ancestor_mutation_groups = list(nx.ancestors(T, f"d{child}"))
-    #     ancestor_mutation_groups = [int(mg[1:]) for mg in ancestor_mutation_groups if mg[0] == 'c']
-    #     ancestor_mutations = df_mutation_group[df_mutation_group["mutation_group"].isin(ancestor_mutation_groups)]['mutation'].to_list()
-    #     in_bin_mutations = df_mut_to_bin[df_mut_to_bin["bin"].isin(bins)]["mutation"].to_list()
-    #     in_bin_ancestor_mutations = list(set(ancestor_mutations) & set(in_bin_mutations))
+                    print(child, b, removed_copy)
 
-    #     for mut in in_bin_ancestor_mutations:
-    #         mutation_possible_loss_at_cluster[mut].append(child)
+        df_mut_to_bin_copy = pd.DataFrame(
+            {"mutation": list(mut_to_bin.keys()), "bin": list(mut_to_bin.values()), "copy": None}
+        )
 
-    #     # print(ancestor_mutations)
-    #     # print(parent, child, bins, ancestor_mutation_groups)
+        for mutation_group in range(n_mutation_groups):
+            path = nx.shortest_path(T, 'root', f"c{mutation_group}")
+            cn_cluster = 0
+            for node in path[:-1]:
+                if node.startswith('d'):
+                    cn_cluster = int(node[1:])
+
+            mutations_in_mutation_group = df_mutation_group[df_mutation_group['mutation_group'] == mutation_group]['mutation']
+            for bin in range(nbins):
+                mutations_in_bin = df_mut_to_bin_copy[df_mut_to_bin_copy["bin"] == bin]['mutation']
+                mutations_in_mutation_group_and_in_bin = list(set(mutations_in_mutation_group) & set(mutations_in_bin))
+                random.shuffle(mutations_in_mutation_group_and_in_bin)
+
+                copies_in_cn_bin = copies[cn_cluster, bin]
+                k = len(copies_in_cn_bin)
+
+                parts = [[] for _ in range(k)]
+                for i, x in enumerate(mutations_in_mutation_group_and_in_bin):
+                    parts[i % k].append(x)
+
+                for copy, muts in zip(copies_in_cn_bin, parts):
+                    df_mut_to_bin_copy.loc[df_mut_to_bin_copy["mutation"].isin(muts), "copy"] = copy
+        
+        B_mut_index = list(T.nodes)
+        for cn_parent, cn in nx.bfs_edges(Tc, source=0):
+            for bin in range(nbins):
+                cps = copies[cn, bin]
+                cps_parent = copies[cn_parent, bin]
+
+                missing_cps = list(set(cps_parent) - set(cps))
+                if len(missing_cps) == 0: continue
+                
+                # There is <= -1 loss when copy goes missing
+                missing_cp = missing_cps[0]
+
+                mutations = df_mut_to_bin_copy[
+                    (df_mut_to_bin_copy["bin"] == bin) &
+                    (df_mut_to_bin_copy["copy"] == missing_cp)
+                ]['mutation']
+
+                lost_in_nodes = [f"d{cn}"] + list(nx.descendants(T, f"d{cn}"))
+                lost_rows = [B_mut_index.index(n) for n in lost_in_nodes]
+                B_muts[np.ix_(lost_rows, mutations)] *= 2
     
-    # mutations_possibly_lost = sorted(mutation_possible_loss_at_cluster.keys())
-    # num_mutations_lost = min(len(mutations_possibly_lost), int(mutation_loss_rate * n_mutations))
-    # mutations_lost = sorted(random.sample(mutations_possibly_lost, num_mutations_lost))
-
-    # print(n_mutations, len(mutations_possibly_lost), num_mutations_lost, mutations_lost)
-
-    # # for key, value in mutation_possible_loss_at_cluster.items():
-    # #     print(key, value)
-    # # print(complete_cell_assignment)
-    # # print(event_order)
+    # observed matrix
+    A_muts = B_muts.copy()
+    for mutation in range(n_mutation_groups):
+        A_muts[A_muts[:,mutation] > 1, mutation] = 0
+    
+    Acell_cn = A_muts[complete_cell_assignment, -1:]
+    Acell_muts = A_muts[complete_cell_assignment, :]
+    Acell_muts = np.hstack((Acell_muts, Acell_cn))
 
     # cell tree
     celltree = T.copy()
