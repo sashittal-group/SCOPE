@@ -22,12 +22,13 @@ def main(args):
 
     n_mutation_groups = args.m
     nclusters = args.p
-    max_losses = args.k
     max_cn = args.maxcn
     cn_loss_rate = args.l
+    mutation_loss = args.mutation_loss
     mutation_grp_mean_size = args.size
     nnodes = n_mutation_groups + nclusters
     nbins = args.nbins
+    min_starting_cn = 2
     
     event_order = list(np.random.permutation(['c'] * n_mutation_groups + ['d'] * (nclusters - 1)))
 
@@ -107,7 +108,7 @@ def main(args):
     }).sort_values('mutation').reset_index(drop=True)
 
     Rb = np.zeros((nclusters, nbins), dtype=int)
-    Rb[0, :] = np.random.randint(max_cn - max_losses - 1, size = nbins) + max_losses + 1
+    Rb[0, :] = np.random.randint(max_cn - min_starting_cn, size = nbins) + min_starting_cn
     Tc_edges = list(nx.bfs_edges(Tc, 0))
     for parent, child in Tc_edges:
         Rb[child, :] = Rb[parent, :]
@@ -152,7 +153,8 @@ def main(args):
     B_muts = B[:, mut_groups]
 
     # Add losses
-    if cn_loss_rate > 0:
+    if cn_loss_rate > 0 and mutation_loss:
+        print("MUTATIONS LOST")
         copies = np.empty(Rb.shape, dtype=object)
         new_copies = np.empty(Rb.shape, dtype=int)
         for j in range(copies.shape[1]):
@@ -255,7 +257,12 @@ def main(args):
     post_error_vaf = fp_rate + (1 - fp_rate - fn_rate) * latent_vaf
     ado_alpha = post_error_vaf * ado_precision
     ado_beta = ado_precision * (1 - post_error_vaf)
+    ado_beta = np.maximum(ado_beta, 1e-8)
 
+    assert np.all(Rtotal >= 0)
+    assert np.all(ado_alpha > 0)
+    assert np.all(ado_beta > 0)
+    
     Vcount = betabinom.rvs(Rtotal, ado_alpha, ado_beta)
     CNs = ntotal
     
@@ -399,7 +406,6 @@ if __name__ == "__main__":
     parser.add_argument('-n', type=int, help='number of samples [5]', default = 5)
     parser.add_argument('-m', type=int, help='number of SNV mutations [5]', default = 5)
     parser.add_argument('-p', type=int, help='number of clusters [1]', default = 1)
-    parser.add_argument('-k', type=int, help='number of SNV losses per character [0]', default = 0)
     parser.add_argument('-o', type=str, help='output prefix', default='sample')
     parser.add_argument('-s', type=int, help='seed [0]', default = 0)
     parser.add_argument('--size', type=int, help='mutation group size [100]', default = 100)
@@ -411,7 +417,8 @@ if __name__ == "__main__":
     parser.add_argument('--maxcn', type=float, help='maximum allowed copy number [8]', default = 8)
     parser.add_argument('--readthreshold', type=int, help='variant read count threshold for generating the mutation matrix [5]', default=5)
     parser.add_argument('--vafthreshold', type=float, help='VAF threshold for generating the mutation matrix [0.1]', default = 0.1)
-    parser.add_argument('-l', type=float, help='rate of mutation loss [0.8]', default = 0.8)
+    parser.add_argument('-l', type=float, help='rate of copy number loss [0.5]', default = 0.5)
+    parser.add_argument('--mutation-loss', action='store_true', help='Lose mutations (default: False)')
     parser.add_argument('--nbins', type=int, help='number of bins', default = 10)
     parser.add_argument('-v', action='store_true', default=False)
     args = parser.parse_args(None if sys.argv[1:] else ['-h'])

@@ -31,7 +31,7 @@ def main(args):
     print(clone_sizes_list)
 
 
-    solutions, best_value = solve_cppme(F_plus, F_minus, cluster_weights=clone_sizes_list)
+    solutions, best_value = solve_cppme(F_plus, F_minus, cluster_weights=clone_sizes_list, num_solutions=1)
     
     unique_solutions = []
     solution_strs = {}

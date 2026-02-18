@@ -18,9 +18,9 @@ def solve_cppme_with_fixed_clones(
     only_cn_tree_variant=False,
 ):
     params = {
-        "WLSACCESSID": '85dfeec1-65a1-402f-9425-7465d0f3a229',
-        "WLSSECRET": 'f755a3a4-dba0-444d-8bc8-d8e781d8a05c',
-        "LICENSEID": 2687964,
+        "WLSACCESSID": '5a0d375f-d80b-41f2-8537-450cb00b732c',
+        "WLSSECRET": '48788ca0-5231-4b91-ae91-2c379d20b8bc',
+        "LICENSEID": 2770065,
     }
     env = gp.Env(params=params)
 
@@ -247,7 +247,7 @@ def solve_cppme_with_fixed_clones(
 
 def solve_cppme(F_plus, F_minus, mutation_cluster_labels=None, 
                 cluster_weights=None, forbidden_pairs=None, cluster_not_at_root=False,
-                only_mutation_tree_variant=False):
+                only_mutation_tree_variant=False, num_solutions=1000):
     if mutation_cluster_labels:
         cluster_weights = mutation_cluster_labels.groupby("mutation_group").size().tolist()
     elif cluster_weights is None:
@@ -271,22 +271,22 @@ def solve_cppme(F_plus, F_minus, mutation_cluster_labels=None,
         if solution is None: n_clones -= 1
         else: break
 
-    print(f"THERE IS A SOLUTION WITH {n_clones} CLONES")
-
     X, _, _, _, _ = solution
     X = X.to_numpy().T[0]
 
+    print(X)
     print(f"THERE IS A SOLUTION WITH {n_clones} CLONES")
 
     found_Bs = []
     solutions = []
     best_val = 0
-    for i in range(1000):    
+    for i in range(num_solutions):    
         solution, model = solve_cppme_with_fixed_clones(F_plus, F_minus, n_clones=n_clones,
                                                 cluster_weights=cluster_weights, time_limit=24* 60 * 10, 
                                                 cluster_parent_restriction_pairs=forbidden_pairs, 
                                                 cluster_not_at_root=cluster_not_at_root,
-                                                found_Bs=found_Bs, Xs=X, 
+                                                found_Bs=found_Bs, 
+                                                # Xs=X, 
                                                 only_mutation_tree_variant=only_mutation_tree_variant)
         if solution is None:
             break
