@@ -8,7 +8,8 @@ from scope.phylogeny_utils import generate_perfect_phylogeny, add_clusters_to_mu
 def calculate_pairwise_ancestry_accuracy_for_scope(
         SIMULATION_STR, 
         type="GIVEN_MUTATION_CLUSTERING", 
-        remove_unassigned_groups=False
+        remove_unassigned_groups=False,
+        loss=None,
     ):
 
     ## TODO: Provide files as arguments instead of filepaths
@@ -20,7 +21,11 @@ def calculate_pairwise_ancestry_accuracy_for_scope(
     if type == "GIVEN_MUTATION_CLUSTERING":
         INPUT_FOLDER = "scope_input"
         OUTPUT_FOLDER = "scope_output"
-        
+
+        if loss is not None: 
+            INPUT_FOLDER += f"_with_loss_{str(int(loss*100))}"
+            OUTPUT_FOLDER += f"_with_loss_{str(int(loss*100))}"
+
         methods_mutation_group = ground_truth_mutation_group.copy()
     else:
         if type == "KMEANS_GIVEN_K":
@@ -31,6 +36,10 @@ def calculate_pairwise_ancestry_accuracy_for_scope(
             OUTPUT_FOLDER = "scope_output_kmeans"
         else:
             raise ValueError("Unknown type", type)
+        
+        if loss is not None: 
+            INPUT_FOLDER += f"_with_loss_{str(int(loss*100))}"
+            OUTPUT_FOLDER += f"_with_loss_{str(int(loss*100))}"
 
         SCOPE_INPUT_DIR = f"../data/simulation/{INPUT_FOLDER}/{SIMULATION_STR}"
         
@@ -112,23 +121,27 @@ def calculate_pairwise_ancestry_accuracy_for_scope(
 def calculate_pairwise_ancestry_accuracy_for_scope_post(
         SIMULATION_STR, 
         type="KMEANS", 
-        remove_unassigned_groups=False
+        remove_unassigned_groups=False,
+        loss=None,
     ):
 
-    GROUND_TRUTH_DIR = f"../data/simulation/ground_truth/{SIMULATION_STR}"
+    if loss is not None: with_loss_substr = f"_with_loss_{str(int(loss*100))}"
+    else: with_loss_substr = ""
+
+    GROUND_TRUTH_DIR = f"../data/simulation/ground_truth{with_loss_substr}/{SIMULATION_STR}"
 
     ground_truth_mutation_group = pd.read_parquet(f"{GROUND_TRUTH_DIR}/sim_mutation_group.parquet")
     ground_truth_mutation_group.set_index('mutation', inplace=True)
 
     
     if type == "KMEANS_GIVEN_K":
-        INPUT_FOLDER = "scope_input_kmeans_known_k"
-        OUTPUT_FOLDER = "scope_output_kmeans_known_k"
-        POST_KMEANS_DIR = "scope_post_kmeans_known_k"
+        INPUT_FOLDER = f"scope_input_kmeans_known_k{with_loss_substr}"
+        OUTPUT_FOLDER = f"scope_output_kmeans_known_k{with_loss_substr}"
+        POST_KMEANS_DIR = f"scope_post_kmeans_known_k{with_loss_substr}"
     elif type == "KMEANS":
-        INPUT_FOLDER = "scope_input_kmeans"
-        OUTPUT_FOLDER = "scope_output_kmeans"
-        POST_KMEANS_DIR = "scope_post_kmeans"
+        INPUT_FOLDER = f"scope_input_kmeans{with_loss_substr}"
+        OUTPUT_FOLDER = f"scope_output_kmeans{with_loss_substr}"
+        POST_KMEANS_DIR = f"scope_post_kmeans{with_loss_substr}"
     else:
         raise ValueError("Unknown type", type)
 
@@ -210,10 +223,13 @@ def calculate_pairwise_ancestry_accuracy_for_scope_post(
 
 
 ## TODO: Refactor code to reuse common parts of code
-def calculate_pairwise_ancestry_accuracy_for_phertilizer(SIMULATION_STR, collapse=False):
+def calculate_pairwise_ancestry_accuracy_for_phertilizer(SIMULATION_STR, collapse=False, loss=None):
 
-    GROUND_TRUTH_DIR = f"../data/simulation/ground_truth/{SIMULATION_STR}"
-    PHERTILIZER_OUTPUT_DIR = f"../data/simulation/phertilizer_output/{SIMULATION_STR}"
+    if loss is not None: with_loss_substr = f"_with_loss_{str(int(loss*100))}"
+    else: with_loss_substr = ""
+
+    GROUND_TRUTH_DIR = f"../data/simulation/ground_truth{with_loss_substr}/{SIMULATION_STR}"
+    PHERTILIZER_OUTPUT_DIR = f"../data/simulation/phertilizer_output{with_loss_substr}/{SIMULATION_STR}"
 
     mutation_group = pd.read_parquet(f"{GROUND_TRUTH_DIR}/sim_mutation_group.parquet")
     mutation_group.set_index('mutation', inplace=True)
@@ -814,6 +830,8 @@ def calculate_runtime(STR, type):
         file_sub = "phertilizer_output"
     elif type == "SBMCLONE":
         file_sub = "sbmclone_output"
+    elif type == "PHARMING":
+        file_sub = "pharming_output"
     
     filename = f"../data/simulation/{file_sub}/{STR}/benchmark"
 
@@ -829,3 +847,223 @@ def calculate_runtime(STR, type):
 
 
     return row['cpu_time'], row['max_vms'], row['s']
+
+
+## TODO: Refactor code to reuse common parts of code
+def calculate_pairwise_ancestry_accuracy_for_pharming(SIMULATION_STR, collapse=False, loss=None):
+
+    if loss is not None: with_loss_substr = f"_with_loss_{str(int(loss*100))}"
+    else: with_loss_substr = ""
+
+    GROUND_TRUTH_DIR = f"../data/simulation/ground_truth{with_loss_substr}/{SIMULATION_STR}"
+    PHARMING_OUTPUT_DIR = f"../data/simulation/pharming_output{with_loss_substr}/{SIMULATION_STR}"
+ 
+    mutation_group = pd.read_parquet(f"{GROUND_TRUTH_DIR}/sim_mutation_group.parquet")
+    mutation_group.set_index('mutation', inplace=True)
+
+    df_snv_clusters = pd.read_csv(f"{PHARMING_OUTPUT_DIR}/pred_mut.csv")
+    
+    df_snv_clusters['mutation'] = df_snv_clusters['mutation'].astype(int)
+    df_snv_clusters.set_index('mutation', inplace=True)
+    df_snv_clusters.sort_index(inplace=True)
+
+    df_merged = pd.merge(mutation_group, df_snv_clusters, left_index=True, right_index=True, how='left')
+    df_merged['cluster'] = df_merged['cluster'].fillna(-1).astype(int)
+
+    pair_counts = df_merged.value_counts(['mutation_group', 'cluster'])
+
+    total_mutation_groups = int(df_merged['mutation_group'].max()) + 1
+    total_mutation_groups_pred = int(df_merged['cluster'].max()) + 1
+    total_mutations = int(df_merged.index.max()) + 1
+    total_mutations_pred = (df_merged['cluster'] != -1).sum()
+
+    # print(total_mutations_pred)
+
+    Tree = pd.read_csv(f"{GROUND_TRUTH_DIR}/sim_tree_edgelist.csv", header=None)
+    Tree_mut = Tree[~Tree[1].str.startswith('s')]
+    T_truth = nx.DiGraph()
+
+    for index, row in Tree_mut.iterrows():
+        parent, child = row[0], row[1]
+        T_truth.add_edge(parent, child)
+
+    T_phert = nx.DiGraph()
+
+    edges = []
+    leaves = []
+
+    with open(f"{PHARMING_OUTPUT_DIR}/pred_tree.txt", "r") as f:
+        lines = f.readlines()
+        
+        n_edges = int(lines[0].split()[0])
+        
+        for line in lines[1:n_edges+1]:
+            u, v = map(int, line.split())
+            edges.append((u, v))
+            T_phert.add_edge(u, v)
+        
+
+    mutation_group_ancestral_relation = np.zeros((total_mutation_groups, total_mutation_groups), dtype=int)
+
+    for i in range(total_mutation_groups):
+        for j in range(total_mutation_groups):
+            if i == j: continue
+            if nx.has_path(T_truth, f'c{i}', f'c{j}'):
+                mutation_group_ancestral_relation[i][j] = 1
+
+    us = []
+    vs = []
+    rel = []
+
+    for i in range(total_mutation_groups):
+        for j in range(total_mutation_groups):
+            us.append(i)
+            vs.append(j)
+            if i == j: rel.append(1)
+            elif nx.has_path(T_truth, f'c{i}', f'c{j}'): rel.append(3)
+            elif nx.has_path(T_truth, f'c{j}', f'c{i}'): rel.append(4)
+            else: rel.append(2)
+
+    true_ancestry_df = pd.DataFrame({
+        'u1': us,
+        'v1': vs,
+        'rel1': rel 
+    })
+
+    us = []
+    vs = []
+    rel = []
+
+    for i in range(total_mutation_groups_pred):
+        for j in range(total_mutation_groups_pred):
+            us.append(i)
+            vs.append(j)
+            if i == j: rel.append(1)
+            elif not T_phert.has_node(i) or not T_phert.has_node(j): rel.append(0)
+            elif nx.has_path(T_phert, i, j): rel.append(3)
+            elif nx.has_path(T_phert, j, i): rel.append(4)
+            else: rel.append(2)
+
+    pred_ancestry_df = pd.DataFrame({
+        'u2': us,
+        'v2': vs,
+        'rel2': rel 
+    })
+
+    merged_ancestry = pd.merge(true_ancestry_df, pred_ancestry_df, how='cross')
+
+    merged_ancestry_ = pd.merge(merged_ancestry, pair_counts, left_on=['u1', 'u2'], right_on=['mutation_group', 'cluster'], how='left')
+    merged_ancestry_.rename(columns={'count': 'u1u2'}, inplace=True)
+    merged_ancestry_ = pd.merge(merged_ancestry_, pair_counts, left_on=['v1', 'v2'], right_on=['mutation_group', 'cluster'], how='left')
+    merged_ancestry_.rename(columns={'count': 'v1v2'}, inplace=True)
+    merged_ancestry_ = merged_ancestry_.fillna(0)
+
+    merged_ancestry_["prod"] = merged_ancestry_["u1u2"] * merged_ancestry_["v1v2"]
+    merged_ancestry_["match"] = (merged_ancestry_["rel1"] == merged_ancestry_["rel2"]).astype(int)
+
+    merged_ancestry_ = merged_ancestry_[merged_ancestry_["rel2"] != 0]
+
+    # TODO: Fix the difference addition for scope    
+    total_pairs = (total_mutations * (total_mutations - 1)) // 2
+
+    match_prod = (merged_ancestry_["prod"] * merged_ancestry_["match"]).sum()
+    correct_pairs = (match_prod - total_mutations_pred) // 2
+
+    phert_acc = correct_pairs / total_pairs
+
+    return total_pairs, correct_pairs, phert_acc
+
+
+def load_tree(filepath):
+    with open(filepath) as f:
+        lines = [l.strip() for l in f if l.strip()]
+
+    # number of edges
+    n_edges = int(lines[0].split()[0])
+
+    edge_lines = lines[1:1+n_edges]
+    leaf_start = 1 + n_edges
+
+    # number of leaves
+    n_leaves = int(lines[leaf_start].split()[0])
+    leaf_lines = lines[leaf_start+1:leaf_start+1+n_leaves]
+
+    # build graph
+    G = nx.DiGraph()
+
+    for line in edge_lines:
+        parent, child = map(int, line.split())
+        G.add_edge(parent, child)
+
+    leaves = [int(x) for x in leaf_lines]
+
+    return G, leaves
+
+
+def cluster_placement_accuracy_pharming(STR):
+
+    GROUND_TRUTH_DIR = f"../data/simulation/ground_truth/{STR}"
+
+    df_mut_mut_group = pd.read_parquet(f"{GROUND_TRUTH_DIR}/sim_mutation_group.parquet")
+
+    Tree = pd.read_csv(f"{GROUND_TRUTH_DIR}/sim_tree_edgelist.csv", header=None)
+    Tree_mut = Tree[~Tree[1].str.startswith('s')]
+    T_truth = nx.DiGraph()
+
+    for index, row in Tree_mut.iterrows():
+        parent, child = row[0], row[1]
+        T_truth.add_edge(parent, child)
+
+    cluster_map = nearest_d_or_root_for_c_nodes(T_truth, 'root')
+
+    cluster_df = pd.DataFrame(list(cluster_map.items()), columns=['mutation_group', 'cn_cluster'])
+    cluster_df['cn_cluster'] = cluster_df['cn_cluster'].replace('root', 'd0')
+    cluster_df['mutation_group'] = cluster_df['mutation_group'].str[1:].astype(int)
+    cluster_df['cn_cluster'] = cluster_df['cn_cluster'].str[1:].astype(int)
+    df_mut_cn_cluster = pd.merge(df_mut_mut_group, cluster_df, on='mutation_group', how='left')
+
+    df_2 = pd.read_csv(f"../data/simulation/pharming_output/{STR}/cn_genotypes.csv", index_col=0)
+    df = pd.read_parquet(f"../data/simulation/ground_truth/{STR}/sim_copy_numbers_of_segments.parquet")
+
+    df.columns = df.columns.astype(int)
+
+    df_2.index = df_2.index.astype(int)
+    df_2.columns = df_2.columns.astype(int)
+
+    df = df[df_2.columns]
+
+    # Compute Manhattan distance matrix
+    dist = pd.DataFrame(
+        np.abs(df_2.values[:, None, :] - df.values[None, :, :]).sum(axis=2),
+        index=df_2.index,
+        columns=df.index
+    )
+
+    # Closest df_2 row for each df row
+    closest_idx = dist.idxmin(axis=1)
+    closest_dist = dist.min(axis=1)
+
+    result = pd.DataFrame({
+        "pharming_cluster": df_2.index,
+        "mapped_cluster": closest_idx,
+        "distance": closest_dist
+    })
+
+    # load tree
+    G, leaves = load_tree(f"../data/simulation/pharming_output/{STR}/pred_tree.txt")
+
+    parent_child_df = pd.DataFrame(list(G.edges()), columns=["parent", "child"])
+
+    pred_mut = pd.read_csv(f"../data/simulation/pharming_output/{STR}/pred_mut.csv")
+    pred_merged = pd.merge(pred_mut, parent_child_df, left_on='cluster', right_on='child')
+    pred_merged = pd.merge(pred_merged, result, left_on="parent", right_on="pharming_cluster")
+
+    df_merged = pd.merge(df_mut_cn_cluster, pred_merged, on='mutation', how='left', suffixes=['_ground_truth', '_method'])
+    df_merged['mapped_cluster'].fillna(-1)
+    df_merged['match'] = (df_merged['cn_cluster'] == df_merged['mapped_cluster']).astype(int)
+
+    total = int(len(df_merged))
+    correct = int(df_merged['match'].sum())
+    accuracy = correct / total
+
+    return total, correct, accuracy

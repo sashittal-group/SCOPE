@@ -2,6 +2,7 @@ configfile: "config.yaml"
 
 seeds = [ i for i in range(config["nseeds"])]
 Ks = [i for i in range(10, 21)]
+lambdas = [f"{int(l*100):02d}" for l in config['lambda']]
 
 import itertools
 
@@ -9,17 +10,25 @@ import itertools
 rule all:
     input:
         # # simulation
-        # expand('data/simulation/ground_truth{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_multi_state_tree_node_character_matrix.parquet', \
+        # expand('data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_multi_state_tree_node_character_matrix.parquet', \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-        #     nclusters=config['nclusters'], cov=config['coverage'], loss_switch=config['loss_switch']),
+        #     nclusters=config['nclusters'], cov=config['coverage']),
+        # # simulation with loss
+        # expand('data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_multi_state_tree_node_character_matrix.parquet', \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage'], lambda_pct=lambdas),
         # # scope input
         # expand("data/simulation/scope_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_plus.csv", \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
         #     nclusters=config['nclusters'], cov=config['coverage']),
         # # scope input kmeans
-        # expand("data/simulation/scope_input_kmeans{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_clones.csv", \
+        # expand("data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_clones.csv", \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-        #     nclusters=config['nclusters'], cov=config['coverage'], loss_switch=config['loss_switch']),
+        #     nclusters=config['nclusters'], cov=config['coverage']),
+        # scope input kmeans with loss
+        expand("data/simulation/scope_input_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_clones.csv", \
+            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+            nclusters=config['nclusters'], cov=config['coverage'], lambda_pct=lambdas),
         # # scope input kmeans known k
         # expand("data/simulation/scope_input_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_clones.csv", \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
@@ -28,18 +37,34 @@ rule all:
         # expand("data/simulation/phertilizer_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/snv_counts.tsv", \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
         #     nclusters=config['nclusters'], cov=config['coverage']),
-        # sbmclone input
-        expand("data/simulation/sbmclone_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/matrix.csv", \
-            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-            nclusters=config['nclusters'], cov=config['coverage']),
+        # # phertilizer input with loss
+        # expand("data/simulation/phertilizer_input_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/snv_counts.tsv", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage'], lambda_pct=lambdas),
+        # # pharming input
+        # expand("data/simulation/pharming_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/read_counts.tsv", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage']),
+        # # pharming input with loss
+        # expand("data/simulation/pharming_input_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/read_counts.tsv", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage'], lambda_pct=lambdas),
+        # # sbmclone input
+        # expand("data/simulation/sbmclone_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/matrix.csv", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage']),
         # # scope on simulation
         # expand("data/simulation/scope_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt", \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
         #     nclusters=config['nclusters'], cov=config['coverage']),
         # # scope kmeans on simulation
-        # expand("data/simulation/scope_output_kmeans{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt", \
+        # expand("data/simulation/scope_output_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt", \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
-        #     nclusters=config['nclusters'], cov=config['coverage'], loss_switch=config['loss_switch']),
+        #     nclusters=config['nclusters'], cov=config['coverage']),
+        # scope kmeans on simulation with loss
+        expand("data/simulation/scope_output_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt", \
+            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+            nclusters=config['nclusters'], cov=config['coverage'], lambda_pct=lambdas),
         # # scope kmeans known k on simulation
         # expand("data/simulation/scope_output_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt", \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
@@ -48,6 +73,18 @@ rule all:
         # expand("data/simulation/phertilizer_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/cell_clusters.csv", \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
         #     nclusters=config['nclusters'], cov=config['coverage']),
+        # # phertilizer on simulation with loss
+        # expand("data/simulation/phertilizer_output_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/cell_clusters.csv", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage'], lambda_pct=lambdas),
+        # pharming on simulation
+        # expand("data/simulation/pharming_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/solutions.pkl", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage']),
+        # pharming on simulation with loss
+        # expand("data/simulation/pharming_output_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/solutions.pkl", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage'], lambda_pct=lambdas),
         # # post process clone
         # expand("data/simulation/scope_post_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_cleaned_clones.csv", \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
@@ -56,39 +93,42 @@ rule all:
         # expand("data/simulation/scope_post_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_cleaned_clones.csv", \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
         #     nclusters=config['nclusters'], cov=config['coverage']),
+        # post process clone 2 with loss
+        expand("data/simulation/scope_post_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_cleaned_clones.csv", \
+            itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+            nclusters=config['nclusters'], cov=config['coverage'], lambda_pct=lambdas),
         # # split inputs williams
         # expand("data/williams/scratch/separate.txt"),
-        # make input williams
+        # # make input williams
         # expand("outputs/scope/williams/{sample_ids}/mutation_clusters/k_10/F_plus.csv", \
         #     itertools.product, sample_ids=config['sample_ids']),
-        # post williams
+        # # post williams
         # expand("outputs/scope/williams/{sample_ids}/solutions_mut/k_{Ks}/summary.txt", \
         #     itertools.product, sample_ids=config['sample_ids'], Ks=Ks),
 
 
 rule simulate:
     output:
-        readcount_matrix="data/simulation/ground_truth{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_read_count.parquet",
-        variantcount_matrix="data/simulation/ground_truth{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_variant_count.parquet",
-        character_matrix="data/simulation/ground_truth{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_character_matrix_without_noise.parquet",
-        copy_number_table="data/simulation/ground_truth{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_copy_numbers.parquet",
-        mutation_group_table="data/simulation/ground_truth{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_mutation_group.parquet",
-        mutation_to_bin_table="data/simulation/ground_truth{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_mutation_to_bin_mapping.parquet",
-        B_truth="data/simulation/ground_truth{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_multi_state_tree_node_character_matrix.parquet",
+        readcount_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_read_count.parquet",
+        variantcount_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_variant_count.parquet",
+        character_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_character_matrix_without_noise.parquet",
+        copy_number_table="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_copy_numbers.parquet",
+        mutation_group_table="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_mutation_group.parquet",
+        mutation_to_bin_table="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_mutation_to_bin_mapping.parquet",
+        B_truth="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_multi_state_tree_node_character_matrix.parquet",
     params:
-        prefix="data/simulation/ground_truth{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim",
+        prefix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim",
         fn=config["fn"],
         fp=config["fp"],
-        mutation_rate=config["lambda"],
+        mutation_rate=0.50,
         vaf_threshold=config["vaf_threshold"],
         read_threshold=config["read_threshold"],
         missing=config["missing_rate"],
-        mutation_loss=lambda wildcards: "--mutation-loss" if wildcards.loss_switch else "",
     log:
-        std="data/simulation/ground_truth{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim.log",
-        err="data/simulation/ground_truth{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim.err.log",
+        std="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim.log",
+        err="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim.err.log",
     benchmark:
-        "data/simulation/ground_truth{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim.benchmark",
+        "data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim.benchmark",
     shell:
         (
             "python -m src.simulation.simulate_data "
@@ -104,7 +144,51 @@ rule simulate:
             "-l {params.mutation_rate} "
             "--cov {wildcards.cov} "
             "--maxcn 6 "
-            "{params.mutation_loss} "
+            "> {log.std} 2> {log.err}"
+        )
+
+rule simulate_with_loss:
+    output:
+        readcount_matrix="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_read_count.parquet",
+        variantcount_matrix="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_variant_count.parquet",
+        character_matrix="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_character_matrix_without_noise.parquet",
+        copy_number_table="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_copy_numbers.parquet",
+        mutation_group_table="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_mutation_group.parquet",
+        mutation_to_bin_table="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_mutation_to_bin_mapping.parquet",
+        B_truth="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_multi_state_tree_node_character_matrix.parquet",
+
+    params:
+        prefix="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim",
+        fn=config["fn"],
+        fp=config["fp"],
+        vaf_threshold=config["vaf_threshold"],
+        read_threshold=config["read_threshold"],
+        missing=config["missing_rate"],
+        lambda_val=lambda wc: float(wc.lambda_pct) / 100,
+
+    log:
+        std="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim.log",
+        err="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim.err.log",
+
+    benchmark:
+        "data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim.benchmark",
+
+    shell:
+        (
+            "python -m src.simulation.simulate_data "
+            "-s {wildcards.seed} "
+            "-o {params.prefix} "
+            "-n {wildcards.ncells} "
+            "-m {wildcards.n_mutation_groups} "
+            "--size {wildcards.mutation_group_sizes} "
+            "-d {params.missing} "
+            "-p {wildcards.nclusters} "
+            "-a {params.fp} "
+            "-b {params.fn} "
+            "-l {params.lambda_val} "
+            "--cov {wildcards.cov} "
+            "--maxcn 6 "
+            "--mutation-loss "
             "> {log.std} 2> {log.err}"
         )
 
@@ -127,6 +211,85 @@ rule phertilizer_input:
         "python -m src.simulation.process_simulated_data_for_phertilizer -i data/simulation/ground_truth/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/sim "
         " -o data/simulation/phertilizer_input/ "
         " > {log.std} 2> {log.err}"
+
+
+rule phertilizer_input_with_loss:
+    input:
+        readcount_matrix="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_read_count.parquet",
+        variantcount_matrix="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_variant_count.parquet",
+        mutation_to_bin_table="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_mutation_to_bin_mapping.parquet",
+    output:
+        snv_counts="data/simulation/phertilizer_input_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/snv_counts.tsv",
+        binned_counts="data/simulation/phertilizer_input_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/binned_read_counts.csv",
+    resources:
+        mem_mb=10240
+    log:
+        std="data/simulation/phertilizer_input_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/stdout.log",
+        err="data/simulation/phertilizer_input_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/stderr.log",
+    benchmark:
+        "data/simulation/phertilizer_input_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/benchmark.txt"
+    shell:
+        """
+        python -m src.simulation.process_simulated_data_for_phertilizer \
+            -i data/simulation/ground_truth_with_loss_{wildcards.lambda_pct}/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/sim \
+            -o data/simulation/phertilizer_input_with_loss_{wildcards.lambda_pct}/ \
+            > {log.std} 2> {log.err}
+        """
+
+
+rule pharming_input:
+    input:
+        readcount_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_read_count.parquet",
+        variantcount_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_variant_count.parquet",
+        mutation_to_bin_table="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_mutation_to_bin_mapping.parquet",
+    output:
+        read_counts="data/simulation/pharming_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/read_counts.tsv",
+        copy_numbers="data/simulation/pharming_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/copy_numbers.csv",
+        segments="data/simulation/pharming_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/segments.txt",
+    resources:
+        mem_mb=10240
+    log:
+        std="data/simulation/pharming_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/log",
+        err="data/simulation/pharming_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/err.log",
+    benchmark: "data/simulation/pharming_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/benchmark",
+    shell:
+        "python -m src.simulation.process_simulated_data_for_pharming -i data/simulation/ground_truth/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/sim "
+        " -o data/simulation/pharming_input/ "
+        " > {log.std} 2> {log.err}"
+
+
+rule pharming_input_with_loss:
+    input:
+        readcount_matrix="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_read_count.parquet",
+        variantcount_matrix="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_variant_count.parquet",
+        mutation_to_bin_table="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_mutation_to_bin_mapping.parquet",
+
+    output:
+        read_counts="data/simulation/pharming_input_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/read_counts.tsv",
+        copy_numbers="data/simulation/pharming_input_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/copy_numbers.csv",
+        segments="data/simulation/pharming_input_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/segments.txt",
+
+    params:
+        prefix="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim",
+        outdir="data/simulation/pharming_input_with_loss_{lambda_pct}/",
+
+    resources:
+        mem_mb=10240
+
+    log:
+        std="data/simulation/pharming_input_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/pharming_input.log",
+        err="data/simulation/pharming_input_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/pharming_input.err.log",
+
+    benchmark:
+        "data/simulation/pharming_input_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/pharming_input.benchmark",
+
+    shell:
+        (
+            "python -m src.simulation.process_simulated_data_for_pharming "
+            "-i {params.prefix} "
+            "-o {params.outdir} "
+            "> {log.std} 2> {log.err}"
+        )
 
 
 rule sbmclone_input:
@@ -170,24 +333,50 @@ rule scope_input:
 
 rule scope_input_kmeans:
     input:
-        character_matrix="data/simulation/ground_truth{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_character_matrix_without_noise.parquet",
-        readcount_matrix="data/simulation/ground_truth{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_read_count.parquet",
-        variantcount_matrix="data/simulation/ground_truth{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_variant_count.parquet",
-        copy_number_table="data/simulation/ground_truth{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_copy_numbers.parquet",
+        character_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_character_matrix_without_noise.parquet",
+        readcount_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_read_count.parquet",
+        variantcount_matrix="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_variant_count.parquet",
+        copy_number_table="data/simulation/ground_truth/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_copy_numbers.parquet",
     output:
-        F_plus="data/simulation/scope_input_kmeans{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_plus.csv",
-        F_minus="data/simulation/scope_input_kmeans{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_minus.csv",
-        F_bar="data/simulation/scope_input_kmeans{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_bar.csv",
-        clone_sizes="data/simulation/scope_input_kmeans{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/clone_sizes.csv",
-        kmeans_clones="data/simulation/scope_input_kmeans{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_clones.csv",
+        F_plus="data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_plus.csv",
+        F_minus="data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_minus.csv",
+        F_bar="data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_bar.csv",
+        clone_sizes="data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/clone_sizes.csv",
+        kmeans_clones="data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_clones.csv",
     log:
-        std="data/simulation/scope_input_kmeans{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/log",
-        err="data/simulation/scope_input_kmeans{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/err.log",
-    benchmark: "data/simulation/scope_input_kmeans{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/benchmark",
+        std="data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/log",
+        err="data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/err.log",
+    benchmark: "data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/benchmark",
     shell:
-        "python -m src.simulation.kmeans_clustering_for_scope -i data/simulation/ground_truth{wildcards.loss_switch}/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/sim "
-        " -o data/simulation/scope_input_kmeans{wildcards.loss_switch}/ "
+        "python -m src.simulation.kmeans_clustering_for_scope -i data/simulation/ground_truth/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/sim "
+        " -o data/simulation/scope_input_kmeans/ "
         " > {log.std} 2> {log.err}"
+
+
+rule scope_input_kmeans_with_loss:
+    input:
+        character_matrix="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_character_matrix_without_noise.parquet",
+        readcount_matrix="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_read_count.parquet",
+        variantcount_matrix="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_variant_count.parquet",
+        copy_number_table="data/simulation/ground_truth_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/sim_copy_numbers.parquet",
+    output:
+        F_plus="data/simulation/scope_input_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_plus.csv",
+        F_minus="data/simulation/scope_input_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_minus.csv",
+        F_bar="data/simulation/scope_input_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_bar.csv",
+        clone_sizes="data/simulation/scope_input_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/clone_sizes.csv",
+        kmeans_clones="data/simulation/scope_input_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_clones.csv",
+    log:
+        std="data/simulation/scope_input_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/stdout.log",
+        err="data/simulation/scope_input_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/stderr.log",
+    benchmark:
+        "data/simulation/scope_input_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/benchmark.txt",
+    shell:
+        """
+        python -m src.simulation.kmeans_clustering_for_scope \
+            -i data/simulation/ground_truth_with_loss_{wildcards.lambda_pct}/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/sim \
+            -o data/simulation/scope_input_kmeans_with_loss_{wildcards.lambda_pct}/ \
+            > {log.std} 2> {log.err}
+        """
 
 rule scope_input_kmeans_known_k:
     input:
@@ -228,24 +417,46 @@ rule scope_on_simulation:
 
 rule scope_kmeans_on_simulation:
     input:
-        F_plus="data/simulation/scope_input_kmeans{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_plus.csv",
-        F_minus="data/simulation/scope_input_kmeans{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_minus.csv",
-        clone_sizes="data/simulation/scope_input_kmeans{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/clone_sizes.csv",
+        F_plus="data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_plus.csv",
+        F_minus="data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_minus.csv",
+        clone_sizes="data/simulation/scope_input_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/clone_sizes.csv",
     output:
-        solution_summary="data/simulation/scope_output_kmeans{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt",
-        X_kmeans="data/simulation/scope_output_kmeans{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/solution_0/X.csv",
+        solution_summary="data/simulation/scope_output_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt",
+        X_kmeans="data/simulation/scope_output_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/solution_0/X.csv",
     log:
-        std="data/simulation/scope_output_kmeans{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/log",
-        err="data/simulation/scope_output_kmeans{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/err.log",
+        std="data/simulation/scope_output_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/log",
+        err="data/simulation/scope_output_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/err.log",
     benchmark:
-        "data/simulation/scope_output_kmeans{loss_switch}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/benchmark",
+        "data/simulation/scope_output_kmeans/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/benchmark",
     shell:
         (
             "python -m src.simulation.run_scope_on_simulated_data "
-            "-i data/simulation/scope_input_kmeans{wildcards.loss_switch}/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed} "
-            " -o data/simulation/scope_output_kmeans{wildcards.loss_switch}/ "
+            "-i data/simulation/scope_input_kmeans/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed} "
+            " -o data/simulation/scope_output_kmeans/ "
             "> {log.std} 2> {log.err}"
         )
+
+
+rule scope_kmeans_on_simulation_with_loss:
+    input:
+        F_plus="data/simulation/scope_input_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_plus.csv",
+        F_minus="data/simulation/scope_input_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_minus.csv",
+        clone_sizes="data/simulation/scope_input_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/clone_sizes.csv",
+    output:
+        solution_summary="data/simulation/scope_output_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/summary.txt",
+        X_kmeans="data/simulation/scope_output_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/solution_0/X.csv",
+    log:
+        std="data/simulation/scope_output_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/stdout.log",
+        err="data/simulation/scope_output_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/stderr.log",
+    benchmark:
+        "data/simulation/scope_output_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/benchmark.txt",
+    shell:
+        """
+        python -m src.simulation.run_scope_on_simulated_data \
+            -i data/simulation/scope_input_kmeans_with_loss_{wildcards.lambda_pct}/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed} \
+            -o data/simulation/scope_output_kmeans_with_loss_{wildcards.lambda_pct}/ \
+            > {log.std} 2> {log.err}
+        """
 
 
 rule scope_kmeans_known_k_on_simulation:
@@ -293,6 +504,28 @@ rule post_process_clones_2:
         "python -m src.simulation.post_process_mutation_groups_2 -s n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed} "
         " > {log.std} 2> {log.err}"
 
+rule post_process_clones_2_with_loss:
+    input:
+        F_bar="data/simulation/scope_input_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/F_bar.csv",
+        X_kmeans="data/simulation/scope_output_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/solution_0/X.csv",
+    output:
+        corrected_clones="data/simulation/scope_post_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_cleaned_clones.csv",
+    log:
+        std="data/simulation/scope_post_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/stdout.log",
+        err="data/simulation/scope_post_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/stderr.log",
+    benchmark:
+        "data/simulation/scope_post_kmeans_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/benchmark.txt",
+    shell:
+        """
+        python -m src.simulation.post_process_mutation_groups_2 \
+            -s n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed} \
+            -i scope_input_kmeans_with_loss_{wildcards.lambda_pct} \
+            -o scope_output_kmeans_with_loss_{wildcards.lambda_pct} \
+            -p scope_post_kmeans_with_loss_{wildcards.lambda_pct} \
+            -g ground_truth_with_loss_{wildcards.lambda_pct} \
+            > {log.std} 2> {log.err}
+        """
+
 rule phertilizer_on_simulation:
     input:
         snv_counts="data/simulation/phertilizer_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/snv_counts.tsv",
@@ -317,6 +550,111 @@ rule phertilizer_on_simulation:
         " -m data/simulation/phertilizer_output/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/snv_clusters.csv "
         " -j 10 -s 4 "
         " > {log.std} 2> {log.err}"
+
+
+rule phertilizer_on_simulation_with_loss:
+    input:
+        snv_counts="data/simulation/phertilizer_input_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/snv_counts.tsv",
+        binned_counts="data/simulation/phertilizer_input_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/binned_read_counts.csv",
+    output:
+        phertilizer_cell_clusters="data/simulation/phertilizer_output_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/cell_clusters.csv",
+        phertilizer_snv_clusters="data/simulation/phertilizer_output_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/snv_clusters.csv",
+        phertilizer_tree_txt="data/simulation/phertilizer_output_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/tree.txt",
+        phertilizer_tree_image="data/simulation/phertilizer_output_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/tree.png",
+    conda:
+        "phertilizer"
+    log:
+        std="data/simulation/phertilizer_output_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/stdout.log",
+        err="data/simulation/phertilizer_output_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/stderr.log",
+    benchmark:
+        "data/simulation/phertilizer_output_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/benchmark.txt",
+    shell:
+        """
+        phertilizer \
+            -f {input.snv_counts} \
+            --bin_count_data {input.binned_counts} \
+            --tree {output.phertilizer_tree_image} \
+            --tree_text {output.phertilizer_tree_txt} \
+            -n {output.phertilizer_cell_clusters} \
+            -m {output.phertilizer_snv_clusters} \
+            -j 10 -s 4 \
+            > {log.std} 2> {log.err}
+        """
+
+
+rule pharming_on_simulation:
+    input:
+        read_counts="data/simulation/pharming_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/read_counts.tsv",
+        copy_numbers="data/simulation/pharming_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/copy_numbers.csv",
+        segments="data/simulation/pharming_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/segments.txt",
+    output:
+        pharming_solution_pkl="data/simulation/pharming_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/solutions.pkl",
+        pharming_tree_png="data/simulation/pharming_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/tree.png",
+        pharming_labels="data/simulation/pharming_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/labels.csv",
+    conda:
+        "pharming"
+    log:
+        std="data/simulation/pharming_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/log",
+        err="data/simulation/pharming_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/err.log",
+    benchmark: "data/simulation/pharming_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/benchmark",
+    shell:
+        "pharming -f data/simulation/pharming_input/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/read_counts.tsv "
+        " -c data/simulation/pharming_input/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/copy_numbers.csv "
+        " -s 0 -l 1000 --top_n 1 --dcfs data/simulation/pharming_input/dcfs.txt "
+        " --root_x 2 --root_y 0 "
+        " --ninit-segs 10 "
+        " --thresh-prop 0.01 "
+        " --sum-condition --collapse --cell-threshold 10 "
+        " -P data/simulation/pharming_output/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/solutions.pkl "
+        " -O data/simulation/pharming_output/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed} "
+        " --tree data/simulation/pharming_output/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/tree.png "
+        " --labels data/simulation/pharming_output/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/labels.csv "
+        " > {log.std} 2> {log.err}"
+
+
+
+rule pharming_on_simulation_with_loss:
+    input:
+        read_counts="data/simulation/pharming_input_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/read_counts.tsv",
+        copy_numbers="data/simulation/pharming_input_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/copy_numbers.csv",
+        segments="data/simulation/pharming_input_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/segments.txt",
+
+    output:
+        pharming_solution_pkl="data/simulation/pharming_output_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/solutions.pkl",
+        pharming_tree_png="data/simulation/pharming_output_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/tree.png",
+        pharming_labels="data/simulation/pharming_output_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/labels.csv",
+
+    params:
+        outdir="data/simulation/pharming_output_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}",
+
+    conda:
+        "pharming"
+
+    log:
+        std="data/simulation/pharming_output_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/pharming.log",
+        err="data/simulation/pharming_output_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/pharming.err.log",
+
+    benchmark:
+        "data/simulation/pharming_output_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/pharming.benchmark",
+
+    shell:
+        (
+            "pharming "
+            "-f {input.read_counts} "
+            "-c {input.copy_numbers} "
+            "-s 0 -l 1000 --top_n 1 "
+            "--dcfs data/simulation/pharming_input/dcfs.txt "
+            "--root_x 2 --root_y 0 "
+            "--ninit-segs 10 "
+            "--thresh-prop 0.01 "
+            "--sum-condition --collapse --cell-threshold 10 "
+            "-P {output.pharming_solution_pkl} "
+            "-O {params.outdir} "
+            "--tree {output.pharming_tree_png} "
+            "--labels {output.pharming_labels} "
+            "> {log.std} 2> {log.err}"
+        )
+
 
 rule split_inputs_williams:
     output:

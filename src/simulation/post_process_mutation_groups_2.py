@@ -18,8 +18,10 @@ def main(args):
 
     STR = args.s
 
-    OUT_DIR = "scope_output_kmeans"
-    INP_DIR = "scope_input_kmeans"
+    OUT_DIR = args.o
+    INP_DIR = args.i
+    POST_DIR = args.p
+    GROUND_TRUTH_DIR = args.g
 
     F_bar = pd.read_csv(f"data/simulation/{INP_DIR}/{STR}/F_bar.csv", index_col=0)
     kmeans_clones = pd.read_csv(f"data/simulation/{INP_DIR}/{STR}/kmeans_clones.csv", index_col=0)
@@ -30,7 +32,7 @@ def main(args):
 
     if len(mutation_groups_not_selected) > 0:
 
-        input_prefix = f"data/simulation/ground_truth/{STR}/sim"
+        input_prefix = f"data/simulation/{GROUND_TRUTH_DIR}/{STR}/sim"
 
         df_total = pd.read_parquet(f"{input_prefix}_read_count.parquet")
         df_variant = pd.read_parquet(f"{input_prefix}_variant_count.parquet")
@@ -87,16 +89,20 @@ def main(args):
         mutation_group_update['mutation_group'] = mutation_group_update['mutation_group'].astype(str).str.strip().astype(int)
 
         mutation_group_update = mutation_group_update[['mutation', 'mutation_group']]
-        os.makedirs(f"data/simulation/scope_post_kmeans/{STR}", exist_ok=True)
-        mutation_group_update.to_csv(f"data/simulation/scope_post_kmeans/{STR}/kmeans_cleaned_clones.csv")
+        os.makedirs(f"data/simulation/{POST_DIR}/{STR}", exist_ok=True)
+        mutation_group_update.to_csv(f"data/simulation/{POST_DIR}/{STR}/kmeans_cleaned_clones.csv")
     
     else:
-        kmeans_clones.to_csv(f"data/simulation/scope_post_kmeans/{STR}/kmeans_cleaned_clones.csv")
+        kmeans_clones.to_csv(f"data/simulation/{POST_DIR}/{STR}/kmeans_cleaned_clones.csv")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', type=str, help='STR', default='sample')
+    parser.add_argument('-i', type=str, help='INP_DIR', default='scope_input_kmeans')
+    parser.add_argument('-o', type=str, help='OUT_DIR', default='scope_output_kmeans')
+    parser.add_argument('-p', type=str, help='POST_DIR', default='scope_post_kmeans')
+    parser.add_argument('-g', type=str, help='GROUND_TRUTH', default='ground_truth')
     args = parser.parse_args(None if sys.argv[1:] else ['-h'])
     
     main(args)
