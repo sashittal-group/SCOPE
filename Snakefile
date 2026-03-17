@@ -85,6 +85,10 @@ rule all:
         # expand("data/simulation/pharming_output_with_loss_{lambda_pct}/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/solutions.pkl", \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
         #     nclusters=config['nclusters'], cov=config['coverage'], lambda_pct=lambdas),
+        # # sbmclone on simulation
+        # expand("data/simulation/sbmclone_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/blockmatrix.csv", \
+        #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
+        #     nclusters=config['nclusters'], cov=config['coverage']),
         # # post process clone
         # expand("data/simulation/scope_post_kmeans_known_k/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/kmeans_cleaned_clones.csv", \
         #     itertools.product, seed=seeds, ncells=config['ncells'], n_mutation_groups=config['n_mutation_groups'], mutation_group_sizes=config['mutation_group_sizes'], \
@@ -105,6 +109,14 @@ rule all:
         # # post williams
         # expand("outputs/scope/williams/{sample_ids}/solutions_mut/k_{Ks}/summary.txt", \
         #     itertools.product, sample_ids=config['sample_ids'], Ks=Ks),
+        # split inputs williams
+        expand("data/williams/scratch/separate.txt"),
+        # make input williams
+        expand("outputs/scope/williams/{sample_ids}/mutation_clusters/k_10/F_plus.csv", \
+            itertools.product, sample_ids=config['sample_ids']),
+        # post williams
+        expand("outputs/scope/williams/{sample_ids}/solutions_mut/k_{Ks}/summary.txt", \
+            itertools.product, sample_ids=config['sample_ids'], Ks=Ks),
 
 
 rule simulate:
@@ -655,6 +667,22 @@ rule pharming_on_simulation_with_loss:
             "> {log.std} 2> {log.err}"
         )
 
+
+rule sbmclone_on_simulation:
+    input:
+        matrix="data/simulation/sbmclone_input/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/matrix.csv",
+    output:
+        blockmatrix="data/simulation/sbmclone_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/blockmatrix.csv",
+    conda:
+        "sbmclone"
+    log:
+        std="data/simulation/sbmclone_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/log",
+        err="data/simulation/sbmclone_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/err.log",
+    benchmark: "data/simulation/sbmclone_output/n{ncells}_m{n_mutation_groups}_size{mutation_group_sizes}_cov{cov}_p{nclusters}_s{seed}/benchmark",
+    shell:
+        "python ../SBMClone/sbmclone.py data/simulation/sbmclone_input/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/matrix.csv "
+        "-o data/simulation/sbmclone_output/n{wildcards.ncells}_m{wildcards.n_mutation_groups}_size{wildcards.mutation_group_sizes}_cov{wildcards.cov}_p{wildcards.nclusters}_s{wildcards.seed}/"
+        " > {log.std} 2> {log.err}"
 
 rule split_inputs_williams:
     output:
