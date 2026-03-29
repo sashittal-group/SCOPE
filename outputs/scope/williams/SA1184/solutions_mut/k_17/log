@@ -1,0 +1,1653 @@
+clone_id
+A    201
+C    128
+E     61
+D     49
+B     46
+F     31
+G     30
+H     21
+Name: count, dtype: int64
+clone_id
+A    0.354497
+C    0.225750
+E    0.107584
+D    0.086420
+B    0.081129
+F    0.054674
+G    0.052910
+H    0.037037
+Name: count, dtype: float64
+0.037037037037037035
+['A', 'B', 'C', 'D', 'E', 'F', 'G']
+   A  B  C  D  E  F  G
+A  0  0  0  0  1  0  1
+B  1  0  0  0  1  0  1
+C  1  0  0  0  1  0  1
+D  1  0  0  0  1  0  1
+E  1  0  1  1  0  1  1
+F  1  0  0  0  1  0  1
+G  1  0  0  0  1  0  0
+                 0         1    2         3    4  ...   12   13   14   15   16
+clone_id                                          ...                         
+A         1.000000  0.308333  0.0  0.571429  1.0  ...  0.0  1.0  1.0  1.0  1.0
+B         0.000000  1.000000  0.0  0.000000  1.0  ...  0.0  1.0  1.0  1.0  1.0
+C         0.333333  1.000000  0.0  1.000000  1.0  ...  1.0  1.0  1.0  1.0  1.0
+D         0.000000  1.000000  0.0  1.000000  1.0  ...  1.0  1.0  1.0  0.0  1.0
+E         1.000000  1.000000  0.0  0.000000  1.0  ...  1.0  1.0  1.0  1.0  1.0
+F         0.000000  1.000000  0.0  1.000000  1.0  ...  1.0  1.0  0.0  1.0  0.0
+G         0.000000  1.000000  0.0  0.000000  0.0  ...  0.0  1.0  1.0  0.0  0.0
+
+[7 rows x 17 columns]
+TRYING 18 CLONES
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 86400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (mac64[arm] - Darwin 25.3.0 25D125)
+
+CPU model: Apple M4
+Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+
+Non-default parameters:
+TimeLimit  86400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 30660 rows, 3526 columns and 89106 nonzeros
+Model fingerprint: 0xd15473f0
+Model has 238 quadratic constraints
+Variable types: 2387 continuous, 1139 integer (1139 binary)
+Coefficient statistics:
+  Matrix range     [5e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [2e+02, 7e+02]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 7e+00]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 18386 rows and 1486 columns (presolve time = 5s)...
+Presolve removed 18289 rows and 1412 columns
+Presolve time: 6.19s
+Presolved: 12427 rows, 2142 columns, 37927 nonzeros
+Variable types: 1412 continuous, 730 integer (730 binary)
+Root relaxation presolved: 12027 rows, 2248 columns, 36921 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    5.9070000e+03   4.382527e+02   0.000000e+00      7s
+    4498    4.5854995e+03   1.091983e+02   0.000000e+00     10s
+    5269    4.5855000e+03   0.000000e+00   0.000000e+00     11s
+    5269    4.5855000e+03   0.000000e+00   0.000000e+00     11s
+
+Root relaxation: objective 4.585500e+03, 5269 iterations, 4.02 seconds (0.97 work units)
+Total elapsed time = 15.80s (DegenMoves)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4585.50000    0  301          - 4585.50000      -     -   19s
+     0     0 3789.33333    0  114          - 3789.33333      -     -   24s
+     0     0 3788.50000    0   95          - 3788.50000      -     -   25s
+     0     0 3787.00000    0   99          - 3787.00000      -     -   27s
+     0     0 3787.00000    0   91          - 3787.00000      -     -   28s
+     0     0 3787.00000    0   73          - 3787.00000      -     -   28s
+     0     0 3787.00000    0   69          - 3787.00000      -     -   29s
+     0     0 3787.00000    0   23          - 3787.00000      -     -   34s
+     0     0 3787.00000    0   28          - 3787.00000      -     -   34s
+     0     0 3787.00000    0   28          - 3787.00000      -     -   35s
+     0     0 3787.00000    0   27          - 3787.00000      -     -   35s
+     0     0 3787.00000    0   22          - 3787.00000      -     -   37s
+     0     0 3787.00000    0   27          - 3787.00000      -     -   37s
+     0     0 3787.00000    0   31          - 3787.00000      -     -   39s
+     0     0 3787.00000    0   31          - 3787.00000      -     -   39s
+     0     2 3787.00000    0   31          - 3787.00000      -     -   45s
+   202   171 3786.99732   27  220          - 3787.00000      -   332   50s
+   570   281 3085.00000   23   65          - 3787.00000      -   295   55s
+  1190   462 3376.00000   15  116          - 3787.00000      -   276   60s
+  1726   598 3786.00000   19   75          - 3787.00000      -   277   65s
+  2246   762 3786.00000   23   81          - 3787.00000      -   278   71s
+  2613   892 3364.82946   16   96          - 3787.00000      -   281   75s
+  3103  1022 3253.50000   20   64          - 3787.00000      -   278   81s
+  3530  1138 3613.25000   23  268          - 3787.00000      -   277   86s
+  3641  1140 3709.00000   13  234          - 3787.00000      -   277  101s
+  3643  1142 3667.00000   24   38          - 3787.00000      -   277  105s
+  3649  1146 3553.00000   12   43          - 3787.00000      -   277  110s
+  3654  1149 3786.00000   25   29          - 3787.00000      -   276  115s
+  3658  1152 2935.20508   15   60          - 3787.00000      -   276  121s
+  3660  1153 2714.00000   18   45          - 3787.00000      -   276  126s
+  3661  1154 3494.00000   24   38          - 3787.00000      -   276  134s
+  3662  1154 3782.59209   23   38          - 3787.00000      -   276  139s
+  3663  1158 3787.00000   11   31          - 3787.00000      -  12.6  745s
+  3707  1201 3787.00000   17   25          - 3787.00000      -  18.2  750s
+  3793  1204 3787.00000   23   12          - 3787.00000      -  26.2  755s
+  3928  1205 3477.00000   28  209          - 3787.00000      -  36.3  760s
+  4055  1188 3364.73508   30  167          - 3787.00000      -  47.0  765s
+  4215  1148 3786.97500   23  108          - 3787.00000      -  62.8  771s
+  4290  1151 3786.00000   26   25          - 3787.00000      -  70.0  776s
+  4373  1150 3648.00000   28   51          - 3787.00000      -  80.7  782s
+  4437  1147 3456.80000   30  178          - 3787.00000      -  89.4  795s
+  4507  1142 infeasible   27               - 3787.00000      -  97.3  800s
+  4645  1129 2607.91347   23   39          - 3787.00000      -   110  806s
+  4695  1105 infeasible   29               - 3787.00000      -   114  811s
+  4847  1055 infeasible   28               - 3786.99658      -   124  816s
+  4904  1052 2530.05153   21  204          - 3786.71898      -   130 1424s
+  4962  1042 infeasible   25               - 3786.71898      -   135 1427s
+  5182   952 3675.19070   23  147          - 3785.98615      -   145 1432s
+  5245   936 3402.96167   23  224          - 3785.98613      -   151 1435s
+  5361   895 2550.00000   26  179          - 3777.40000      -   156 1450s
+  5586   866 infeasible   26               - 3774.00000      -   163 1456s
+  5874   777 3139.99533   25  116          - 3668.60000      -   173 1462s
+  6044   711 2291.25000   29   74          - 3668.60000      -   178 1466s
+  6235   648 2716.98442   21  106          - 3492.00000      -   183 1470s
+  6516   559 3142.16667   33  113          - 3459.84085      -   194 1477s
+  6669   512 3012.00000   20   72          - 3244.00000      -   201 1481s
+  6905   407 2846.00000   22   23          - 3232.00000      -   205 1485s
+  7306   295 3057.89731   19  104          - 3136.00000      -   213 1492s
+  7573   236 2483.00000   25   54          - 3108.00000      -   217 1497s
+  7803   180 2555.25000   22  171          - 3045.78626      -   220 1504s
+  8089   131 infeasible   28               - 2916.00000      -   223 1509s
+  8487    38 2203.00000   33   44          - 2506.26813      -   225 1513s
+  8791     4 1228.00000   29   33          - 2260.00000      -   227 1517s
+
+Cutting planes:
+  Learned: 4
+  Gomory: 9
+  Cover: 86
+  Implied bound: 23
+  Clique: 5
+  MIR: 45
+  StrongCG: 3
+  Flow cover: 90
+  Inf proof: 5
+  Zero half: 43
+  RLT: 89
+  Relax-and-lift: 5
+  BQP: 39
+
+Explored 8968 nodes (3079029 simplex iterations) in 1518.69 seconds (86.08 work units)
+Thread count was 10 (of 10 available processors)
+
+Solution count 0
+No other solutions better than -1e+100
+
+Model is infeasible
+Best objective -, best bound -, gap -
+TRYING 17 CLONES
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 86400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (mac64[arm] - Darwin 25.3.0 25D125)
+
+CPU model: Apple M4
+Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+
+Non-default parameters:
+TimeLimit  86400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 29469 rows, 3383 columns and 85614 nonzeros
+Model fingerprint: 0x40796369
+Model has 238 quadratic constraints
+Variable types: 2261 continuous, 1122 integer (1122 binary)
+Coefficient statistics:
+  Matrix range     [5e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [2e+02, 7e+02]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 7e+00]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 17754 rows and 1368 columns
+Presolve time: 2.82s
+Presolved: 11767 rows, 2041 columns, 35922 nonzeros
+Variable types: 1330 continuous, 711 integer (711 binary)
+Root relaxation presolved: 11384 rows, 2144 columns, 34956 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+    2533    4.5854995e+03   2.845610e+02   0.000000e+00      5s
+    5277    4.5854994e+03   5.990496e+02   0.000000e+00     10s
+    5453    4.5855000e+03   0.000000e+00   0.000000e+00     10s
+    5453    4.5855000e+03   0.000000e+00   0.000000e+00     10s
+
+Root relaxation: objective 4.585500e+03, 5453 iterations, 7.29 seconds (1.02 work units)
+Total elapsed time = 16.38s (DegenMoves)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4585.50000    0  159          - 4585.50000      -     -   18s
+     0     0 3789.33333    0   96          - 3789.33333      -     -   20s
+     0     0 3788.50000    0  102          - 3788.50000      -     -   22s
+     0     0 3787.00000    0   75          - 3787.00000      -     -   24s
+     0     0 3787.00000    0   63          - 3787.00000      -     -   25s
+     0     0 3787.00000    0   52          - 3787.00000      -     -   25s
+     0     0 3787.00000    0   52          - 3787.00000      -     -   25s
+     0     0 3787.00000    0   25          - 3787.00000      -     -   27s
+     0     0 3787.00000    0   39          - 3787.00000      -     -   27s
+     0     0 3787.00000    0   31          - 3787.00000      -     -   28s
+     0     0 3787.00000    0   38          - 3787.00000      -     -   28s
+     0     0 3787.00000    0   27          - 3787.00000      -     -   30s
+     0     0 3787.00000    0   41          - 3787.00000      -     -   31s
+     0     0 3787.00000    0   24          - 3787.00000      -     -   32s
+     0     0 3787.00000    0   48          - 3787.00000      -     -   33s
+     0     0 3787.00000    0   25          - 3787.00000      -     -   33s
+     0     0 3787.00000    0   25          - 3787.00000      -     -   34s
+     0     2 3787.00000    0   25          - 3787.00000      -     -   46s
+   144   129 3673.06334   13  110          - 3787.00000      -   300   50s
+   372   249 3570.00000   13  141          - 3787.00000      -   250   55s
+   606   315 infeasible   23               - 3787.00000      -   245   60s
+  1023   469 3787.00000    9   35          - 3787.00000      -   224   65s
+  1408   578 3775.33333   29   70          - 3787.00000      -   217   72s
+  1632   654 3785.98438   13   60          - 3787.00000      -   220   76s
+  1858   711 3528.81250   15   52          - 3787.00000      -   222   80s
+  2179   756 infeasible   15               - 3787.00000      -   215   85s
+  2465   791 infeasible   15               - 3787.00000      -   207   91s
+  2656   842 3506.22222    9   82          - 3787.00000      -   209   95s
+  3010   934 3786.00000   12   53          - 3786.35185      -   207  102s
+  3245  1033 3785.17689   12  177          - 3786.35185      -   209  107s
+  3385  1034 3783.70399   12   25          - 3786.35185      -   208  110s
+  3387  1035 3755.00000   16  168          - 3786.35185      -   208  132s
+  3388  1036 3645.89263   13   78          - 3786.35185      -   208  150s
+  3390  1037 2417.00000   21   28          - 3786.35185      -   208  155s
+  3393  1039 3745.48816   21   20          - 3786.35185      -   208  160s
+  3396  1041 2969.00000   17   20          - 3786.35185      -   208  166s
+  3400  1044 1939.00000   20   32          - 3786.35185      -   207  172s
+  3403  1046 3543.00000   17   31          - 3786.35185      -   207  175s
+  3404  1047 2981.00000   20   31          - 3786.35185      -   207  180s
+  3407  1049 3655.00000   14   32          - 3786.35185      -   207  201s
+  3408  1049 2652.00000   20   32          - 3786.35185      -   207  208s
+  3409  1053 3786.35185   16   34          - 3786.35185      -  11.3  210s
+  3423  1068 3786.35185   19   30          - 3786.35185      -  13.1  216s
+  3480  1096 3786.35185   24   28          - 3786.35185      -  19.3  220s
+  3545  1104 3786.35185   27   16          - 3786.35185      -  23.8  225s
+  3648  1086 3786.00000   30   75          - 3786.35185      -  31.0  231s
+  3698  1090 3786.00000   31   53          - 3786.35185      -  36.6  238s
+  3723  1087 2821.00000   32   33          - 3786.35185      -  40.2  240s
+  3803  1075 2520.00000   36   44          - 3786.35185      -  49.4  247s
+  3913  1057 3520.00000   23   44          - 3786.35185      -  58.6  250s
+  4068  1023 3786.35185   27  184          - 3786.35185      -  69.0  256s
+  4184  1013 infeasible   31               - 3786.35185      -  78.9  262s
+  4310   986 3001.99805   30   74          - 3786.35185      -  88.0  265s
+  4542   918 infeasible   28               - 3779.83887      -   100  272s
+  4725   876 3371.50000   23  116          - 3766.83496      -   104  275s
+  5026   788 infeasible   23               - 3725.00000      -   116  281s
+  5249   704 infeasible   30               - 3552.98679      -   124  285s
+  5490   601 2614.26573   39   63          - 3541.99910      -   133  290s
+  5913   406 infeasible   34               - 3365.00000      -   142  295s
+  6244   308 infeasible   31               - 3157.99928      -   147  300s
+  6681   174 infeasible   37               - 3073.00000      -   152  305s
+  7503     0 2183.00000   30   22          - 2456.11691      -   156  310s
+
+Cutting planes:
+  Learned: 2
+  Gomory: 7
+  Lift-and-project: 3
+  Cover: 48
+  Implied bound: 12
+  Clique: 4
+  MIR: 38
+  StrongCG: 2
+  Flow cover: 68
+  GUB cover: 1
+  Inf proof: 6
+  Zero half: 33
+  RLT: 60
+  Relax-and-lift: 6
+  BQP: 69
+
+Explored 7565 nodes (1909790 simplex iterations) in 310.55 seconds (55.24 work units)
+Thread count was 10 (of 10 available processors)
+
+Solution count 0
+No other solutions better than -1e+100
+
+Model is infeasible
+Best objective -, best bound -, gap -
+TRYING 16 CLONES
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 86400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (mac64[arm] - Darwin 25.3.0 25D125)
+
+CPU model: Apple M4
+Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+
+Non-default parameters:
+TimeLimit  86400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 28278 rows, 3240 columns and 82122 nonzeros
+Model fingerprint: 0x6fd7f910
+Model has 238 quadratic constraints
+Variable types: 2135 continuous, 1105 integer (1105 binary)
+Coefficient statistics:
+  Matrix range     [5e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [2e+02, 7e+02]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 7e+00]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 17186 rows and 1322 columns
+Presolve time: 1.11s
+Presolved: 11148 rows, 1946 columns, 33512 nonzeros
+Variable types: 1248 continuous, 698 integer (698 binary)
+Root relaxation presolved: 10748 rows, 2052 columns, 32506 nonzeros
+
+
+Root relaxation: objective 4.585500e+03, 4829 iterations, 2.85 seconds (0.77 work units)
+Total elapsed time = 6.00s (DegenMoves)
+Total elapsed time = 11.29s (DegenMoves)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4585.50000    0  243          - 4585.50000      -     -   13s
+     0     0 3787.00000    0   64          - 3787.00000      -     -   15s
+     0     0 3787.00000    0   79          - 3787.00000      -     -   16s
+     0     0 3787.00000    0   51          - 3787.00000      -     -   16s
+     0     0 3787.00000    0   16          - 3787.00000      -     -   18s
+     0     0 3787.00000    0   16          - 3787.00000      -     -   18s
+     0     0 3787.00000    0   17          - 3787.00000      -     -   18s
+     0     0 3787.00000    0   21          - 3787.00000      -     -   18s
+     0     0 3787.00000    0   17          - 3787.00000      -     -   19s
+     0     0 3787.00000    0   17          - 3787.00000      -     -   20s
+     0     2 3787.00000    0   17          - 3787.00000      -     -   24s
+     1     4 3787.00000    1   61          - 3787.00000      -  1201   25s
+   441   219 3783.09101   16  100          - 3787.00000      -   228   30s
+  1041   364 3533.61670   10   82          - 3787.00000      -   226   35s
+  1570   558 3493.00000   11   75          - 3787.00000      -   224   40s
+  2020   711 3715.00000   13   55          - 3787.00000      -   223   45s
+  2593   891 3767.39205   27   74          - 3787.00000      -   224   50s
+  3187  1048 3026.00000   22   17          - 3786.00000      -   226   55s
+  3189  1049 3521.15933   20  133          - 3786.00000      -   226   64s
+  3190  1050 3655.00000   31   23          - 3786.00000      -   226   66s
+  3194  1053 3716.24733   18   24          - 3786.00000      -   225   70s
+  3200  1057 2596.00000   16   27          - 3786.00000      -   225   76s
+  3204  1059 3175.09654   15   16          - 3786.00000      -   225   81s
+  3209  1063 3786.00000   23   15          - 3786.00000      -   224   92s
+  3210  1063 3536.26730   17   15          - 3786.00000      -   224   96s
+  3329  1079 3074.00000   18   15          - 3786.00000      -  19.7  100s
+  3487  1054 3786.00000   17   85          - 3786.00000      -  31.6  105s
+  3617  1059 3754.91880   20   89          - 3786.00000      -  39.3  110s
+  3787  1041 3786.00000   21   66          - 3786.00000      -  49.3  115s
+  3957  1017 infeasible   20               - 3786.00000      -  61.0  121s
+  4089  1016 3622.75000   23  214          - 3786.00000      -  73.7  126s
+  4151  1008 infeasible   24               - 3786.00000      -  79.8  130s
+  4225  1001 3523.95178   25  138          - 3785.99609      -  87.8  135s
+  4383   967 3633.58333   22  217          - 3785.99609      -  98.5  140s
+  4640   903 2675.00000   25   62          - 3774.28571      -   111  146s
+  4940   825 2920.50000   25   72          - 3754.00000      -   124  151s
+  5321   691 3146.00000   32   85          - 3561.61621      -   137  156s
+  5617   579 infeasible   29               - 3505.49556      -   146  163s
+  5710   559 infeasible   31               - 3442.31252      -   148  165s
+  6352   312 2840.00000   23   17          - 3131.00000      -   155  172s
+  6744   360 2835.00000   17   32          - 3102.00000      -   160  177s
+  7114   373 infeasible   32               - 3074.00000      -   169  182s
+  7572   348 2183.00000   28   27          - 2969.00000      -   174  187s
+  7859   319 2285.00000   29   55          - 2894.00000      -   176  190s
+  8530   209 infeasible   28               - 2779.00000      -   179  196s
+  9241    16 infeasible   24               - 2388.86940      -   180  202s
+  9619     2 infeasible   34               - 1855.00000      -   178  226s
+
+Cutting planes:
+  Learned: 1
+  Gomory: 12
+  Cover: 52
+  Implied bound: 49
+  Clique: 11
+  MIR: 44
+  Mixing: 1
+  StrongCG: 2
+  Flow cover: 61
+  Inf proof: 5
+  Zero half: 26
+  RLT: 31
+  Relax-and-lift: 9
+  BQP: 87
+
+Explored 9649 nodes (2463101 simplex iterations) in 227.03 seconds (66.84 work units)
+Thread count was 10 (of 10 available processors)
+
+Solution count 0
+No other solutions better than -1e+100
+
+Model is infeasible
+Best objective -, best bound -, gap -
+TRYING 15 CLONES
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 86400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (mac64[arm] - Darwin 25.3.0 25D125)
+
+CPU model: Apple M4
+Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+
+Non-default parameters:
+TimeLimit  86400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 27087 rows, 3097 columns and 78630 nonzeros
+Model fingerprint: 0x98711640
+Model has 238 quadratic constraints
+Variable types: 2009 continuous, 1088 integer (1088 binary)
+Coefficient statistics:
+  Matrix range     [5e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [2e+02, 7e+02]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 7e+00]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 16644 rows and 1278 columns
+Presolve time: 1.59s
+Presolved: 10497 rows, 1846 columns, 31542 nonzeros
+Variable types: 1166 continuous, 680 integer (680 binary)
+Root relaxation presolved: 10105 rows, 1956 columns, 30558 nonzeros
+
+
+Root relaxation: objective 4.585500e+03, 4327 iterations, 3.29 seconds (0.67 work units)
+Total elapsed time = 5.17s (DegenMoves)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4585.50000    0  203          - 4585.50000      -     -   10s
+     0     0 3905.50000    0   82          - 3905.50000      -     -   12s
+     0     0 3799.00000    0   82          - 3799.00000      -     -   12s
+     0     0 3787.00000    0   59          - 3787.00000      -     -   13s
+     0     0 3787.00000    0   52          - 3787.00000      -     -   13s
+     0     0 3787.00000    0   58          - 3787.00000      -     -   13s
+     0     0 3787.00000    0   50          - 3787.00000      -     -   14s
+     0     0 3787.00000    0   18          - 3787.00000      -     -   15s
+     0     0 3787.00000    0   39          - 3787.00000      -     -   15s
+     0     0 3787.00000    0   17          - 3787.00000      -     -   16s
+     0     0 3787.00000    0   19          - 3787.00000      -     -   16s
+     0     0 3787.00000    0   19          - 3787.00000      -     -   16s
+     0     0 3787.00000    0   17          - 3787.00000      -     -   17s
+     0     0 3787.00000    0   17          - 3787.00000      -     -   17s
+     0     2 3787.00000    0   17          - 3787.00000      -     -   22s
+   236   145 3734.15211   15  111          - 3787.00000      -   174   25s
+   815   303 3780.68202   13  157          - 3787.00000      -   164   30s
+  1444   440 3786.89399   20  251          - 3787.00000      -   169   35s
+  1858   575 3436.16667   21   86          - 3787.00000      -   188   40s
+  2445   753 3226.39262   23  127          - 3787.00000      -   196   45s
+  3049   976 3785.94862   27  240          - 3786.00000      -   199   50s
+  3744  1099 3760.58506   27  157          - 3786.00000      -   197   55s
+  4042  1139 3758.00000   23  116          - 3786.00000      -   199   64s
+  4043  1140 3648.00000   11   22          - 3786.00000      -   199   68s
+  4045  1141 3168.00000   22   14          - 3786.00000      -   199   70s
+  4051  1145 3786.00000   22   12          - 3786.00000      -   198   75s
+  4056  1149 3696.75000   23   41          - 3786.00000      -   198   80s
+  4061  1152 3720.25000    9   22          - 3786.00000      -   198   86s
+  4062  1153 3332.00000   11   11          - 3786.00000      -   198   94s
+  4063  1153 3520.00000   11   11          - 3786.00000      -   198   99s
+  4066  1160 3786.00000   11   12          - 3786.00000      -   9.0  100s
+  4234  1166 3547.96235   18  102          - 3786.00000      -  16.6  105s
+  4360  1155 infeasible   21               - 3786.00000      -  24.7  110s
+  4583  1103 2133.00000   28   26          - 3786.00000      -  36.8  115s
+  4896  1014 2939.96375   28   41          - 3693.04003      -  48.8  120s
+  5349   884 3523.99219   26   54          - 3523.99219      -  59.5  126s
+  5628   794 2759.00000   18   42          - 3164.00000      -  65.3  130s
+  6136   589 infeasible   32               - 2978.00000      -  75.2  135s
+  7055   156 infeasible   36               - 2502.00000      -  83.1  140s
+
+Cutting planes:
+  Gomory: 13
+  Lift-and-project: 1
+  Cover: 21
+  Implied bound: 12
+  Clique: 11
+  MIR: 24
+  StrongCG: 2
+  Flow cover: 29
+  GUB cover: 1
+  Inf proof: 1
+  Zero half: 54
+  RLT: 48
+  BQP: 4
+
+Explored 7124 nodes (1420622 simplex iterations) in 140.31 seconds (38.15 work units)
+Thread count was 10 (of 10 available processors)
+
+Solution count 0
+No other solutions better than -1e+100
+
+Model is infeasible
+Best objective -, best bound -, gap -
+TRYING 14 CLONES
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 86400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (mac64[arm] - Darwin 25.3.0 25D125)
+
+CPU model: Apple M4
+Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+
+Non-default parameters:
+TimeLimit  86400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 25896 rows, 2954 columns and 75138 nonzeros
+Model fingerprint: 0x9dc947a0
+Model has 238 quadratic constraints
+Variable types: 1883 continuous, 1071 integer (1071 binary)
+Coefficient statistics:
+  Matrix range     [5e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [2e+02, 7e+02]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 7e+00]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 16092 rows and 1233 columns
+Presolve time: 1.03s
+Presolved: 9858 rows, 1748 columns, 29607 nonzeros
+Variable types: 1084 continuous, 664 integer (664 binary)
+
+Root relaxation: objective 4.585500e+03, 4357 iterations, 2.79 seconds (0.65 work units)
+Total elapsed time = 5.55s (DegenMoves)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4585.50000    0  199          - 4585.50000      -     -    7s
+     0     0 3869.33333    0  222          - 3869.33333      -     -    9s
+     0     0 3823.00000    0  213          - 3823.00000      -     -    9s
+     0     0 3787.00000    0   78          - 3787.00000      -     -   10s
+     0     0 3787.00000    0   75          - 3787.00000      -     -   10s
+     0     0 3787.00000    0   59          - 3787.00000      -     -   10s
+     0     0 3787.00000    0   59          - 3787.00000      -     -   10s
+     0     0 3787.00000    0    8          - 3787.00000      -     -   11s
+     0     0 3787.00000    0   11          - 3787.00000      -     -   12s
+     0     0 3787.00000    0   11          - 3787.00000      -     -   12s
+     0     0 3787.00000    0   19          - 3787.00000      -     -   13s
+     0     0 3787.00000    0   25          - 3787.00000      -     -   13s
+     0     0 3787.00000    0   21          - 3787.00000      -     -   14s
+     0     0 3787.00000    0   14          - 3787.00000      -     -   14s
+     0     2 3787.00000    0   14          - 3787.00000      -     -   18s
+    79    85 3786.98677    7  174          - 3787.00000      -   195   20s
+   570   229 infeasible   25               - 3787.00000      -   154   25s
+  1315   498 infeasible   13               - 3787.00000      -   152   30s
+  2337   841 infeasible   21               - 3787.00000      -   153   35s
+  2903  1066 3554.78198   16  197          - 3786.00000      -   155   43s
+  2904  1067 3535.75000   23   24          - 3786.00000      -   155   50s
+  2910  1071 3709.90625   16   17          - 3786.00000      -   155   55s
+  2917  1076 3126.00000   27   38          - 3786.00000      -   155   60s
+  2922  1079 3786.00000   24   34          - 3786.00000      -   154   65s
+  2923  1080 3624.00000   19   10          - 3786.00000      -   154   71s
+  2924  1080 3553.00000    7   10          - 3786.00000      -   154   75s
+  3046  1119 2563.80976   19   50          - 3786.00000      -  24.4   80s
+  3261  1105 infeasible   24               - 3786.00000      -  37.8   85s
+  3472  1088 infeasible   32               - 3786.00000      -  53.0   91s
+  3787  1020 2115.00000   36   30          - 3667.76566      -  66.3   96s
+  4107   969 infeasible   27               - 3543.00000      -  77.3  100s
+  4609   804 infeasible   32               - 3523.99219      -  92.4  105s
+  5333   543 2926.83705   31   70          - 3070.00000      -   106  111s
+  5723   410 infeasible   32               - 2924.00000      -   110  116s
+  6243   174 2088.48532   35  103          - 2681.00000      -   116  120s
+  7168     5 1663.00000   34   62          - 1851.83726      -   122  125s
+
+Cutting planes:
+  Learned: 1
+  Gomory: 7
+  Cover: 26
+  Implied bound: 24
+  Clique: 2
+  MIR: 29
+  StrongCG: 2
+  Flow cover: 36
+  Inf proof: 3
+  Zero half: 41
+  RLT: 39
+  Relax-and-lift: 8
+  BQP: 25
+
+Explored 7355 nodes (1370252 simplex iterations) in 126.29 seconds (36.86 work units)
+Thread count was 10 (of 10 available processors)
+
+Solution count 0
+No other solutions better than -1e+100
+
+Model is infeasible
+Best objective -, best bound -, gap -
+TRYING 13 CLONES
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 86400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (mac64[arm] - Darwin 25.3.0 25D125)
+
+CPU model: Apple M4
+Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+
+Non-default parameters:
+TimeLimit  86400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 24705 rows, 2811 columns and 71646 nonzeros
+Model fingerprint: 0x02671a24
+Model has 238 quadratic constraints
+Variable types: 1757 continuous, 1054 integer (1054 binary)
+Coefficient statistics:
+  Matrix range     [5e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [2e+02, 7e+02]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 7e+00]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 15561 rows and 1189 columns
+Presolve time: 1.05s
+Presolved: 9194 rows, 1647 columns, 27618 nonzeros
+Variable types: 1002 continuous, 645 integer (645 binary)
+
+Root relaxation: objective 4.585500e+03, 3473 iterations, 1.88 seconds (0.45 work units)
+Total elapsed time = 5.29s (DegenMoves)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4585.50000    0  268          - 4585.50000      -     -    5s
+     0     0 3905.50000    0  108          - 3905.50000      -     -    8s
+     0     0 3787.00000    0   98          - 3787.00000      -     -    8s
+     0     0 3787.00000    0   88          - 3787.00000      -     -    9s
+     0     0 3787.00000    0   72          - 3787.00000      -     -   10s
+     0     0 3787.00000    0   53          - 3787.00000      -     -   10s
+     0     0 3787.00000    0   43          - 3787.00000      -     -   10s
+     0     0 3787.00000    0    8          - 3787.00000      -     -   11s
+     0     0 3787.00000    0    9          - 3787.00000      -     -   12s
+     0     0 3787.00000    0    9          - 3787.00000      -     -   12s
+     0     0 3787.00000    0    9          - 3787.00000      -     -   12s
+     0     0 3787.00000    0    9          - 3787.00000      -     -   12s
+     0     0 3787.00000    0    8          - 3787.00000      -     -   12s
+     0     0 3787.00000    0    8          - 3787.00000      -     -   13s
+     0     2 3787.00000    0    8          - 3787.00000      -     -   15s
+   626   276 3553.00000   12   32          - 3787.00000      -   198   20s
+  1296   506 3227.00000   24   28          - 3787.00000      -   212   25s
+  2114   759 3785.95402   27   60          - 3786.00000      -   203   30s
+  3143   964 infeasible   12               - 3785.76131      -   187   35s
+  4008  1116 3120.82593   12   62          - 3775.52407      -   185   40s
+  4964  1210 3548.00000   17   21          - 3762.00000      -   178   45s
+  5990  1298 3486.50000   23    8          - 3744.09923      -   175   50s
+  5992  1299 3475.32075   12  166          - 3744.09923      -   175   55s
+  5999  1304 1981.00000   27   10          - 3744.09923      -   175   60s
+  6009  1311 3583.40385   10    9          - 3744.09923      -   174   65s
+  6012  1313 2714.00000   29   12          - 3744.09923      -   174   74s
+  6013  1313 3102.00000   15   12          - 3744.09923      -   174   78s
+  6038  1353 3744.09923   14   18          - 3744.09923      -   5.3   80s
+  6293  1327 2822.00000   22   15          - 3744.09923      -  14.2   85s
+  6495  1311 3321.60000   29   47          - 3744.09923      -  21.0   90s
+  6703  1291 3655.87939   21  127          - 3744.09923      -  29.4   95s
+  6948  1233 2922.00000   23   27          - 3744.09923      -  38.0  100s
+  7316  1159 infeasible   32               - 3744.09923      -  48.3  105s
+  7719  1018 2676.49600   21   52          - 3654.50000      -  60.5  111s
+  7900   975 infeasible   31               - 3524.00000      -  65.7  115s
+  8286   833 infeasible   28               - 3504.00000      -  74.7  120s
+  9024   532 infeasible   26               - 3406.00000      -  85.8  126s
+  9680   239 2655.66667   23  171          - 2938.00000      -  94.0  131s
+  9998   117 1460.37500   29   81          - 2835.00000      -   100  135s
+ 10179   123 infeasible   20               - 2799.00000      -   102  151s
+ 10589    82 infeasible   38               - 2477.13341      -   105  155s
+
+Cutting planes:
+  Learned: 2
+  Gomory: 17
+  Lift-and-project: 2
+  Cover: 33
+  Implied bound: 39
+  Clique: 3
+  MIR: 22
+  StrongCG: 1
+  Flow cover: 56
+  Inf proof: 1
+  Zero half: 65
+  RLT: 54
+  BQP: 61
+  PSD: 3
+
+Explored 11393 nodes (2265440 simplex iterations) in 157.78 seconds (50.31 work units)
+Thread count was 10 (of 10 available processors)
+
+Solution count 0
+No other solutions better than -1e+100
+
+Model is infeasible
+Best objective -, best bound -, gap -
+TRYING 12 CLONES
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 86400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (mac64[arm] - Darwin 25.3.0 25D125)
+
+CPU model: Apple M4
+Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+
+Non-default parameters:
+TimeLimit  86400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 23514 rows, 2668 columns and 68154 nonzeros
+Model fingerprint: 0x9f296f74
+Model has 238 quadratic constraints
+Variable types: 1631 continuous, 1037 integer (1037 binary)
+Coefficient statistics:
+  Matrix range     [5e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [2e+02, 7e+02]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 7e+00]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 15016 rows and 1144 columns
+Presolve time: 0.92s
+Presolved: 8546 rows, 1548 columns, 25675 nonzeros
+Variable types: 920 continuous, 628 integer (628 binary)
+
+Root relaxation: objective 4.585500e+03, 3591 iterations, 1.86 seconds (0.45 work units)
+Total elapsed time = 5.94s (DegenMoves)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4585.50000    0  229          - 4585.50000      -     -    6s
+     0     0 3905.50000    0  116          - 3905.50000      -     -    7s
+     0     0 3791.00000    0   99          - 3791.00000      -     -    8s
+     0     0 3787.00000    0   57          - 3787.00000      -     -    8s
+     0     0 3787.00000    0   46          - 3787.00000      -     -    9s
+     0     0 3787.00000    0   46          - 3787.00000      -     -    9s
+     0     0 3787.00000    0   46          - 3787.00000      -     -    9s
+     0     0 3787.00000    0   18          - 3787.00000      -     -   10s
+     0     0 3787.00000    0   20          - 3787.00000      -     -   11s
+     0     0 3787.00000    0   14          - 3787.00000      -     -   11s
+     0     0 3787.00000    0   31          - 3787.00000      -     -   12s
+     0     0 3787.00000    0   15          - 3787.00000      -     -   13s
+     0     0 3787.00000    0   12          - 3787.00000      -     -   13s
+     0     0 3787.00000    0   14          - 3787.00000      -     -   14s
+     0     0 3787.00000    0   38          - 3787.00000      -     -   14s
+     0     0 3787.00000    0   10          - 3787.00000      -     -   15s
+     0     0 3787.00000    0   40          - 3787.00000      -     -   15s
+     0     0 3787.00000    0   19          - 3787.00000      -     -   15s
+     0     0 3787.00000    0    3          - 3787.00000      -     -   15s
+     0     2 3787.00000    0    3          - 3787.00000      -     -   20s
+   617   290 3399.00734   14   58          - 3787.00000      -   172   25s
+  1635   593 3785.99934   16   50          - 3786.98438      -   159   30s
+  2559   893 3474.20471   26   77          - 3786.00000      -   166   35s
+  3548  1039 infeasible   18               - 3778.78125      -   160   40s
+  4818  1150 3544.66667   15  232          - 3724.15436      -   151   45s
+  6150  1327 2921.37600   17   69          - 3553.00000      -   144   50s
+  6499  1329 3070.00000   19  181          - 3553.00000      -   142   55s
+  6501  1331 3492.00000   20   28          - 3553.00000      -   142   60s
+  6511  1337 3438.98728   14    8          - 3553.00000      -   142   68s
+  6512  1338 3448.36923   22    8          - 3553.00000      -   142   71s
+  6607  1405 3073.99779   23   36          - 3553.00000      -   7.3   75s
+  6962  1330 3553.00000   22   88          - 3553.00000      -  18.3   80s
+  7383  1227 3523.88948   29  116          - 3553.00000      -  29.9   85s
+  7793  1209 3523.82593   25   42          - 3553.00000      -  42.4   91s
+  8097  1145 3088.00000   31   88          - 3553.00000      -  50.8   95s
+  8622   968 3164.00000   30    6          - 3553.00000      -  63.0  101s
+  8943   840 2737.00000   37   20          - 3524.00000      -  68.5  109s
+  9046   806 3279.65186   25   39          - 3524.00000      -  70.7  110s
+  9731   508 2644.00000   41   30          - 3431.00000      -  80.5  115s
+ 10480   201 infeasible   44               - 3072.89606      -  88.0  120s
+ 11473    67 2227.00000   24   12          - 2687.30000      -  92.2  125s
+
+Cutting planes:
+  Learned: 1
+  Gomory: 13
+  Cover: 34
+  Implied bound: 32
+  Clique: 3
+  MIR: 27
+  Flow cover: 31
+  GUB cover: 1
+  Inf proof: 2
+  Zero half: 50
+  RLT: 42
+  Relax-and-lift: 9
+  BQP: 42
+  PSD: 2
+
+Explored 12483 nodes (2126030 simplex iterations) in 128.19 seconds (43.02 work units)
+Thread count was 10 (of 10 available processors)
+
+Solution count 0
+No other solutions better than -1e+100
+
+Model is infeasible
+Best objective -, best bound -, gap -
+TRYING 11 CLONES
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 86400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (mac64[arm] - Darwin 25.3.0 25D125)
+
+CPU model: Apple M4
+Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+
+Non-default parameters:
+TimeLimit  86400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 22323 rows, 2525 columns and 64662 nonzeros
+Model fingerprint: 0x8cda7a0f
+Model has 238 quadratic constraints
+Variable types: 1505 continuous, 1020 integer (1020 binary)
+Coefficient statistics:
+  Matrix range     [5e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [2e+02, 7e+02]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 7e+00]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 14457 rows and 1099 columns
+Presolve time: 0.79s
+Presolved: 7916 rows, 1451 columns, 23748 nonzeros
+Variable types: 838 continuous, 613 integer (613 binary)
+
+Root relaxation: objective 4.585500e+03, 3473 iterations, 1.62 seconds (0.39 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4585.50000    0  210          - 4585.50000      -     -    4s
+     0     0 3787.00000    0  230          - 3787.00000      -     -    6s
+     0     0 3787.00000    0  226          - 3787.00000      -     -    6s
+     0     0 3787.00000    0   49          - 3787.00000      -     -    8s
+     0     0 3787.00000    0   37          - 3787.00000      -     -    8s
+     0     0 3787.00000    0   32          - 3787.00000      -     -    8s
+     0     0 3787.00000    0   32          - 3787.00000      -     -    8s
+     0     0 3787.00000    0   14          - 3787.00000      -     -    9s
+     0     0 3787.00000    0   14          - 3787.00000      -     -    9s
+     0     0 3787.00000    0    6          - 3787.00000      -     -    9s
+     0     0 3787.00000    0    8          - 3787.00000      -     -   10s
+     0     0 3787.00000    0   10          - 3787.00000      -     -   10s
+     0     0 3787.00000    0   20          - 3787.00000      -     -   10s
+     0     0 3787.00000    0   10          - 3787.00000      -     -   11s
+     0     0 3787.00000    0    9          - 3787.00000      -     -   11s
+     0     0 3787.00000    0    3          - 3787.00000      -     -   12s
+     0     0 3787.00000    0    2          - 3787.00000      -     -   12s
+     0     0 3787.00000    0    3          - 3787.00000      -     -   12s
+     0     0 3787.00000    0    4          - 3787.00000      -     -   12s
+     0     0 3787.00000    0    4          - 3787.00000      -     -   13s
+     0     2 3787.00000    0    4          - 3787.00000      -     -   16s
+   647   303 3786.80630    9  122          - 3787.00000      -   126   20s
+  1900   699 3786.68333    9   81          - 3787.00000      -   125   25s
+  3161  1043 infeasible   10               - 3786.08594      -   131   30s
+  3646  1148  873.40387   23   17          - 3786.00000      -   134   35s
+  3664  1160 2571.00000   13   13          - 3786.00000      -   134   40s
+  3665  1161 3543.00000   13    6          - 3786.00000      -   134   45s
+  3739  1190 3786.00000   19   14          - 3786.00000      -   6.3   50s
+  4200  1137 2894.00000   32   17          - 3786.00000      -  23.9   55s
+  4786  1039 3442.00000   24   40          - 3786.00000      -  40.3   60s
+  5605   783 infeasible   41               - 3542.99823      -  56.2   65s
+  5902   676 2978.00000   29   14          - 3492.00000      -  61.4   70s
+  6661   405 2209.00000   33   11          - 3188.99226      -  71.1   75s
+  7542   157 infeasible   22               - 2804.75000      -  78.1   80s
+
+Cutting planes:
+  Learned: 4
+  Gomory: 16
+  Cover: 23
+  Implied bound: 17
+  Clique: 5
+  MIR: 22
+  Flow cover: 27
+  GUB cover: 1
+  Zero half: 76
+  RLT: 41
+  BQP: 9
+
+Explored 8438 nodes (1184546 simplex iterations) in 82.38 seconds (25.68 work units)
+Thread count was 10 (of 10 available processors)
+
+Solution count 0
+No other solutions better than -1e+100
+
+Model is infeasible
+Best objective -, best bound -, gap -
+TRYING 10 CLONES
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 86400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (mac64[arm] - Darwin 25.3.0 25D125)
+
+CPU model: Apple M4
+Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+
+Non-default parameters:
+TimeLimit  86400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 21132 rows, 2382 columns and 61170 nonzeros
+Model fingerprint: 0xdbb66587
+Model has 238 quadratic constraints
+Variable types: 1379 continuous, 1003 integer (1003 binary)
+Coefficient statistics:
+  Matrix range     [5e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [2e+02, 7e+02]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 7e+00]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 13912 rows and 1054 columns
+Presolve time: 0.74s
+Presolved: 7268 rows, 1352 columns, 21805 nonzeros
+Variable types: 756 continuous, 596 integer (596 binary)
+
+Root relaxation: objective 4.585500e+03, 2715 iterations, 1.01 seconds (0.29 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4585.50000    0  238          - 4585.50000      -     -    3s
+     0     0 3866.50000    0   97          - 3866.50000      -     -    4s
+     0     0 3866.50000    0   94          - 3866.50000      -     -    5s
+H    0     0                    3787.0000000 3787.00000  0.00%     -    5s
+     0     0 3787.00000    0   75 3787.00000 3787.00000  0.00%     -    5s
+
+Cutting planes:
+  Learned: 4
+  Gomory: 17
+  Lift-and-project: 9
+  Cover: 13
+  Implied bound: 48
+  Clique: 59
+  MIR: 18
+  StrongCG: 1
+  Flow cover: 28
+  Zero half: 28
+  RLT: 163
+  Relax-and-lift: 458
+  BQP: 186
+
+Explored 1 nodes (10812 simplex iterations) in 6.16 seconds (1.54 work units)
+Thread count was 10 (of 10 available processors)
+
+Solution count 1: 3787 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.787000000000e+03, best bound 3.787000000000e+03, gap 0.0000%
+[ 1.  0.  0. -0.  1.  1.  1.  1.  1.  1.  0.  0.  0.  1.  0.  1.  0.]
+THERE IS A SOLUTION WITH 10 CLONES
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 14400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (mac64[arm] - Darwin 25.3.0 25D125)
+
+CPU model: Apple M4
+Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+
+Non-default parameters:
+TimeLimit  14400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 21132 rows, 2382 columns and 61170 nonzeros
+Model fingerprint: 0xdbb66587
+Model has 238 quadratic constraints
+Variable types: 1379 continuous, 1003 integer (1003 binary)
+Coefficient statistics:
+  Matrix range     [5e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [2e+02, 7e+02]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 7e+00]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 13912 rows and 1054 columns
+Presolve time: 0.75s
+Presolved: 7268 rows, 1352 columns, 21805 nonzeros
+Variable types: 756 continuous, 596 integer (596 binary)
+
+Root relaxation: objective 4.585500e+03, 2715 iterations, 1.13 seconds (0.29 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4585.50000    0  238          - 4585.50000      -     -    4s
+     0     0 3866.50000    0   97          - 3866.50000      -     -    5s
+     0     0 3866.50000    0   94          - 3866.50000      -     -    5s
+H    0     0                    3787.0000000 3787.00000  0.00%     -    6s
+     0     0 3787.00000    0   75 3787.00000 3787.00000  0.00%     -    6s
+
+Cutting planes:
+  Learned: 4
+  Gomory: 17
+  Lift-and-project: 9
+  Cover: 13
+  Implied bound: 48
+  Clique: 59
+  MIR: 18
+  StrongCG: 1
+  Flow cover: 28
+  Zero half: 28
+  RLT: 163
+  Relax-and-lift: 458
+  BQP: 186
+
+Explored 1 nodes (10812 simplex iterations) in 6.51 seconds (1.54 work units)
+Thread count was 10 (of 10 available processors)
+
+Solution count 1: 3787 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.787000000000e+03, best bound 3.787000000000e+03, gap 0.0000%
+SOLUTION 0
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 14400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (mac64[arm] - Darwin 25.3.0 25D125)
+
+CPU model: Apple M4
+Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+
+Non-default parameters:
+TimeLimit  14400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 21133 rows, 2382 columns and 61340 nonzeros
+Model fingerprint: 0x8a1cc439
+Model has 238 quadratic constraints
+Variable types: 1379 continuous, 1003 integer (1003 binary)
+Coefficient statistics:
+  Matrix range     [5e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [2e+02, 7e+02]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 4e+01]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 13912 rows and 1054 columns
+Presolve time: 0.71s
+Presolved: 7269 rows, 1352 columns, 21941 nonzeros
+Variable types: 756 continuous, 596 integer (596 binary)
+
+Root relaxation: objective 4.585500e+03, 2646 iterations, 0.88 seconds (0.23 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4585.50000    0  149          - 4585.50000      -     -    3s
+     0     0 3787.00000    0   71          - 3787.00000      -     -    4s
+     0     0 3787.00000    0   56          - 3787.00000      -     -    4s
+     0     0 3787.00000    0   61          - 3787.00000      -     -    4s
+     0     0 3787.00000    0   53          - 3787.00000      -     -    4s
+     0     0 3787.00000    0   18          - 3787.00000      -     -    5s
+H    0     0                    3787.0000000 3787.00000  0.00%     -    5s
+     0     0 3787.00000    0   15 3787.00000 3787.00000  0.00%     -    5s
+
+Cutting planes:
+  Learned: 3
+  Gomory: 4
+  Cover: 5
+  Implied bound: 13
+  Clique: 8
+  MIR: 4
+  Flow cover: 7
+  Zero half: 25
+  RLT: 33
+  BQP: 50
+
+Explored 1 nodes (9804 simplex iterations) in 5.85 seconds (1.30 work units)
+Thread count was 10 (of 10 available processors)
+
+Solution count 1: 3787 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.787000000000e+03, best bound 3.787000000000e+03, gap 0.0000%
+SOLUTION 1
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 14400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (mac64[arm] - Darwin 25.3.0 25D125)
+
+CPU model: Apple M4
+Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+
+Non-default parameters:
+TimeLimit  14400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 21134 rows, 2382 columns and 61510 nonzeros
+Model fingerprint: 0xaf686ce9
+Model has 238 quadratic constraints
+Variable types: 1379 continuous, 1003 integer (1003 binary)
+Coefficient statistics:
+  Matrix range     [5e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [2e+02, 7e+02]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 4e+01]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 13912 rows and 1054 columns
+Presolve time: 1.17s
+Presolved: 7270 rows, 1352 columns, 22077 nonzeros
+Variable types: 756 continuous, 596 integer (596 binary)
+
+Root relaxation: objective 4.585500e+03, 2549 iterations, 1.28 seconds (0.26 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4585.50000    0  166          - 4585.50000      -     -    4s
+     0     0 3787.00000    0   61          - 3787.00000      -     -    5s
+     0     0 3787.00000    0   42          - 3787.00000      -     -    5s
+     0     0 3787.00000    0   58          - 3787.00000      -     -    6s
+     0     0 3787.00000    0   48          - 3787.00000      -     -    6s
+     0     0 3787.00000    0   28          - 3787.00000      -     -    7s
+     0     0 3787.00000    0   43          - 3787.00000      -     -    7s
+     0     0 3787.00000    0    5          - 3787.00000      -     -    8s
+     0     0 3787.00000    0    9          - 3787.00000      -     -    9s
+     0     0 3787.00000    0   10          - 3787.00000      -     -    9s
+     0     0 3787.00000    0    3          - 3787.00000      -     -    9s
+     0     0 3787.00000    0    1          - 3787.00000      -     -    9s
+     0     0 3787.00000    0   11          - 3787.00000      -     -    9s
+     0     0 3787.00000    0   22          - 3787.00000      -     -   10s
+     0     0 3787.00000    0    6          - 3787.00000      -     -   10s
+     0     0 3787.00000    0    6          - 3787.00000      -     -   10s
+     0     2 3787.00000    0    6          - 3787.00000      -     -   13s
+    61    79 3787.00000    9   39          - 3787.00000      -   252   15s
+*  237   152              18    3787.0000000 3787.00000  0.00%   199   15s
+
+Cutting planes:
+  Learned: 5
+  Gomory: 6
+  Cover: 17
+  Implied bound: 24
+  Clique: 12
+  MIR: 17
+  Flow cover: 18
+  Zero half: 22
+  RLT: 30
+  BQP: 38
+
+Explored 246 nodes (63148 simplex iterations) in 16.05 seconds (3.51 work units)
+Thread count was 10 (of 10 available processors)
+
+Solution count 1: 3787 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.787000000000e+03, best bound 3.787000000000e+03, gap 0.0000%
+SOLUTION 2
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 14400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (mac64[arm] - Darwin 25.3.0 25D125)
+
+CPU model: Apple M4
+Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+
+Non-default parameters:
+TimeLimit  14400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 21135 rows, 2382 columns and 61680 nonzeros
+Model fingerprint: 0x28f364b1
+Model has 238 quadratic constraints
+Variable types: 1379 continuous, 1003 integer (1003 binary)
+Coefficient statistics:
+  Matrix range     [5e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [2e+02, 7e+02]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 4e+01]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 13912 rows and 1054 columns
+Presolve time: 1.18s
+Presolved: 7271 rows, 1352 columns, 22213 nonzeros
+Variable types: 756 continuous, 596 integer (596 binary)
+
+Root relaxation: objective 4.585500e+03, 2939 iterations, 1.58 seconds (0.31 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4585.50000    0  211          - 4585.50000      -     -    4s
+     0     0 3945.33333    0   97          - 3945.33333      -     -    6s
+     0     0 3906.00000    0   94          - 3906.00000      -     -    6s
+     0     0 3787.00000    0   39          - 3787.00000      -     -    6s
+     0     0 3787.00000    0   37          - 3787.00000      -     -    7s
+     0     0 3787.00000    0   27          - 3787.00000      -     -    7s
+     0     0 3787.00000    0   28          - 3787.00000      -     -    7s
+     0     0 3787.00000    0   16          - 3787.00000      -     -    7s
+     0     0 3787.00000    0   13          - 3787.00000      -     -    7s
+     0     0 3787.00000    0    7          - 3787.00000      -     -    8s
+     0     0 3787.00000    0    8          - 3787.00000      -     -    8s
+     0     0 3787.00000    0    4          - 3787.00000      -     -    8s
+     0     0 3787.00000    0    9          - 3787.00000      -     -    8s
+     0     0 3787.00000    0    6          - 3787.00000      -     -    9s
+     0     0 3787.00000    0   11          - 3787.00000      -     -    9s
+     0     0 3787.00000    0    9          - 3787.00000      -     -    9s
+     0     0 3787.00000    0    9          - 3787.00000      -     -    9s
+     0     2 3787.00000    0    9          - 3787.00000      -     -   13s
+*   41    54               7    3787.0000000 3787.00000  0.00%   238   13s
+
+Cutting planes:
+  Learned: 5
+  Gomory: 4
+  Cover: 19
+  Implied bound: 32
+  Clique: 11
+  MIR: 12
+  Flow cover: 16
+  Inf proof: 1
+  Zero half: 26
+  RLT: 56
+  BQP: 114
+
+Explored 62 nodes (25870 simplex iterations) in 13.79 seconds (3.04 work units)
+Thread count was 10 (of 10 available processors)
+
+Solution count 1: 3787 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.787000000000e+03, best bound 3.787000000000e+03, gap 0.0000%
+SOLUTION 3
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 14400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (mac64[arm] - Darwin 25.3.0 25D125)
+
+CPU model: Apple M4
+Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+
+Non-default parameters:
+TimeLimit  14400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 21136 rows, 2382 columns and 61850 nonzeros
+Model fingerprint: 0x9b0ee317
+Model has 238 quadratic constraints
+Variable types: 1379 continuous, 1003 integer (1003 binary)
+Coefficient statistics:
+  Matrix range     [5e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [2e+02, 7e+02]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 4e+01]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 13912 rows and 1054 columns
+Presolve time: 1.02s
+Presolved: 7272 rows, 1352 columns, 22349 nonzeros
+Variable types: 756 continuous, 596 integer (596 binary)
+
+Root relaxation: objective 4.585500e+03, 2513 iterations, 0.91 seconds (0.21 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4585.50000    0  155          - 4585.50000      -     -    3s
+     0     0 3787.00000    0   48          - 3787.00000      -     -    5s
+     0     0 3787.00000    0   35          - 3787.00000      -     -    5s
+     0     0 3787.00000    0   37          - 3787.00000      -     -    5s
+     0     0 3787.00000    0   35          - 3787.00000      -     -    5s
+     0     0 3787.00000    0    7          - 3787.00000      -     -    6s
+     0     0 3787.00000    0    6          - 3787.00000      -     -    6s
+     0     0 3787.00000    0   13          - 3787.00000      -     -    7s
+     0     0 3787.00000    0   12          - 3787.00000      -     -    7s
+     0     0 3787.00000    0    7          - 3787.00000      -     -    7s
+     0     0 3787.00000    0   15          - 3787.00000      -     -    7s
+     0     0 3787.00000    0    6          - 3787.00000      -     -    7s
+     0     0 3787.00000    0    6          - 3787.00000      -     -    8s
+     0     2 3787.00000    0    6          - 3787.00000      -     -   11s
+*   80    67               6    3787.0000000 3787.00000  0.00%   190   12s
+
+Cutting planes:
+  Learned: 5
+  Gomory: 4
+  Cover: 18
+  Implied bound: 1
+  Clique: 14
+  MIR: 6
+  Flow cover: 25
+  Zero half: 34
+  RLT: 38
+  Relax-and-lift: 1
+  BQP: 97
+
+Explored 95 nodes (29238 simplex iterations) in 12.85 seconds (2.64 work units)
+Thread count was 10 (of 10 available processors)
+
+Solution count 1: 3787 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.787000000000e+03, best bound 3.787000000000e+03, gap 0.0000%
+SOLUTION 4
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 14400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (mac64[arm] - Darwin 25.3.0 25D125)
+
+CPU model: Apple M4
+Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+
+Non-default parameters:
+TimeLimit  14400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 21137 rows, 2382 columns and 62020 nonzeros
+Model fingerprint: 0x70333d2a
+Model has 238 quadratic constraints
+Variable types: 1379 continuous, 1003 integer (1003 binary)
+Coefficient statistics:
+  Matrix range     [5e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [2e+02, 7e+02]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 4e+01]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 13912 rows and 1054 columns
+Presolve time: 1.10s
+Presolved: 7273 rows, 1352 columns, 22485 nonzeros
+Variable types: 756 continuous, 596 integer (596 binary)
+
+Root relaxation: objective 4.585500e+03, 2781 iterations, 1.57 seconds (0.27 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4585.50000    0  161          - 4585.50000      -     -    5s
+     0     0 3863.66667    0  252          - 3863.66667      -     -    6s
+     0     0 3829.00000    0  235          - 3829.00000      -     -    6s
+     0     0 3787.00000    0   72          - 3787.00000      -     -    8s
+     0     0 3787.00000    0   29          - 3787.00000      -     -    8s
+     0     0 3787.00000    0   33          - 3787.00000      -     -    8s
+     0     0 3787.00000    0   30          - 3787.00000      -     -    8s
+     0     0 3787.00000    0   17          - 3787.00000      -     -    9s
+     0     0 3787.00000    0   17          - 3787.00000      -     -    9s
+H    0     0                    3787.0000000 3787.00000  0.00%     -    9s
+     0     0 3787.00000    0    1 3787.00000 3787.00000  0.00%     -    9s
+
+Cutting planes:
+  Learned: 4
+  Gomory: 11
+  Cover: 24
+  Implied bound: 8
+  Clique: 26
+  MIR: 36
+  Flow cover: 20
+  Zero half: 41
+  RLT: 99
+  BQP: 47
+
+Explored 1 nodes (13747 simplex iterations) in 9.91 seconds (1.83 work units)
+Thread count was 10 (of 10 available processors)
+
+Solution count 1: 3787 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.787000000000e+03, best bound 3.787000000000e+03, gap 0.0000%
+SOLUTION 5
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 14400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (mac64[arm] - Darwin 25.3.0 25D125)
+
+CPU model: Apple M4
+Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+
+Non-default parameters:
+TimeLimit  14400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 21138 rows, 2382 columns and 62190 nonzeros
+Model fingerprint: 0x38f02ba6
+Model has 238 quadratic constraints
+Variable types: 1379 continuous, 1003 integer (1003 binary)
+Coefficient statistics:
+  Matrix range     [5e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [2e+02, 7e+02]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 4e+01]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 13912 rows and 1054 columns
+Presolve time: 0.87s
+Presolved: 7274 rows, 1352 columns, 22621 nonzeros
+Variable types: 756 continuous, 596 integer (596 binary)
+
+Root relaxation: objective 4.585500e+03, 2396 iterations, 1.08 seconds (0.21 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4585.50000    0  192          - 4585.50000      -     -    4s
+     0     0 3866.00000    0  100          - 3866.00000      -     -    6s
+     0     0 3865.33333    0   87          - 3865.33333      -     -    6s
+     0     0 3787.00000    0   62          - 3787.00000      -     -    7s
+     0     0 3787.00000    0   54          - 3787.00000      -     -    7s
+     0     0 3787.00000    0   46          - 3787.00000      -     -    7s
+     0     0 3787.00000    0   39          - 3787.00000      -     -    7s
+     0     0 3787.00000    0   18          - 3787.00000      -     -    8s
+     0     0 3787.00000    0   13          - 3787.00000      -     -    8s
+     0     0 3787.00000    0   16          - 3787.00000      -     -    8s
+     0     0 3787.00000    0    9          - 3787.00000      -     -    8s
+     0     0 3787.00000    0    2          - 3787.00000      -     -    9s
+     0     0 3787.00000    0   11          - 3787.00000      -     -    9s
+*    0     0               0    3787.0000000 3787.00000  0.00%     -    9s
+
+Cutting planes:
+  Learned: 4
+  Gomory: 9
+  Cover: 7
+  Implied bound: 2
+  Clique: 10
+  MIR: 11
+  Flow cover: 17
+  GUB cover: 1
+  Zero half: 27
+  RLT: 21
+  BQP: 26
+
+Explored 1 nodes (14263 simplex iterations) in 9.84 seconds (1.89 work units)
+Thread count was 10 (of 10 available processors)
+
+Solution count 1: 3787 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.787000000000e+03, best bound 3.787000000000e+03, gap 0.0000%
+SOLUTION 6
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 14400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (mac64[arm] - Darwin 25.3.0 25D125)
+
+CPU model: Apple M4
+Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+
+Non-default parameters:
+TimeLimit  14400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 21139 rows, 2382 columns and 62360 nonzeros
+Model fingerprint: 0x3d81a20a
+Model has 238 quadratic constraints
+Variable types: 1379 continuous, 1003 integer (1003 binary)
+Coefficient statistics:
+  Matrix range     [5e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [2e+02, 7e+02]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 4e+01]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 13912 rows and 1054 columns
+Presolve time: 0.99s
+Presolved: 7275 rows, 1352 columns, 22757 nonzeros
+Variable types: 756 continuous, 596 integer (596 binary)
+
+Root relaxation: objective 4.585500e+03, 2367 iterations, 1.00 seconds (0.18 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4585.50000    0  198          - 4585.50000      -     -    3s
+     0     0 3787.00000    0   73          - 3787.00000      -     -    5s
+     0     0 3787.00000    0   68          - 3787.00000      -     -    5s
+     0     0 3787.00000    0   60          - 3787.00000      -     -    6s
+     0     0 3787.00000    0   57          - 3787.00000      -     -    6s
+H    0     0                    3787.0000000 3787.00000  0.00%     -    6s
+
+Cutting planes:
+  Learned: 4
+  Gomory: 3
+  Lift-and-project: 2
+  Cover: 4
+  Implied bound: 29
+  Clique: 52
+  MIR: 20
+  Flow cover: 17
+  Zero half: 35
+  RLT: 92
+  Relax-and-lift: 323
+  BQP: 123
+
+Explored 1 nodes (7555 simplex iterations) in 6.58 seconds (1.21 work units)
+Thread count was 10 (of 10 available processors)
+
+Solution count 1: 3787 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 3.787000000000e+03, best bound 3.787000000000e+03, gap 0.0000%
+SOLUTION 7
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 14400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (mac64[arm] - Darwin 25.3.0 25D125)
+
+CPU model: Apple M4
+Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+
+Non-default parameters:
+TimeLimit  14400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 21140 rows, 2382 columns and 62530 nonzeros
+Model fingerprint: 0xb3545f3f
+Model has 238 quadratic constraints
+Variable types: 1379 continuous, 1003 integer (1003 binary)
+Coefficient statistics:
+  Matrix range     [5e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [2e+02, 7e+02]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 4e+01]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 13912 rows and 1054 columns
+Presolve time: 1.21s
+Presolved: 7276 rows, 1352 columns, 22893 nonzeros
+Variable types: 756 continuous, 596 integer (596 binary)
+
+Root relaxation: objective 4.585500e+03, 2632 iterations, 1.08 seconds (0.26 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4585.50000    0  195          - 4585.50000      -     -    3s
+     0     0 3956.28571    0  216          - 3956.28571      -     -    5s
+     0     0 3854.42857    0   99          - 3854.42857      -     -    6s
+     0     0 3787.00000    0   93          - 3787.00000      -     -    6s
+     0     0 3787.00000    0   66          - 3787.00000      -     -    7s
+     0     0 3787.00000    0   52          - 3787.00000      -     -    7s
+     0     0 3787.00000    0   31          - 3787.00000      -     -    7s
+     0     0 3787.00000    0   34          - 3787.00000      -     -    8s
+     0     0 3787.00000    0   11          - 3787.00000      -     -    8s
+     0     0 3787.00000    0   30          - 3787.00000      -     -    9s
+     0     0 3787.00000    0   32          - 3787.00000      -     -    9s
+     0     0 3787.00000    0    6          - 3787.00000      -     -   10s
+     0     0 3787.00000    0    6          - 3787.00000      -     -   10s
+     0     0 3787.00000    0   15          - 3787.00000      -     -   10s
+     0     0 3787.00000    0    7          - 3787.00000      -     -   10s
+     0     2 3787.00000    0    7          - 3787.00000      -     -   13s
+   113    92 3787.00000    8   39          - 3787.00000      -   244   15s
+  1229   452 3784.57700   13  174          - 3787.00000      -   128   20s
+  2377   825 3465.00000   17  126          - 3786.00000      -   129   25s
+  3827  1136 3162.33333   13    7          - 3763.73451      -   125   30s
+  3830  1138 3521.00000   13   39          - 3763.73451      -   125   35s
+  3849  1151 3403.00000   15    2          - 3763.73451      -   124   43s
+  3850  1151 3074.00000    8    2          - 3763.73451      -   124   46s
+  4020  1191 3725.70703   21   79          - 3763.73451      -  12.9   50s
+  4540  1070 3763.73451   17   26          - 3763.73451      -  30.7   55s
+  5324   867 3189.00000   25   10          - 3682.27784      -  45.8   60s
+  6253   483 2227.00000   20   26          - 3276.52222      -  58.2   65s
+  6931   260 1638.00000   34    7          - 2978.00000      -  63.7   72s
+  7373   148 2181.00000   34   20          - 2562.66667      -  68.4   75s
+
+Cutting planes:
+  Gomory: 11
+  Lift-and-project: 1
+  Cover: 22
+  Implied bound: 19
+  Clique: 6
+  MIR: 16
+  StrongCG: 1
+  Flow cover: 33
+  Inf proof: 1
+  Zero half: 87
+  RLT: 50
+  Relax-and-lift: 1
+  BQP: 30
+
+Explored 8644 nodes (1119355 simplex iterations) in 79.10 seconds (26.02 work units)
+Thread count was 10 (of 10 available processors)
+
+Solution count 0
+No other solutions better than -1e+100
+
+Model is infeasible
+Best objective -, best bound -, gap -
+SOLUTION 0
+SOLUTION 1
+SOLUTION 2
+SOLUTION 3
+SOLUTION 4
+SOLUTION 5
+SOLUTION 6
+SOLUTION 7

@@ -1,0 +1,114 @@
+clone_id
+B    156
+C    140
+H     60
+D     54
+F     48
+A     34
+E     21
+G     20
+Name: count, dtype: int64
+clone_id
+B    0.292683
+C    0.262664
+H    0.112570
+D    0.101313
+F    0.090056
+A    0.063790
+E    0.039400
+G    0.037523
+Name: count, dtype: float64
+0.037037037037037035
+['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+   A  B  C  D  E  F  G  H
+A  0  1  1  1  1  1  1  1
+B  1  0  0  1  1  1  1  1
+C  1  1  0  1  1  1  1  1
+D  1  1  1  0  1  1  0  0
+E  1  1  1  1  0  0  0  0
+F  1  1  1  1  1  0  1  1
+G  1  1  1  1  1  1  0  1
+H  1  1  1  1  1  1  0  0
+            0    1         2         3    4  ...   12        13   14        15   16
+clone_id                                     ...                                   
+A         1.0  0.0  0.000000  1.000000  0.0  ...  1.0  0.400000  0.0  0.285714  1.0
+B         0.0  1.0  0.117647  1.000000  0.0  ...  1.0  0.571429  0.0  0.522883  0.0
+C         0.0  0.0  0.571429  1.000000  1.0  ...  1.0  0.472941  0.0  0.153846  0.0
+D         1.0  0.0  0.000000  1.000000  0.0  ...  1.0  0.533333  0.0  0.500000  1.0
+E         1.0  0.0  0.000000  0.000000  0.0  ...  1.0  1.000000  0.0  0.333333  1.0
+F         1.0  0.0  0.000000  1.000000  0.0  ...  1.0  0.000000  0.0  0.430804  1.0
+G         1.0  0.0  0.000000  0.333333  0.0  ...  1.0  0.000000  0.0  1.000000  0.0
+H         1.0  0.0  0.000000  1.000000  0.0  ...  1.0  0.500000  0.0  0.500000  1.0
+
+[8 rows x 17 columns]
+TRYING 18 CLONES
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 86400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (linux64 - "Rocky Linux 9.7 (Blue Onyx)")
+
+CPU model: AMD EPYC 7702 64-Core Processor, instruction set [SSE2|AVX|AVX2]
+Thread count: 128 physical cores, 128 logical processors, using up to 32 threads
+
+Non-default parameters:
+TimeLimit  86400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 33313 rows, 3901 columns and 96138 nonzeros
+Model fingerprint: 0x90fbd221
+Model has 272 quadratic constraints
+Variable types: 2728 continuous, 1173 integer (1173 binary)
+Coefficient statistics:
+  Matrix range     [8e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [7e+02, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 8e+00]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 23138 rows and 2272 columns
+Presolve time: 0.26s
+Presolved: 10289 rows, 1686 columns, 30447 nonzeros
+Variable types: 979 continuous, 707 integer (707 binary)
+
+Root relaxation: objective 2.567900e+04, 3104 iterations, 0.45 seconds (0.48 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 25679.0000    0  144          - 25679.0000      -     -    2s
+     0     0 24547.0000    0   96          - 24547.0000      -     -    3s
+     0     0 24547.0000    0  100          - 24547.0000      -     -    3s
+     0     0 24547.0000    0   81          - 24547.0000      -     -    4s
+     0     0 24547.0000    0   79          - 24547.0000      -     -    4s
+     0     0 24547.0000    0   39          - 24547.0000      -     -    5s
+     0     0          -    0               - 24547.0000      -     -    5s
+
+Cutting planes:
+  Learned: 4
+  Gomory: 2
+  Lift-and-project: 1
+  Cover: 7
+  Implied bound: 22
+  Clique: 1
+  MIR: 35
+  Flow cover: 14
+  Zero half: 9
+  RLT: 22
+  Relax-and-lift: 2
+  BQP: 36
+
+Explored 1 nodes (22419 simplex iterations) in 5.78 seconds (3.50 work units)
+Thread count was 32 (of 128 available processors)
+
+Solution count 0
+
+Solve interrupted
+Best objective -, best bound 2.454700000000e+04, gap -
+TRYING 17 CLONES
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu

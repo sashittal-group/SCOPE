@@ -1,0 +1,374 @@
+clone_id
+H    334
+B    159
+A    115
+D    105
+F     87
+E     66
+C     60
+G     45
+Name: count, dtype: int64
+clone_id
+H    0.343975
+B    0.163749
+A    0.118435
+D    0.108136
+F    0.089598
+E    0.067971
+C    0.061792
+G    0.046344
+Name: count, dtype: float64
+0.037037037037037035
+['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+   A  B  C  D  E  F  G  H
+A  0  0  1  1  0  1  0  0
+B  1  0  1  1  0  1  0  0
+C  1  1  0  1  1  1  1  1
+D  1  1  0  0  1  1  1  1
+E  1  0  1  1  0  1  0  0
+F  1  1  1  1  0  0  0  0
+G  1  1  1  1  0  1  0  0
+H  1  1  1  1  0  1  0  0
+                 0    1    2    3  ...         7         8         9        10
+clone_id                           ...                                        
+A         0.666667  1.0  0.0  1.0  ...  0.827586  1.000000  0.162990  0.640344
+B         0.333333  1.0  0.0  1.0  ...  0.833333  1.000000  0.933333  0.000000
+C         0.000000  1.0  1.0  0.0  ...  0.000000  0.000000  0.000000  0.000000
+D         0.000000  1.0  1.0  0.0  ...  0.000000  0.000000  0.000000  0.000000
+E         0.000000  0.0  0.0  0.0  ...  0.000000  0.299342  0.000000  0.000000
+F         0.000000  1.0  0.0  0.0  ...  0.000000  1.000000  0.000000  0.000000
+G         0.000000  1.0  0.0  0.0  ...  1.000000  1.000000  0.000000  0.000000
+H         0.400000  1.0  0.0  1.0  ...  0.888889  1.000000  0.800000  1.000000
+
+[8 rows x 11 columns]
+TRYING 8 CLONES
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 86400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (linux64 - "Rocky Linux 9.7 (Blue Onyx)")
+
+CPU model: AMD EPYC 7702 64-Core Processor, instruction set [SSE2|AVX|AVX2]
+Thread count: 128 physical cores, 128 logical processors, using up to 32 threads
+
+Non-default parameters:
+TimeLimit  86400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 9708 rows, 1373 columns and 27403 nonzeros
+Model fingerprint: 0xed8762a3
+Model has 176 quadratic constraints
+Variable types: 856 continuous, 517 integer (517 binary)
+Coefficient statistics:
+  Matrix range     [1e-01, 1e+03]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [5e+02, 7e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 8e+00]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 8394 rows and 995 columns
+Presolve time: 0.04s
+Presolved: 1340 rows, 391 columns, 3766 nonzeros
+Variable types: 267 continuous, 124 integer (124 binary)
+
+Root relaxation: objective 1.354100e+04, 432 iterations, 0.01 seconds (0.01 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 13541.0000    0    1          - 13541.0000      -     -    0s
+     0     0 13541.0000    0    7          - 13541.0000      -     -    0s
+     0     0 13541.0000    0    8          - 13541.0000      -     -    0s
+     0     0 13541.0000    0    6          - 13541.0000      -     -    0s
+     0     0 13541.0000    0    6          - 13541.0000      -     -    0s
+     0     0 13541.0000    0    4          - 13541.0000      -     -    0s
+     0     0 13541.0000    0    4          - 13541.0000      -     -    0s
+     0     0 13541.0000    0    2          - 13541.0000      -     -    0s
+     0     0 13541.0000    0    3          - 13541.0000      -     -    0s
+     0     0 13541.0000    0    3          - 13541.0000      -     -    0s
+     0     2 13541.0000    0    3          - 13541.0000      -     -    0s
+
+Cutting planes:
+  Learned: 3
+  Cover: 25
+  MIR: 9
+  StrongCG: 2
+  Zero half: 2
+  Mod-K: 1
+  RLT: 7
+  Relax-and-lift: 4
+
+Explored 313 nodes (16344 simplex iterations) in 0.39 seconds (0.31 work units)
+Thread count was 32 (of 128 available processors)
+
+Solution count 0
+No other solutions better than -1e+100
+
+Model is infeasible
+Best objective -, best bound -, gap -
+TRYING 7 CLONES
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 86400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (linux64 - "Rocky Linux 9.7 (Blue Onyx)")
+
+CPU model: AMD EPYC 7702 64-Core Processor, instruction set [SSE2|AVX|AVX2]
+Thread count: 128 physical cores, 128 logical processors, using up to 32 threads
+
+Non-default parameters:
+TimeLimit  86400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 9102 rows, 1266 columns and 25646 nonzeros
+Model fingerprint: 0x43aad207
+Model has 176 quadratic constraints
+Variable types: 760 continuous, 506 integer (506 binary)
+Coefficient statistics:
+  Matrix range     [1e-01, 1e+03]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [5e+02, 7e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 8e+00]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 7946 rows and 931 columns
+Presolve time: 0.04s
+Presolved: 1182 rows, 348 columns, 3309 nonzeros
+Variable types: 230 continuous, 118 integer (118 binary)
+
+Root relaxation: objective 1.354100e+04, 382 iterations, 0.01 seconds (0.01 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+H    0     0                    13541.000000 13541.0000  0.00%     -    0s
+     0     0 13541.0000    0   11 13541.0000 13541.0000  0.00%     -    0s
+
+Explored 1 nodes (668 simplex iterations) in 0.12 seconds (0.06 work units)
+Thread count was 32 (of 128 available processors)
+
+Solution count 1: 13541 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 1.354100000000e+04, best bound 1.354100000000e+04, gap 0.0000%
+[0. 1. 1. 1. 1. 0. 1. 0. 1. 0. 0.]
+THERE IS A SOLUTION WITH 7 CLONES
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 14400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (linux64 - "Rocky Linux 9.7 (Blue Onyx)")
+
+CPU model: AMD EPYC 7702 64-Core Processor, instruction set [SSE2|AVX|AVX2]
+Thread count: 128 physical cores, 128 logical processors, using up to 32 threads
+
+Non-default parameters:
+TimeLimit  14400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 9102 rows, 1266 columns and 25646 nonzeros
+Model fingerprint: 0x43aad207
+Model has 176 quadratic constraints
+Variable types: 760 continuous, 506 integer (506 binary)
+Coefficient statistics:
+  Matrix range     [1e-01, 1e+03]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [5e+02, 7e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 8e+00]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 7946 rows and 931 columns
+Presolve time: 0.04s
+Presolved: 1182 rows, 348 columns, 3309 nonzeros
+Variable types: 230 continuous, 118 integer (118 binary)
+
+Root relaxation: objective 1.354100e+04, 382 iterations, 0.01 seconds (0.01 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+H    0     0                    13541.000000 13541.0000  0.00%     -    0s
+     0     0 13541.0000    0   11 13541.0000 13541.0000  0.00%     -    0s
+
+Explored 1 nodes (668 simplex iterations) in 0.14 seconds (0.06 work units)
+Thread count was 32 (of 128 available processors)
+
+Solution count 1: 13541 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 1.354100000000e+04, best bound 1.354100000000e+04, gap 0.0000%
+SOLUTION 0
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 14400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (linux64 - "Rocky Linux 9.7 (Blue Onyx)")
+
+CPU model: AMD EPYC 7702 64-Core Processor, instruction set [SSE2|AVX|AVX2]
+Thread count: 128 physical cores, 128 logical processors, using up to 32 threads
+
+Non-default parameters:
+TimeLimit  14400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 9103 rows, 1266 columns and 25723 nonzeros
+Model fingerprint: 0x2ce52cd9
+Model has 176 quadratic constraints
+Variable types: 760 continuous, 506 integer (506 binary)
+Coefficient statistics:
+  Matrix range     [1e-01, 1e+03]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [5e+02, 7e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+01]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 7946 rows and 931 columns
+Presolve time: 0.04s
+Presolved: 1183 rows, 348 columns, 3343 nonzeros
+Variable types: 230 continuous, 118 integer (118 binary)
+
+Root relaxation: objective 1.354100e+04, 370 iterations, 0.01 seconds (0.01 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 13541.0000    0    3          - 13541.0000      -     -    0s
+H    0     0                    13541.000000 13541.0000  0.00%     -    0s
+
+Explored 1 nodes (960 simplex iterations) in 0.17 seconds (0.07 work units)
+Thread count was 32 (of 128 available processors)
+
+Solution count 1: 13541 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 1.354100000000e+04, best bound 1.354100000000e+04, gap 0.0000%
+SOLUTION 1
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 14400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (linux64 - "Rocky Linux 9.7 (Blue Onyx)")
+
+CPU model: AMD EPYC 7702 64-Core Processor, instruction set [SSE2|AVX|AVX2]
+Thread count: 128 physical cores, 128 logical processors, using up to 32 threads
+
+Non-default parameters:
+TimeLimit  14400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 9104 rows, 1266 columns and 25800 nonzeros
+Model fingerprint: 0xa6ca0810
+Model has 176 quadratic constraints
+Variable types: 760 continuous, 506 integer (506 binary)
+Coefficient statistics:
+  Matrix range     [1e-01, 1e+03]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [5e+02, 7e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+01]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 7946 rows and 931 columns
+Presolve time: 0.08s
+Presolved: 1184 rows, 348 columns, 3374 nonzeros
+Variable types: 230 continuous, 118 integer (118 binary)
+
+Root relaxation: objective 1.354100e+04, 359 iterations, 0.01 seconds (0.01 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 13541.0000    0    3          - 13541.0000      -     -    0s
+H    0     0                    13541.000000 13541.0000  0.00%     -    0s
+
+Explored 1 nodes (785 simplex iterations) in 0.18 seconds (0.06 work units)
+Thread count was 32 (of 128 available processors)
+
+Solution count 1: 13541 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 1.354100000000e+04, best bound 1.354100000000e+04, gap 0.0000%
+SOLUTION 2
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 14400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (linux64 - "Rocky Linux 9.7 (Blue Onyx)")
+
+CPU model: AMD EPYC 7702 64-Core Processor, instruction set [SSE2|AVX|AVX2]
+Thread count: 128 physical cores, 128 logical processors, using up to 32 threads
+
+Non-default parameters:
+TimeLimit  14400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 9105 rows, 1266 columns and 25877 nonzeros
+Model fingerprint: 0x7d74dbbb
+Model has 176 quadratic constraints
+Variable types: 760 continuous, 506 integer (506 binary)
+Coefficient statistics:
+  Matrix range     [1e-01, 1e+03]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [5e+02, 7e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+01]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 7947 rows and 931 columns
+Presolve time: 0.08s
+Presolved: 1184 rows, 348 columns, 3374 nonzeros
+Variable types: 230 continuous, 118 integer (118 binary)
+
+Root relaxation: objective 1.354100e+04, 420 iterations, 0.01 seconds (0.01 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 13541.0000    0    4          - 13541.0000      -     -    0s
+     0     0 13541.0000    0   23          - 13541.0000      -     -    0s
+     0     0 13541.0000    0   14          - 13541.0000      -     -    0s
+     0     0 13541.0000    0    4          - 13541.0000      -     -    0s
+     0     0 13541.0000    0    2          - 13541.0000      -     -    0s
+     0     0 13541.0000    0    3          - 13541.0000      -     -    0s
+     0     0 13541.0000    0    5          - 13541.0000      -     -    0s
+     0     0 13541.0000    0   10          - 13541.0000      -     -    0s
+     0     0 13541.0000    0    7          - 13541.0000      -     -    0s
+     0     0 13541.0000    0    2          - 13541.0000      -     -    0s
+     0     0 13541.0000    0    7          - 13541.0000      -     -    0s
+     0     0 13541.0000    0   12          - 13541.0000      -     -    0s
+     0     0 13541.0000    0    9          - 13541.0000      -     -    0s
+     0     0 13040.0000    0   14          - 13040.0000      -     -    0s
+     0     0 13040.0000    0    2          - 13040.0000      -     -    0s
+     0     2 13040.0000    0    2          - 13040.0000      -     -    1s
+
+Cutting planes:
+  Learned: 7
+  Cover: 21
+  Implied bound: 9
+  MIR: 15
+  Flow cover: 14
+  Mod-K: 2
+  RLT: 9
+  BQP: 1
+
+Explored 299 nodes (13776 simplex iterations) in 1.85 seconds (0.34 work units)
+Thread count was 32 (of 128 available processors)
+
+Solution count 0
+No other solutions better than -1e+100
+
+Model is infeasible
+Best objective -, best bound -, gap -
+SOLUTION 0
+SOLUTION 1
+SOLUTION 2

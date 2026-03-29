@@ -1,0 +1,34 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/saminrk/workspace/SCOPE/src/williams/run_scope_on_williams.py", line 119, in <module>
+    run_for_sample(sample, k)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/saminrk/workspace/SCOPE/src/williams/run_scope_on_williams.py", line 74, in run_for_sample
+    solutions, best_val = solve_cppme(F_plus=F_plus, F_minus=F_minus, cluster_weights=cluster_weights,
+                          ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                only_mutation_tree_variant=only_mutation_tree_variant, cluster_not_at_root=cluster_not_at_root,
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                forbidden_pairs=forbidden_pairs)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/saminrk/workspace/SCOPE/src/scope/solve_ilp.py", line 266, in solve_cppme
+    solution, model = solve_cppme_with_fixed_clones(F_plus, F_minus, n_clones=n_clones,
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                    cluster_weights=cluster_weights, time_limit=60 * 60 * 24,
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                    cluster_parent_restriction_pairs=forbidden_pairs,
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                    cluster_not_at_root=cluster_not_at_root,
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                    only_mutation_tree_variant=only_mutation_tree_variant)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/saminrk/workspace/SCOPE/src/scope/solve_ilp.py", line 128, in solve_cppme_with_fixed_clones
+    model.addConstr(b[j, c] + b[j, d] <= 2 - z[c,d])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "src/gurobipy/_model.pyx", line 3994, in gurobipy._model.Model.addConstr
+  File "src/gurobipy/linexpr.pxi", line 500, in gurobipy._core.LinExpr.__sub__
+  File "src/gurobipy/linexpr.pxi", line 541, in gurobipy._core.LinExpr.__rmul__
+  File "src/gurobipy/linexpr.pxi", line 536, in gurobipy._core.LinExpr.__mul__
+  File "src/gurobipy/linexpr.pxi", line 42, in gurobipy._core.LinExpr.__init__
+  File "<frozen abc>", line 117, in __instancecheck__
+KeyboardInterrupt

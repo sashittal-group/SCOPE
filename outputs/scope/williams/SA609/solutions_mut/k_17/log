@@ -1,0 +1,130 @@
+clone_id
+J    3484
+H    1778
+M    1468
+O    1438
+E    1018
+G     331
+C     304
+D     132
+K      71
+B      67
+N      59
+I      56
+F      56
+P      55
+L      44
+A      36
+Name: count, dtype: int64
+clone_id
+J    0.335097
+H    0.171011
+M    0.141195
+O    0.138309
+E    0.097913
+G    0.031836
+C    0.029239
+D    0.012696
+K    0.006829
+B    0.006444
+N    0.005675
+I    0.005386
+F    0.005386
+P    0.005290
+L    0.004232
+A    0.003463
+Name: count, dtype: float64
+0.0196078431372549
+['C', 'E', 'G', 'H', 'J', 'M', 'O']
+   C  E  G  H  J  M  O
+C  0  1  0  0  0  0  0
+E  0  0  0  0  0  0  0
+G  1  1  0  0  1  0  1
+H  1  1  0  0  1  0  1
+J  0  1  0  0  0  0  0
+M  1  1  0  0  1  0  1
+O  0  1  0  0  0  0  0
+            0    1    2         3  ...     13        14        15        16
+clone_id                           ...                                     
+C         0.0  0.0  0.0  0.000000  ...  0.000  0.000000  0.000000  0.000000
+E         0.0  1.0  1.0  0.823529  ...  0.125  0.153846  0.333333  0.000000
+G         0.0  1.0  1.0  0.000000  ...  1.000  0.000000  0.000000  0.000000
+H         0.0  1.0  1.0  0.864214  ...  0.800  1.000000  1.000000  0.512195
+J         0.0  1.0  1.0  0.940224  ...  0.400  0.447875  0.952381  0.000000
+M         0.0  0.0  0.0  0.000000  ...  0.000  0.000000  0.000000  0.000000
+O         0.0  1.0  0.0  1.000000  ...  0.000  0.000000  0.000000  0.000000
+
+[7 rows x 17 columns]
+TRYING 16 CLONES
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 86400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (linux64 - "Rocky Linux 9.7 (Blue Onyx)")
+
+CPU model: AMD EPYC 7702 64-Core Processor, instruction set [SSE2|AVX|AVX2]
+Thread count: 128 physical cores, 128 logical processors, using up to 32 threads
+
+Non-default parameters:
+TimeLimit  86400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 28176 rows, 3240 columns and 81867 nonzeros
+Model fingerprint: 0x4378c60a
+Model has 238 quadratic constraints
+Variable types: 2135 continuous, 1105 integer (1105 binary)
+Coefficient statistics:
+  Matrix range     [6e-02, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [1e+03, 1e+04]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 7e+00]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 21589 rows and 2104 columns
+Presolve time: 0.18s
+Presolved: 6649 rows, 1167 columns, 20803 nonzeros
+Variable types: 644 continuous, 523 integer (523 binary)
+
+Root relaxation: objective 2.837100e+04, 2212 iterations, 0.24 seconds (0.24 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 28371.0000    0   91          - 28371.0000      -     -    0s
+     0     0 28371.0000    0   79          - 28371.0000      -     -    1s
+     0     0 28371.0000    0   88          - 28371.0000      -     -    1s
+     0     0 28371.0000    0   92          - 28371.0000      -     -    1s
+     0     0 28371.0000    0   23          - 28371.0000      -     -    2s
+     0     0 28371.0000    0   25          - 28371.0000      -     -    2s
+     0     0 28371.0000    0   41          - 28371.0000      -     -    3s
+     0     0 28371.0000    0   31          - 28371.0000      -     -    3s
+     0     0 28371.0000    0   18          - 28371.0000      -     -    3s
+     0     0 28371.0000    0   16          - 28371.0000      -     -    3s
+     0     0 28371.0000    0   20          - 28371.0000      -     -    3s
+     0     0 28371.0000    0   39          - 28371.0000      -     -    3s
+     0     0 28371.0000    0   55          - 28371.0000      -     -    5s
+     0     0 28371.0000    0   55          - 28371.0000      -     -    5s
+
+Cutting planes:
+  Cover: 6
+  Clique: 1
+  MIR: 5
+  Flow cover: 26
+  RLT: 31
+  Relax-and-lift: 1
+  BQP: 7
+
+Explored 1 nodes (26136 simplex iterations) in 5.36 seconds (3.15 work units)
+Thread count was 32 (of 128 available processors)
+
+Solution count 0
+
+Solve interrupted
+Best objective -, best bound 2.837100000000e+04, gap -
+TRYING 15 CLONES
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu

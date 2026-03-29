@@ -1,0 +1,93 @@
+clone_id
+D    110
+A     93
+C     79
+B     47
+Name: count, dtype: int64
+clone_id
+D    0.334347
+A    0.282675
+C    0.240122
+B    0.142857
+Name: count, dtype: float64
+0.06666666666666667
+['A', 'B', 'C', 'D']
+   A  B  C  D
+A  0  0  0  0
+B  0  0  0  0
+C  0  0  0  0
+D  0  0  0  0
+            0    1    2         3  ...   13        14        15   16
+clone_id                           ...                              
+A         0.0  1.0  1.0  0.285714  ...  1.0  1.000000  0.000000  1.0
+B         0.0  1.0  0.0  0.000000  ...  0.0  1.000000  1.000000  1.0
+C         0.0  1.0  0.0  1.000000  ...  1.0  0.000000  1.000000  0.0
+D         0.0  1.0  0.0  1.000000  ...  1.0  0.333333  0.333333  1.0
+
+[4 rows x 17 columns]
+TRYING 17 CLONES
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Set parameter TimeLimit to value 86400
+Gurobi Optimizer version 12.0.3 build v12.0.3rc0 (linux64 - "Rocky Linux 9.7 (Blue Onyx)")
+
+CPU model: AMD EPYC 7702 64-Core Processor, instruction set [SSE2|AVX|AVX2]
+Thread count: 128 physical cores, 128 logical processors, using up to 32 threads
+
+Non-default parameters:
+TimeLimit  86400
+
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
+Optimize a model with 22734 rows, 2312 columns and 66992 nonzeros
+Model fingerprint: 0x16b08a5b
+Model has 136 quadratic constraints
+Variable types: 1292 continuous, 1020 integer (1020 binary)
+Coefficient statistics:
+  Matrix range     [2e-01, 7e+04]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [2e+01, 2e+01]
+  Objective range  [3e+02, 3e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 4e+00]
+  QRHS range       [2e+01, 2e+01]
+Presolve removed 13782 rows and 892 columns
+Presolve time: 0.16s
+Presolved: 9064 rows, 1476 columns, 27146 nonzeros
+Variable types: 770 continuous, 706 integer (706 binary)
+
+Root relaxation: objective 1.350350e+04, 3612 iterations, 0.56 seconds (0.53 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 13503.5000    0  201          - 13503.5000      -     -    2s
+     0     0 13115.9333    0  325          - 13115.9333      -     -    4s
+     0     0 13115.9333    0  294          - 13115.9333      -     -    5s
+
+Cutting planes:
+  Learned: 18
+  Gomory: 2
+  Cover: 39
+  Implied bound: 47
+  Clique: 58
+  MIR: 10
+  Flow cover: 3
+  Zero half: 2
+  RLT: 53
+  Relax-and-lift: 3
+  BQP: 38
+
+Explored 1 nodes (18980 simplex iterations) in 5.50 seconds (3.16 work units)
+Thread count was 32 (of 128 available processors)
+
+Solution count 0
+
+Solve interrupted
+Best objective -, best bound 1.311500000000e+04, gap -
+TRYING 16 CLONES
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2770065
+Academic license 2770065 - for non-commercial use only - registered to sa___@vt.edu
