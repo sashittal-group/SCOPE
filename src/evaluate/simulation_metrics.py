@@ -346,8 +346,11 @@ def calculate_pairwise_ancestry_accuracy_for_phertilizer(SIMULATION_STR, collaps
     return total_pairs, correct_pairs, phert_acc
 
 
-def calculate_pairwise_ancestry_accuracy_for_sbmclone(SIMULATION_STR):
-    GROUND_TRUTH_DIR = f"../data/simulation/ground_truth/{SIMULATION_STR}"
+def calculate_pairwise_ancestry_accuracy_for_sbmclone(SIMULATION_STR, loss=None):
+    if loss is not None: with_loss_substr = f"_with_loss_{str(int(loss*100))}"
+    else: with_loss_substr = ""
+    
+    GROUND_TRUTH_DIR = f"../data/simulation/ground_truth{with_loss_substr}/{SIMULATION_STR}"
 
     ground_truth_mutation_group = pd.read_parquet(f"{GROUND_TRUTH_DIR}/sim_mutation_group.parquet")
     ground_truth_mutation_group.set_index('mutation', inplace=True)
@@ -360,7 +363,7 @@ def calculate_pairwise_ancestry_accuracy_for_sbmclone(SIMULATION_STR):
         parent, child = row[0], row[1]
         T_truth.add_edge(parent, child)
     
-    SBMCLONE_OUT_DIR = f"../data/simulation/sbmclone_output/{SIMULATION_STR}"
+    SBMCLONE_OUT_DIR = f"../data/simulation/sbmclone_output{with_loss_substr}/{SIMULATION_STR}"
 
     with open(f"{SBMCLONE_OUT_DIR}/cluster-assignments.txt", "r") as f:
         lines = f.readlines()
